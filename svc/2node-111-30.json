@@ -1,0 +1,6 @@
+{
+    "numworkers": 2,
+    "kubeversion": "1.11",
+    "timeout": 30,
+    "owner": "hausenbl+notif@amazon.com"
+}
