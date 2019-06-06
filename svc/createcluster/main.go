@@ -30,7 +30,7 @@ type ClusterCreateRequest struct {
 }
 
 func fetcheksctl() error {
-	eksctlbin, err := os.Create("./eksctl")
+	eksctlbin, err := os.Create("/tmp/eksctl")
 	if err != nil {
 		return err
 	}
