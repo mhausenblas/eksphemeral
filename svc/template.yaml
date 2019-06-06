@@ -33,6 +33,10 @@ Resources:
               Action:
               - eks:*
               Resource: '*'
+            - Effect: Allow
+              Action:
+              - s3:PutObject
+              Resource: 'arn:aws:s3:::eks-cluster-meta/*'
   DestroyClusterFunc:
     Type: AWS::Serverless::Function
     Properties:

@@ -14,7 +14,7 @@ A simple Amazon EKS manager for ephemeral clusters, using AWS Lambda and sportin
 
 In order to build the service, clone this repo, and make sure you've got the `aws` CLI and the [SAM CLI](https://github.com/awslabs/aws-sam-cli) installed.
 
-Dependencies: AWS Lambda, Amazon EKS, Docker, `aws, `sam`, and `jq`.
+Dependencies: AWS Lambda, Amazon EKS, Docker, `aws`, `sam`, and `jq`.
 
 ## Preparation
 
@@ -23,6 +23,15 @@ Create an S3 bucket `eks-svc` for the Lambda functions like so:
 ```sh
 $ aws s3api create-bucket \
       --bucket eks-svc \
+      --create-bucket-configuration LocationConstraint=us-east-2 \
+      --region us-east-2
+```
+
+Create an S3 bucket `eks-cluster-meta` for the cluster metadata like so:
+
+```sh
+$ aws s3api create-bucket \
+      --bucket eks-cluster-meta \
       --create-bucket-configuration LocationConstraint=us-east-2 \
       --region us-east-2
 ```
