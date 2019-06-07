@@ -49,9 +49,9 @@ func handler() error {
 		fn := *obj.Key
 		clusterIDs := strings.TrimSuffix(fn, ".json")
 		ts := obj.LastModified
-		ttl := time.Since(ts)
+		ttl := time.Since(*ts)
 		switch {
-		case ttl > 1*time.Minute:
+		case ttl > 10*time.Minute:
 			fmt.Printf("DEBUG:: tearing down cluster %v\n", clusterIDs)
 			// err := deleteStack("eksctl-eksphemeral-nodegroup-ng-df9fe94e")
 			// if err != nil {
@@ -61,10 +61,10 @@ func handler() error {
 			// if err != nil {
 			// 	fmt.Println(err)
 			// }
-		case ttl > 5*time.Minute:
+		case ttl > 9*time.Minute && ttl <= 10*time.Minute:
 			fmt.Printf("DEBUG:: sending owner XXX a warning re tear down of cluster %v\n", clusterIDs)
 		default:
-			fmt.Printf("DEBUG:: cluster %v still has %v min to live\n", clusterIDs, ttl)
+			fmt.Printf("DEBUG:: cluster %v is %v min old\n", clusterIDs, ttl.Minutes())
 		}
 	}
 	fmt.Printf("DEBUG:: destroy cluster done\n")

@@ -1,4 +1,4 @@
-.PHONY: deps clean build deploy status
+.PHONY: deps clean deploy status
 
 deps:
 	go get -u ./...
