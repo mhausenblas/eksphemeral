@@ -2,7 +2,7 @@
 
 > Note: this is a heavy WIP, do not use in production.
 
-A simple Amazon EKS manager for ephemeral clusters, using AWS Lambda and sporting the following features:
+A simple Amazon EKS manager for ephemeral dev/test clusters, using AWS Lambda and AWS Fargate and sporting the following features:
 
 - Create a cluster via a HTTP `POST` to `$BASEURL/create` with following parameters (all optional):
   - `numworkers` ... number of worker nodes, defaults to `1`
@@ -12,9 +12,9 @@ A simple Amazon EKS manager for ephemeral clusters, using AWS Lambda and sportin
 - Check cluster status via a HTTP `GET` to `$BASEURL/status/$CLUSTERID`
 - Auto-destruction of a cluster after the set timeout
 
-In order to build the service, clone this repo, and make sure you've got the `aws` CLI and the [SAM CLI](https://github.com/awslabs/aws-sam-cli) installed.
+In order to build the service, clone this repo, and make sure you've got the `aws` CLI, [SAM CLI](https://github.com/awslabs/aws-sam-cli), and the [Fargate CLI](https://somanymachines.com/fargate/) installed.
 
-Dependencies: AWS Lambda, Amazon EKS, Docker, `aws`, `sam`, and `jq`.
+All the dependencies: AWS Lambda, AWS Fargate, Amazon EKS, Docker, `aws`, `sam`, `fargate` and `jq`.
 
 ## Preparation
 
@@ -36,7 +36,16 @@ $ aws s3api create-bucket \
       --region us-east-2
 ```
 
+Optionally, you can build a custom container image using your own registry coordinates and customize what's in the `eksctl` image used to provision the EKS cluster via a Fargate task:
+
+```sh
+$ docker build -t quay.io/mhausenblas/eksctl:0.1 .
+$ docker push quay.io/mhausenblas/eksctl:0.1
+```
+
 ## Local development
+
+### Control plane in AWS Lambda
 
 In order for the local simulation, part of SAM, to work, you need to have Docker running. Note: Local testing the API is at time of writing not possible since [CORS is locally not supported](https://github.com/awslabs/aws-sam-cli/issues/323), yet.
 
@@ -54,9 +63,39 @@ $ make build
 
 If you change anything in the SAM/CF [template file](svc/template.yaml) then you need to re-start the local API emulation.
 
-## Deployment
 
-The following assumes that the S3 bucket as outlined above is set up and you have access to AWS configured.
+### Data plane in AWS Fargate
+
+Ypou can manually kick off the EKS cluster provisioning as follows.
+
+First, set the security group to use:
+
+```sh
+$ export EKSPHEMERAL_SG=XXXX
+```
+
+Note that if you don't know which default security group(s) you have available, you can use the following
+command to list them:
+
+```sh
+$ aws ec2 describe-security-groups | jq '.SecurityGroups[] | select (.GroupName == "default") | .GroupId'
+```
+
+Now you can use Fargate to provision the cluster (using your local AWS credentials):
+
+```sh
+$ fargate task run eksctl \
+          --image quay.io/mhausenblas/eksctl:0.1 \
+          --region us-east-2 \
+          --env AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id) \
+          --env AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key) \
+          --env AWS_DEFAULT_REGION=$(aws configure get region)
+          --security-group-id $EKSPHEMERAL_SG
+```
+
+## Usages
+
+The following assumes that the S3 bucket as outlined above is set up and you have access to AWS configured, locally.
 
 In the `svc/` directory, do the following:
 
@@ -80,9 +119,11 @@ $ curl --progress-bar \
        $EKSPHEMERAL_URL/create/
 ```
 
+
 ## Clean up
 
 ```bash
 $ aws cloudformation delete-stack --stack-name eksp
 ```
 
+TBD: Fargate clean-up

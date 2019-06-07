@@ -13,7 +13,6 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
-	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/s3manager"
 )
 
@@ -27,27 +26,6 @@ type ClusterCreateRequest struct {
 	Timeout int `json:"timeout"`
 	// Owner specifies the email address of the owner (will be notified when cluster is created and 5 min before destruction)
 	Owner string `json:"owner"`
-}
-
-func fetcheksctl() error {
-	eksctlbin, err := os.Create("/tmp/eksctl")
-	if err != nil {
-		return err
-	}
-	defer eksctlbin.Close()
-	cfg, err := external.LoadDefaultAWSConfig()
-	if err != nil {
-		return err
-	}
-	downloader := s3manager.NewDownloader(cfg)
-	_, err = downloader.Download(eksctlbin, &s3.GetObjectInput{
-		Bucket: aws.String("eks-cluster-meta"),
-		Key:    aws.String("eksctl"),
-	})
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 func upload(region, bucket, jsonfilename, content string) error {
@@ -100,12 +78,6 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	if err != nil {
 		return serverError(err)
 	}
-	// shell out to eksctl with above params:
-	err = fetcheksctl()
-	if err != nil {
-		return serverError(err)
-	}
-	fmt.Println("DEBUG:: eksctl done")
 
 	// store cluster spec in S3 bucket keyed by cluster ID:
 	jsonfilename := clusterID.String() + ".json"
