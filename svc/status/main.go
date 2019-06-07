@@ -2,10 +2,12 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	_ "image/jpeg"
 	_ "image/png"
 	"net/http"
+	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -31,14 +33,29 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	if err != nil {
 		return serverError(err)
 	}
-	fmt.Printf("DEBUG:: list clusters start\n")
+
+	fmt.Printf("DEBUG:: S3 bucket listing start\n")
 	svc := s3.New(cfg)
 	req := svc.ListObjectsRequest(&s3.ListObjectsInput{Bucket: aws.String("eks-cluster-meta")})
 	resp, err := req.Send(context.TODO())
 	if err != nil {
 		return serverError(err)
 	}
-	fmt.Printf("DEBUG:: list clusters done\n")
+	fmt.Printf("DEBUG:: S3 bucket listing done\n")
+
+	fmt.Printf("DEBUG:: list cluster IDs start\n")
+	clusterIDs := []string{}
+	// get all objects in the bucket:
+	for _, obj := range resp.Contents {
+		fn := *obj.Key
+		clusterIDs = append(clusterIDs, strings.TrimSuffix(fn, ".json"))
+	}
+	js, err := json.Marshal(clusterIDs)
+	if err != nil {
+		return serverError(err)
+	}
+	fmt.Printf("DEBUG:: list cluster IDs done\n")
+
 	fmt.Printf("DEBUG:: status done\n")
 	return events.APIGatewayProxyResponse{
 		StatusCode: http.StatusOK,
@@ -46,7 +63,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 			"Content-Type":                "application/json",
 			"Access-Control-Allow-Origin": "*",
 		},
-		Body: resp.String(),
+		Body: string(js),
 	}, nil
 }
 
