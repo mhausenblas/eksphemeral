@@ -2,15 +2,8 @@
 
 > Note: this is a heavy WIP, do not use in production.
 
-A simple Amazon EKS manager for ephemeral dev/test clusters, using AWS Lambda and AWS Fargate and sporting the following features:
-
-- Create a cluster via a HTTP `POST` to `$BASEURL/create` with following parameters (all optional):
-  - `numworkers` ... number of worker nodes, defaults to `1`
-  - `kubeversion` ... Kubernetes version to use, defaults to `1.12`
-  - `timeout` ... timeout in minutes, after which the cluster is destroyed, defaults to `10`
-  - `owner` ... the email address of the owner
-- Check cluster status via a HTTP `GET` to `$BASEURL/status/$CLUSTERID`
-- Auto-destruction of a cluster after the set timeout
+A simple Amazon EKS manager for ephemeral dev/test clusters, using AWS Lambda and AWS Fargate,
+allowing you to launch an EKS cluster with an automatic tear-down after a given time.
 
 In order to build the service, clone this repo, and make sure you've got the `aws` CLI, [SAM CLI](https://github.com/awslabs/aws-sam-cli), and the [Fargate CLI](https://somanymachines.com/fargate/) installed.
 
@@ -63,6 +56,16 @@ $ make build
 
 If you change anything in the SAM/CF [template file](svc/template.yaml) then you need to re-start the local API emulation.
 
+The EKSphemeral control plane has the following API
+
+- List the launched clusters via an HTTP `GET` to `$BASEURL/status` 
+- Check status of a specific cluster via an HTTP `GET` to `$BASEURL/status/$CLUSTERID`
+- Create a cluster via an HTTP `POST` to `$BASEURL/create` with following parameters (all optional):
+  - `numworkers` ... number of worker nodes, defaults to `1`
+  - `kubeversion` ... Kubernetes version to use, defaults to `1.12`
+  - `timeout` ... timeout in minutes, after which the cluster is destroyed, defaults to `10`
+  - `owner` ... the email address of the owner
+- Auto-destruction of a cluster after the set timeout (triggered by CloudWatch events, no HTTP endpoint)
 
 ### Data plane in AWS Fargate
 
@@ -93,7 +96,7 @@ $ fargate task run eksctl \
           --security-group-id $EKSPHEMERAL_SG
 ```
 
-## Usages
+## Usage
 
 The following assumes that the S3 bucket as outlined above is set up and you have access to AWS configured, locally.
 
@@ -107,6 +110,12 @@ After above command you can get the HTTP API endpoint like this (requires `jq` t
 
 ```sh
 $ EKSPHEMERAL_URL=$(aws cloudformation describe-stacks --stack-name eksp | jq '.Stacks[].Outputs[] | select(.OutputKey=="EKSphemeralAPIEndpoint").OutputValue' -r)
+```
+
+First, let's check what clusters are already managed by EKSphemeral:
+
+```sh
+$ curl $EKSPHEMERAL_URL/status/
 ```
 
 Now, let's create a 2-node cluster, using Kubernetes version 1.11, with a 30 min timeout:

@@ -12,6 +12,32 @@ Globals:
       AllowOrigin: "'*'"
 
 Resources:
+  StatusFunc:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: bin/
+      Handler: status
+      Runtime: go1.x
+      Tracing: Active
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /status
+            Method: GET
+      Policies:
+        - AWSLambdaExecute
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+              - s3:ListBucket
+              - s3:GetBucket
+              - s3:GetObject
+              - s3:ListObjects
+              Resource:
+              - 'arn:aws:s3:::eks-cluster-meta/*'
+              - 'arn:aws:s3:::eks-cluster-meta'
   CreateClusterFunc:
     Type: AWS::Serverless::Function
     Properties:
