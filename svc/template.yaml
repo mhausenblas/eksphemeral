@@ -84,6 +84,7 @@ Resources:
               - cloudformation:*
               - iam:*
               - ec2:*
+              - autoscaling:*
               Resource: '*'
             - Effect: Allow
               Action:

@@ -2,8 +2,7 @@
 
 > Note: this is a heavy WIP, do not use in production.
 
-A simple Amazon EKS manager for ephemeral dev/test clusters, using AWS Lambda and AWS Fargate,
-allowing you to launch an EKS cluster with an automatic tear-down after a given time.
+A simple Amazon EKS manager for ephemeral dev/test clusters, using AWS Lambda and AWS Fargate, allowing you to launch an EKS cluster with an automatic tear-down after a given time.
 
 In order to build the service, clone this repo, and make sure you've got the `aws` CLI, [SAM CLI](https://github.com/awslabs/aws-sam-cli), and the [Fargate CLI](https://somanymachines.com/fargate/) installed.
 
