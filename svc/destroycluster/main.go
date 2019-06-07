@@ -24,7 +24,8 @@ func deleteStack(name string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("%v\n", resp.String())
+	_ = resp
+	// fmt.Printf("%v\n", resp.String())
 	return nil
 }
 
