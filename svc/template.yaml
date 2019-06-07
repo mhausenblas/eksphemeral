@@ -75,6 +75,26 @@ Resources:
           Type: Schedule
           Properties:
             Schedule: rate(1 minute)
+      Policies:
+        - AWSLambdaExecute
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+              - cloudformation:*
+              - iam:*
+              Resource: '*'
+            - Effect: Allow
+              Action:
+              - s3:ListBucket
+              - s3:GetBucket
+              - s3:GetObject
+              - s3:ListObjects
+              Resource:
+              - 'arn:aws:s3:::eks-cluster-meta/*'
+              - 'arn:aws:s3:::eks-cluster-meta'
+
+
 
 Outputs:
   EKSphemeralAPIEndpoint:
