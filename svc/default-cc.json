@@ -1,0 +1,6 @@
+{
+    "numworkers": 1,
+    "kubeversion": "1.12",
+    "timeout": 20,
+    "owner": "nobody@example.com"
+}
