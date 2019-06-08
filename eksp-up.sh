@@ -12,6 +12,15 @@ cd svc
 make up
 cd ..
 
-printf "Control plane should be up now, let us verify that:\n"
+printf "\nControl plane should be up now, let us verify that:\n"
 
-curl --progress-bar $EKSPHEMERAL_URL/status/
+EKSPHEMERAL_URL=$(aws cloudformation describe-stacks --stack-name eksp | jq '.Stacks[].Outputs[] | select(.OutputKey=="EKSphemeralAPIEndpoint").OutputValue' -r)
+
+CONTROLPLANE_STATUS=$(curl -sL -w "%{http_code}" -o /dev/null "$EKSPHEMERAL_URL/status/")
+
+if [ $CONTROLPLANE_STATUS == "200" ]
+then
+    echo "All good, ready to launch emphemeral clusters now using 'eksp-launch.sh' now ..."
+else 
+    echo "There was an issue setting up the EKSphemeral control plane, check the CloudFormation logs :("
+fi
