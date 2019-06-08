@@ -17,9 +17,14 @@ fi
 ###############################################################################
 ### DEPENDENCIES
 
-EKSPHEMERAL_URL=$(aws cloudformation describe-stacks --stack-name eksp | jq '.Stacks[].Outputs[] | select(.OutputKey=="EKSphemeralAPIEndpoint").OutputValue' -r)
+if ! aws cloudformation describe-stacks --stack-name eksp > /dev/null 2>&1
+then
+    echo "Pre-flight check failed: the control plane seems not to be up, are you sure you executed eksp-up.sh already?" >&2
+    exit 1
+fi
 
 # Check dependency, that is, if control plane is available:
+EKSPHEMERAL_URL=$(aws cloudformation describe-stacks --stack-name eksp | jq '.Stacks[].Outputs[] | select(.OutputKey=="EKSphemeralAPIEndpoint").OutputValue' -r)
 CONTROLPLANE_STATUS=$(curl -sL -w "%{http_code}" -o /dev/null "$EKSPHEMERAL_URL/status/")
 
 if [ $CONTROLPLANE_STATUS != "200" ]
@@ -51,6 +56,8 @@ do
     printf "."
     sleep 60 
 done
+
+# note, one could use https://docs.aws.amazon.com/cli/latest/reference/cloudformation/wait/stack-exists.html as well here, maybe?
 
 printf "\nNow moving on to configure kubectl to point to your EKS cluster:\n"
 aws eks update-kubeconfig --name eksphemeral

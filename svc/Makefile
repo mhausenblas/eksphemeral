@@ -12,9 +12,11 @@ build:
 	GOOS=linux GOARCH=amd64 go build -v -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o bin/createcluster ./createcluster
 	GOOS=linux GOARCH=amd64 go build -v -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o bin/destroycluster ./destroycluster
 
-deploy: build
+up: 
 	sam package --template-file template.yaml --output-template-file eksp-stack.yaml --s3-bucket eks-svc
 	sam deploy --template-file eksp-stack.yaml --stack-name eksp --capabilities CAPABILITY_IAM
+
+deploy: build up
 
 destroy: 
 	aws s3 rm s3://eks-cluster-meta --recursive
