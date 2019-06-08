@@ -128,10 +128,10 @@ $ curl --progress-bar \
 ```
 
 
-## Clean up
+## Tear down
+
+To tear down EKSphemeral, use the following command which will remove the control plane elements (Lambda functions, S3 bucket content):
 
 ```bash
-$ aws cloudformation delete-stack --stack-name eksp
+$ make destroy
 ```
-
-TBD: Fargate clean-up
