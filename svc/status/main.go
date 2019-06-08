@@ -28,7 +28,8 @@ func serverError(err error) (events.APIGatewayProxyResponse, error) {
 	}, nil
 }
 
-func fetchcluster(bucket, id string) (string, error) {
+// fetchCluster returns the cluster spec of the cluster with given ID
+func fetchCluster(bucket, id string) (string, error) {
 	cfg, err := external.LoadDefaultAWSConfig()
 	if err != nil {
 		return "", err
@@ -59,7 +60,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	// return info on specified cluster if we have an cluster ID in the URL path component:
 	if cID != "*" {
 		fmt.Printf("DEBUG:: cluster info lookup for ID %v start\n", cID)
-		clusterspec, err := fetchcluster("eks-cluster-meta", cID)
+		clusterspec, err := fetchCluster("eks-cluster-meta", cID)
 		if err != nil {
 			return serverError(err)
 		}
