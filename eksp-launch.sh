@@ -81,9 +81,5 @@ aws eks update-kubeconfig --name eksphemeral
 printf "\nYour EKS cluster is now set up and configured:\n"
 kubectl config get-contexts
 
-
-
-
-
-
- 
+printf "\nNote that it still can take up to 5 min until the worker nodes are available, check with the following command until you don't see the 'No resources found.' message anymore:\n"
+kubectl get nodes 
