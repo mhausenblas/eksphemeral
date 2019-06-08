@@ -5,7 +5,6 @@ set -o errtrace
 set -o nounset
 set -o pipefail
 
-
 printf "Installing the EKSphemeral control plane, this might take a few minutes ...\n"
 
 cd svc

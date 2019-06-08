@@ -6,19 +6,33 @@ set -o nounset
 set -o pipefail
 
 ###############################################################################
-### COMMAND LINE PARAMETERS
-CLUSTER_NAME=${1:-$(uuidgen | tr '[:upper:]' '[:lower:]')}
-EKSPHEMERAL_SG=${2:-$(aws ec2 describe-vpcs --filters "Name=isDefault, Values=true" | jq .Vpcs[0].VpcId -r)}
-CLUSTER_SPEC=${3:-svc/default-cc.json}
-
-###############################################################################
-### PRE-FLIGHT CHECKS
+### DEPENDENCIES CHECKS
 
 if ! [ -x "$(command -v jq)" ]
 then
   echo "Pre-flight check failed: jq is not installed. Yo, please install it from https://stedolan.github.io/jq/download/ and try again, cool?" >&2
   exit 1
 fi
+
+if ! [ -x "$(command -v aws)" ]
+then
+  echo "Pre-flight check failed: aws is not installed. Yo, please install it via https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html and try again, cool?" >&2
+  exit 1
+fi
+
+###############################################################################
+### COMMAND LINE PARAMETERS
+default_vpc=$(aws ec2 describe-vpcs --filters "Name=isDefault, Values=true" | jq .Vpcs[0].VpcId -r)
+
+default_sg=$(aws ec2 describe-security-groups  | jq '.SecurityGroups[] | select (.VpcId == "$default_vpc") | .GroupId')
+
+
+CLUSTER_NAME=${1:-$(uuidgen | tr '[:upper:]' '[:lower:]')}
+EKSPHEMERAL_SG=${2:$default_sg}
+CLUSTER_SPEC=${3:-svc/default-cc.json}
+
+###############################################################################
+### PRE-FLIGHT CHECKS
 
 if ! aws cloudformation describe-stacks --stack-name eksp > /dev/null 2>&1
 then

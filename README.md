@@ -30,10 +30,8 @@ $ aws s3api create-bucket \
 
 The following assumes that the S3 bucket as outlined above is set up and you have access to AWS configured, locally.
 
-Do the following then to set up the EKSphemeral control plane (with `$EKSPHEMERAL_SG` being the security group you want to use for the Fargate-provisioned data plane):
-
 ```sh
-$ ./eksp-up.sh $EKSPHEMERAL_SG
+$ ./eksp-up.sh
 ```
 
 First, let's check what clusters are already managed by EKSphemeral:
@@ -42,19 +40,22 @@ First, let's check what clusters are already managed by EKSphemeral:
 $ ./eksp-list.sh
 ```
 
-Now, let's create a two-node cluster, using Kubernetes version 1.11, with a 30 min timeout as defined in the example config file [2node-111-30.json](svc/2node-111-30.json):
+Now, let's create a throwaway cluster named `test-cluster`, using the `$EKSPHEMERAL_SG` security group, with two worker nodes, using Kubernetes version 1.11, with a 30 min timeout as defined in the example cluster spec file [2node-111-30.json](svc/2node-111-30.json):
 
 ```sh
 $ cat svc/2node-111-30.json
 {
+    "name": "test-cluster",
     "numworkers": 2,
     "kubeversion": "1.11",
     "timeout": 30,
     "owner": "hausenbl+notif@amazon.com"
 }
 
-$ ./eksp-create.sh test-cluster 2node-111-30.json
+$ ./eksp-create.sh $EKSPHEMERAL_SG 2node-111-30.json
 ```
+
+Note that both the security group and the cluster spec file are optional. If not present, the first security group of the default VPC and `default-cc.json` will be used.
 
 ## Tear down
 
