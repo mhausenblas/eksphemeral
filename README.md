@@ -4,9 +4,7 @@
 
 A simple Amazon EKS manager for ephemeral dev/test clusters, using AWS Lambda and AWS Fargate, allowing you to launch an EKS cluster with an automatic tear-down after a given time.
 
-In order to build the service, clone this repo, and make sure you've got the `aws` CLI, [SAM CLI](https://github.com/awslabs/aws-sam-cli), and the [Fargate CLI](https://somanymachines.com/fargate/) installed.
-
-All the dependencies: AWS Lambda, AWS Fargate, Amazon EKS, Docker, `aws`, `sam`, `fargate` and `jq`.
+In order to use EKSphemeral, clone this repo, and make sure you've got `jq`, the `aws` CLI and the [Fargate CLI](https://somanymachines.com/fargate/) installed.
 
 ## Preparation
 
@@ -38,16 +36,10 @@ Do the following then to set up the EKSphemeral control plane (with `$EKSPHEMERA
 $ ./eksp-up.sh $EKSPHEMERAL_SG
 ```
 
-After above command you can get the HTTP API endpoint like this (note: this requires `jq` to be installed, locally):
-
-```sh
-$ EKSPHEMERAL_URL=$(aws cloudformation describe-stacks --stack-name eksp | jq '.Stacks[].Outputs[] | select(.OutputKey=="EKSphemeralAPIEndpoint").OutputValue' -r)
-```
-
 First, let's check what clusters are already managed by EKSphemeral:
 
 ```sh
-$ curl $EKSPHEMERAL_URL/status/
+$ ./eksp-list.sh
 ```
 
 Now, let's create a two-node cluster, using Kubernetes version 1.11, with a 30 min timeout as defined in the example config file [2node-111-30.json](svc/2node-111-30.json):
@@ -60,6 +52,7 @@ $ cat svc/2node-111-30.json
     "timeout": 30,
     "owner": "hausenbl+notif@amazon.com"
 }
+
 $ ./eksp-create.sh test-cluster 2node-111-30.json
 ```
 
@@ -70,3 +63,7 @@ To tear down EKSphemeral, use the following command which will remove control pl
 ```bash
 $ ./eksp-down.sh
 ```
+
+## Development
+
+See the dedicated [development docs](dev.md) for how to customize and extend EKSphemeral.
