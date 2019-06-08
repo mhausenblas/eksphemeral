@@ -68,7 +68,7 @@ The EKSphemeral control plane has the following API
 
 ### Data plane in AWS Fargate
 
-Ypou can manually kick off the EKS cluster provisioning as follows.
+You can manually kick off the EKS cluster provisioning as follows.
 
 First, set the security group to use:
 

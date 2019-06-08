@@ -24,7 +24,7 @@ CONTROLPLANE_STATUS=$(curl -sL -w "%{http_code}" -o /dev/null "$EKSPHEMERAL_URL/
 
 if [ $CONTROLPLANE_STATUS != "200" ]
 then
-    echo "Pre-flight check failed: the control plane seems not to be up, are you sure you executed install.sh already, mate?" >&2
+    echo "Pre-flight check failed: the control plane seems not to be up, are you sure you executed eksp-up.sh already?" >&2
     exit 1
 fi
 

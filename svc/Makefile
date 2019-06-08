@@ -1,4 +1,4 @@
-.PHONY: deps clean deploy status
+.PHONY: deps clean deploy destroy status
 
 deps:
 	go get -u ./...
@@ -15,6 +15,9 @@ build:
 deploy: build
 	sam package --template-file template.yaml --output-template-file eksp-stack.yaml --s3-bucket eks-svc
 	sam deploy --template-file eksp-stack.yaml --stack-name eksp --capabilities CAPABILITY_IAM
+
+destroy: 
+	aws cloudformation delete-stack --stack-name eksp
 
 status:
 	aws cloudformation describe-stacks --stack-name eksp
