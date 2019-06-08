@@ -16,8 +16,11 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3/s3manager"
 )
 
-// ClusterCreateRequest has the params for eksctl
-type ClusterCreateRequest struct {
+// ClusterSpec represents the parameters for eksctl,
+// TTL, and ownership of a cluster.
+type ClusterSpec struct {
+	// Name specifies the cluster name
+	Name string `json:"name"`
 	// NumWorkers specifies the number of worker nodes, defaults to 1
 	NumWorkers int `json:"numworkers"`
 	// KubeVersion  specifies the Kubernetes version to use, defaults to `1.12`
@@ -58,19 +61,20 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	clusterbucket := "eks-cluster-meta"
 	fmt.Println("DEBUG:: create start")
 	// parse params:
-	ccr := ClusterCreateRequest{
+	ccr := ClusterSpec{
+		Name:        "unknown",
 		NumWorkers:  1,
 		KubeVersion: "1.12",
 		Timeout:     10,
 		Owner:       "nobody@example.com",
 	}
 
-	// Unmarshal the json, return 404 if error
+	// Unmarshal the JSON payload in the POST:
 	err := json.Unmarshal([]byte(request.Body), &ccr)
 	if err != nil {
 		return serverError(err)
 	}
-	fmt.Printf("Creating a %v cluster with %v nodes for %v minutes which is owned by %v\n", ccr.KubeVersion, ccr.NumWorkers, ccr.Timeout, ccr.Owner)
+	fmt.Printf("Creating %v, a %v cluster with %v nodes for %v minutes which is owned by %v\n", ccr.Name, ccr.KubeVersion, ccr.NumWorkers, ccr.Timeout, ccr.Owner)
 	fmt.Println("DEBUG:: parse done")
 
 	// create unique cluster ID:
