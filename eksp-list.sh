@@ -2,7 +2,6 @@
 
 set -o errexit
 set -o errtrace
-set -o nounset
 set -o pipefail
 
 ###############################################################################
@@ -20,8 +19,18 @@ then
   exit 1
 fi
 
+CLUSTER_ID=${1}
+
+
 ###############################################################################
-### LIST ACTIVE CLUSTERS
+### STATUS ON ACTIVE CLUSTER(S)
 
 EKSPHEMERAL_URL=$(aws cloudformation describe-stacks --stack-name eksp | jq '.Stacks[].Outputs[] | select(.OutputKey=="EKSphemeralAPIEndpoint").OutputValue' -r)
-curl --progress "$EKSPHEMERAL_URL/status/"
+
+if [ ! -z "$CLUSTER_ID" ]
+then
+  curl --progress "$EKSPHEMERAL_URL/status/$CLUSTER_ID"
+else
+  curl --progress "$EKSPHEMERAL_URL/status/"
+fi 
+
