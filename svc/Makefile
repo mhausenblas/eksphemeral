@@ -17,6 +17,7 @@ deploy: build
 	sam deploy --template-file eksp-stack.yaml --stack-name eksp --capabilities CAPABILITY_IAM
 
 destroy: 
+	aws s3 rm s3://eks-cluster-meta --recursive
 	aws cloudformation delete-stack --stack-name eksp
 
 status:
