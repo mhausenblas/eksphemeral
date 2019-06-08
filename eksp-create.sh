@@ -107,7 +107,7 @@ printf "Waiting for EKS cluster provisioning to complete. Allow some 15 min to c
 # this is necessary to make sure the EKS control plane is up and we can query the cluster status:
 sleep 120
 
-while [ "$(aws eks describe-cluster --name eksphemeral | jq .cluster.status -r)" != "ACTIVE" ]
+while [ "$(aws eks describe-cluster --name $CLUSTER_NAME | jq .cluster.status -r)" != "ACTIVE" ]
 do
     printf "."
     sleep 60 
@@ -129,7 +129,7 @@ printf "\nCreated control plane entry for cluster %s via AWS Lambda and S3 and n
 ### CONFIG AND SMOKE TEST
 
 printf "\nNow moving on to configure kubectl to point to your EKS cluster:\n"
-aws eks update-kubeconfig --name eksphemeral
+aws eks update-kubeconfig --name $CLUSTER_NAME
 
 printf "\nYour EKS cluster is now set up and configured:\n"
 kubectl config get-contexts
