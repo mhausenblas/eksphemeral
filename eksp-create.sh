@@ -22,13 +22,14 @@ fi
 
 ###############################################################################
 ### COMMAND LINE PARAMETERS
+
+# Look up default VPC and secuirity group:
 default_vpc=$(aws ec2 describe-vpcs --filters "Name=isDefault, Values=true" | jq .Vpcs[0].VpcId -r)
+default_sg=$(aws ec2 describe-security-groups  | jq  --arg default_vpc "$default_vpc" '.SecurityGroups[] | select (.VpcId == $default_vpc) | .GroupId' -r)
 
-default_sg=$(aws ec2 describe-security-groups  | jq '.SecurityGroups[] | select (.VpcId == "$default_vpc") | .GroupId')
-
-
+# Get user provided parameters, if any:
 CLUSTER_NAME=${1:-$(uuidgen | tr '[:upper:]' '[:lower:]')}
-EKSPHEMERAL_SG=${2:$default_sg}
+EKSPHEMERAL_SG=${2:-$default_sg}
 CLUSTER_SPEC=${3:-svc/default-cc.json}
 
 ###############################################################################
