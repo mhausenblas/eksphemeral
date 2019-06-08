@@ -102,12 +102,15 @@ func lookupStack(clustername string) (string, string, error) {
 		if err != nil {
 			return "", "", err
 		}
-		if tagValueOf(dsresp.Stacks[0], "eksctl.cluster.k8s.io/v1alpha1/cluster-name") == clustername {
+		fmt.Printf("DEBUG:: checking stack: %v\n", *dsresp.Stacks[0].StackName)
+		cnofstack := tagValueOf(dsresp.Stacks[0], "eksctl.cluster.k8s.io/v1alpha1/cluster-name")
+		fmt.Printf("DEBUG:: got cluster name: %v\n", cnofstack)
+		if cnofstack != "" && cnofstack == clustername {
 			switch {
 			case tagValueOf(dsresp.Stacks[0], "alpha.eksctl.io/nodegroup-name") != "":
-				dpstack = *stack.StackName
+				dpstack = *dsresp.Stacks[0].StackName
 			default:
-				cpstack = *stack.StackName
+				cpstack = *dsresp.Stacks[0].StackName
 			}
 		}
 	}
