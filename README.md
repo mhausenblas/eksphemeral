@@ -99,13 +99,13 @@ $ fargate task run eksctl \
 
 The following assumes that the S3 bucket as outlined above is set up and you have access to AWS configured, locally.
 
-In the `svc/` directory, do the following:
+Do the following then to set up the EKSphemeral control plane:
 
 ```sh
-make deploy
+$ ./eksp-up.sh
 ```
 
-After above command you can get the HTTP API endpoint like this (requires `jq` to be installed, locally):
+After above command you can get the HTTP API endpoint like this (note: this requires `jq` to be installed, locally):
 
 ```sh
 $ EKSPHEMERAL_URL=$(aws cloudformation describe-stacks --stack-name eksp | jq '.Stacks[].Outputs[] | select(.OutputKey=="EKSphemeralAPIEndpoint").OutputValue' -r)
@@ -117,21 +117,23 @@ First, let's check what clusters are already managed by EKSphemeral:
 $ curl $EKSPHEMERAL_URL/status/
 ```
 
-Now, let's create a 2-node cluster, using Kubernetes version 1.11, with a 30 min timeout:
+Now, let's create a two-node cluster, using Kubernetes version 1.11, with a 30 min timeout as defined in the example config file [2node-111-30.json](svc/2node-111-30.json):
 
 ```sh
-$ curl --progress-bar \
-       --header "Content-Type: application/json" \
-       --request POST \
-       --data @2node-111-30.json \
-       $EKSPHEMERAL_URL/create/
+$ cat svc/2node-111-30.json
+{
+    "numworkers": 2,
+    "kubeversion": "1.11",
+    "timeout": 30,
+    "owner": "hausenbl+notif@amazon.com"
+}
+$ ./eksp-launch.sh 2node-111-30.json
 ```
-
 
 ## Tear down
 
-To tear down EKSphemeral, use the following command which will remove the control plane elements (Lambda functions, S3 bucket content):
+To tear down EKSphemeral, use the following command which will remove control plane elements (Lambda functions, S3 bucket content):
 
 ```bash
-$ make destroy
+$ ./eksp-down.sh
 ```

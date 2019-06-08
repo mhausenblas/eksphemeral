@@ -31,18 +31,18 @@ fi
 ###############################################################################
 ### CONTROL PLANE (METADATA) OPERATIONS
 
-# CLUSTERID=$(curl --progress-bar --header "Content-Type: application/json" --request POST --data @2node-111-30.json $EKSPHEMERAL_URL/create/)
+CLUSTERID=$(curl --progress-bar --header "Content-Type: application/json" --request POST --data @2node-111-30.json $EKSPHEMERAL_URL/create/)
 
 ###############################################################################
 ### DATA PLANE OPERATIONS
 
-# fargate task run eksctl \
-#           --image quay.io/mhausenblas/eksctl:0.1 \
-#           --region us-east-2 \
-#           --env AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id) \
-#           --env AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key) \
-#           --env AWS_DEFAULT_REGION=$(aws configure get region)
-#           --security-group-id $EKSPHEMERAL_SG
+fargate task run eksctl \
+          --image quay.io/mhausenblas/eksctl:0.1 \
+          --region us-east-2 \
+          --env AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id) \
+          --env AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key) \
+          --env AWS_DEFAULT_REGION=$(aws configure get region)
+          --security-group-id $EKSPHEMERAL_SG
 
 printf "Waiting for EKS cluster provisioning to complete. Allow some 15 min to complete, checking status every minute:\n"
 
