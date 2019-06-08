@@ -51,9 +51,13 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	if err != nil {
 		return serverError(err)
 	}
-
+	// validate cluster ID or list lookup in URL path:
+	if _, ok := request.PathParameters["clusterid"]; !ok {
+		return serverError(fmt.Errorf("Unknown cluster status query. Either specify a cluster ID or _ for listing all clusters."))
+	}
+	cID := request.PathParameters["clusterid"]
 	// return info on specified cluster if we have an cluster ID in the URL path component:
-	if cID, ok := request.PathParameters["clusterid"]; ok {
+	if cID != "*" {
 		fmt.Printf("DEBUG:: cluster info lookup for ID %v start\n", cID)
 		clusterspec, err := fetchcluster("eks-cluster-meta", cID)
 		if err != nil {

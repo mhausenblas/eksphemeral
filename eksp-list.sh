@@ -31,6 +31,6 @@ if [ ! -z "$CLUSTER_ID" ]
 then
   curl --progress "$EKSPHEMERAL_URL/status/$CLUSTER_ID"
 else
-  curl --progress "$EKSPHEMERAL_URL/status/"
+  curl --progress "$EKSPHEMERAL_URL/status/*"
 fi 
 

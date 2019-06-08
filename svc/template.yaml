@@ -23,7 +23,7 @@ Resources:
         CatchAll:
           Type: Api
           Properties:
-            Path: /status/{clusterid*}
+            Path: /status/{clusterid}
             Method: GET
       Policies:
         - AWSLambdaExecute
