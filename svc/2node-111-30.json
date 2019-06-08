@@ -1,4 +1,5 @@
 {
+    "name": "2node-111-30",
     "numworkers": 2,
     "kubeversion": "1.11",
     "timeout": 30,

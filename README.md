@@ -40,19 +40,19 @@ First, let's check what clusters are already managed by EKSphemeral:
 $ ./eksp-list.sh
 ```
 
-Now, let's create a throwaway cluster named `test-cluster`, using the `$EKSPHEMERAL_SG` security group, with two worker nodes, using Kubernetes version 1.11, with a 30 min timeout as defined in the example cluster spec file [2node-111-30.json](svc/2node-111-30.json):
+Now, let's create a throwaway cluster named `2node-111-30`, using the `EKSPHEMERAL_SG` security group, with two worker nodes, using Kubernetes version 1.11, with a 30 min timeout as defined in the example cluster spec file [2node-111-30.json](svc/2node-111-30.json):
 
 ```sh
 $ cat svc/2node-111-30.json
 {
-    "name": "test-cluster",
+    "name": "2node-111-30",
     "numworkers": 2,
     "kubeversion": "1.11",
     "timeout": 30,
     "owner": "hausenbl+notif@amazon.com"
 }
 
-$ ./eksp-create.sh $EKSPHEMERAL_SG 2node-111-30.json
+$ ./eksp-create.sh 2node-111-30.json $EKSPHEMERAL_SG
 ```
 
 Note that both the security group and the cluster spec file are optional. If not present, the first security group of the default VPC and `default-cc.json` will be used.
