@@ -48,8 +48,8 @@ You can manually kick off the EKS cluster provisioning as described in the follo
 Note that, optionally, you can build a custom container image using your own registry coordinates and customize what's in the `eksctl` image used to provision the EKS cluster via a Fargate task like so:
 
 ```sh
-$ docker build -t quay.io/mhausenblas/eksctl:0.1 .
-$ docker push quay.io/mhausenblas/eksctl:0.1
+$ docker build -t quay.io/mhausenblas/eksctl:0.2 .
+$ docker push quay.io/mhausenblas/eksctl:0.2
 ```
 
 Back to the provisioning. First, set the security group to use:
@@ -77,15 +77,19 @@ $ aws ec2 authorize-security-group-ingress --group-name eksphemeral-sg --protoco
 
 Note that the last command apparently doesn't work, unsure but based on my research it's an AWS CLI bug.
 
-Anyways, now you can use AWS Fargate through the Fargate CLI to provision the cluster (using your local AWS credentials):
+Anyways, now you can use AWS Fargate through the Fargate CLI to provision the cluster,
+using your local AWS credentials, for example like so:
 
 ```sh
 $ fargate task run eksctl \
-          --image quay.io/mhausenblas/eksctl:0.1 \
+          --image quay.io/mhausenblas/eksctl:0.2 \
           --region us-east-2 \
           --env AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id) \
           --env AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key) \
-          --env AWS_DEFAULT_REGION=$(aws configure get region)
+          --env AWS_DEFAULT_REGION=$(aws configure get region) \
+          --env CLUSTER_NAME=test \
+          --env NUM_WORKERS=3 \
+          --env KUBERNETES_VERSION=1.12 \
           --security-group-id $EKSPHEMERAL_SG
 ```
 

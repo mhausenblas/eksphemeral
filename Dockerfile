@@ -5,29 +5,24 @@
 FROM amazonlinux:2018.03
 MAINTAINER hausenbl@amazon.com
 
-################## BEGIN INSTALLATION ######################
-
-# setup the IAM authenticator for eksctl
-RUN curl -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.12.7/2019-03-27/bin/linux/amd64/aws-iam-authenticator
-RUN chmod +x ./aws-iam-authenticator
-RUN mv ./aws-iam-authenticator /usr/local/bin
-
-# set up eksctl
-RUN curl --silent --location "https://github.com/weaveworks/eksctl/releases/download/latest_release/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp 
-RUN mv -v /tmp/eksctl /usr/local/bin
-
-##################### INSTALLATION END #####################
+# set up eksctl and dep IAM authenticator
+RUN yum -y install shadow-utils && \
+    curl -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.12.7/2019-03-27/bin/linux/amd64/aws-iam-authenticator && \
+    chmod +x ./aws-iam-authenticator && \
+    mv ./aws-iam-authenticator /usr/local/bin && \
+    curl --silent --location "https://github.com/weaveworks/eksctl/releases/download/latest_release/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp  && \
+    mv -v /tmp/eksctl /usr/local/bin
 
 WORKDIR /
 
-RUN adduser -D -u 10001 eksctl
+RUN /usr/sbin/useradd eksctl
 
 USER eksctl
 
 CMD eksctl create cluster \
-    --name eksphemeral \
-    --version 1.12 \
-    --nodes 2 \
+    --name $CLUSTER_NAME \
+    --version $KUBERNETES_VERSION \
+    --nodes $NUM_WORKERS \
     --auto-kubeconfig \
     --full-ecr-access \
     --appmesh-access
