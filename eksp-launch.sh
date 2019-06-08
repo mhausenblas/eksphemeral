@@ -38,6 +38,8 @@ fi
 ###############################################################################
 ### DATA PLANE OPERATION
 
+printf "I will now provision the EKS cluster using AWS Fargate:\n\n"
+
 # provision the EKS cluster using containerized eksctl:
 fargate task run eksctl \
           --image quay.io/mhausenblas/eksctl:0.1 \
