@@ -36,16 +36,9 @@ then
 fi
 
 ###############################################################################
-### CONTROL PLANE (METADATA) OPERATIONS
+### DATA PLANE OPERATION
 
-CLUSTERID=$(curl --progress-bar --header "Content-Type: application/json" --request POST --data @$CLUSTER_SPEC $EKSPHEMERAL_URL/create/)
-
-printf "\nCreated control plane entry for cluster %s via AWS Lambda and S3 and now moving on to provision the data plane using AWS Fargate\n\n" $CLUSTERID
-
-
-###############################################################################
-### DATA PLANE OPERATIONS
-
+# provision the EKS cluster using containerized eksctl:
 fargate task run eksctl \
           --image quay.io/mhausenblas/eksctl:0.1 \
           --region us-east-2 \
@@ -66,6 +59,19 @@ do
 done
 
 # note, one could use https://docs.aws.amazon.com/cli/latest/reference/cloudformation/wait/stack-exists.html as well here, maybe?
+
+
+###############################################################################
+### CONTROL PLANE (METADATA) OPERATIONS
+
+# now that the EKS cluster (our data plane) is up and running,
+# let's create a cluster (metadata) entry in S3 via Lambda (our control plane):
+CLUSTERID=$(curl --progress-bar --header "Content-Type: application/json" --request POST --data @$CLUSTER_SPEC $EKSPHEMERAL_URL/create/)
+
+printf "\nCreated control plane entry for cluster %s via AWS Lambda and S3 and now moving on to provision the data plane using AWS Fargate\n\n" $CLUSTERID
+
+###############################################################################
+### CONFIG AND SMOKE TEST
 
 printf "\nNow moving on to configure kubectl to point to your EKS cluster:\n"
 aws eks update-kubeconfig --name eksphemeral

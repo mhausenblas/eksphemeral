@@ -51,7 +51,7 @@ func handler() error {
 		ts := obj.LastModified
 		ttl := time.Since(*ts)
 		switch {
-		case ttl > 10*time.Minute:
+		case ttl > 20*time.Minute:
 			fmt.Printf("DEBUG:: tearing down cluster %v\n", clusterIDs)
 			// err := deleteStack("eksctl-eksphemeral-nodegroup-ng-df9fe94e")
 			// if err != nil {
@@ -61,7 +61,7 @@ func handler() error {
 			// if err != nil {
 			// 	fmt.Println(err)
 			// }
-		case ttl > 9*time.Minute && ttl <= 10*time.Minute:
+		case ttl > 15*time.Minute && ttl <= 10*time.Minute:
 			fmt.Printf("DEBUG:: sending owner XXX a warning re tear down of cluster %v\n", clusterIDs)
 		default:
 			fmt.Printf("DEBUG:: cluster %v is %v min old\n", clusterIDs, ttl.Minutes())

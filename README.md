@@ -62,7 +62,7 @@ The EKSphemeral control plane has the following API
 - Create a cluster via an HTTP `POST` to `$BASEURL/create` with following parameters (all optional):
   - `numworkers` ... number of worker nodes, defaults to `1`
   - `kubeversion` ... Kubernetes version to use, defaults to `1.12`
-  - `timeout` ... timeout in minutes, after which the cluster is destroyed, defaults to `20` (and one minute before that you get a warning mail)
+  - `timeout` ... timeout in minutes, after which the cluster is destroyed, defaults to `20` (and 5 minutes before that you get a warning mail)
   - `owner` ... the email address of the owner
 - Auto-destruction of a cluster after the set timeout (triggered by CloudWatch events, no HTTP endpoint)
 
