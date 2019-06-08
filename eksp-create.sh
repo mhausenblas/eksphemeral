@@ -6,6 +6,11 @@ set -o nounset
 set -o pipefail
 
 ###############################################################################
+### USER-DEFINED GLOBAL CONSTANTS
+
+DEFAULT_K8S_VERSION=1.12
+
+###############################################################################
 ### DEPENDENCIES CHECKS
 
 if ! [ -x "$(command -v jq)" ]
@@ -21,16 +26,45 @@ then
 fi
 
 ###############################################################################
-### COMMAND LINE PARAMETERS
+### EVALUATE COMMAND LINE PARAMETERS
 
 # Look up default VPC and secuirity group:
 default_vpc=$(aws ec2 describe-vpcs --filters "Name=isDefault, Values=true" | jq .Vpcs[0].VpcId -r)
 default_sg=$(aws ec2 describe-security-groups  | jq  --arg default_vpc "$default_vpc" '.SecurityGroups[] | select (.VpcId == $default_vpc) | .GroupId' -r)
 
 # Get user provided parameters, if any:
-CLUSTER_NAME=${1:-$(uuidgen | tr '[:upper:]' '[:lower:]')}
+CLUSTER_SPEC=${1:-svc/default-cc.json}
 EKSPHEMERAL_SG=${2:-$default_sg}
-CLUSTER_SPEC=${3:-svc/default-cc.json}
+
+# If no name is provided in the cluster spec,
+# generate a unique one as a fallback, otherwise
+# use the one from the JSON doc:
+if ! cat $CLUSTER_SPEC | jq .name -r
+then
+  CLUSTER_NAME=$(uuidgen | tr '[:upper:]' '[:lower:]')
+else
+  CLUSTER_NAME=$(cat $CLUSTER_SPEC | jq .name -r)
+fi
+
+# If the number of worker nodes is not provided 
+# in the cluster spec, set default, otherwise
+# use the one from the JSON doc:
+if ! cat $CLUSTER_SPEC | jq .numworkers -r
+then
+  NUM_WORKERS=1
+else
+  NUM_WORKERS=$(cat $CLUSTER_SPEC | jq .numworkers -r)
+fi
+
+# If the Kubernetes version is not provided 
+# in the cluster spec, set default, otherwise
+# use the one from the JSON doc:
+if ! cat $CLUSTER_SPEC | jq .kubeversion -r
+then
+  K8S_VERSION=$DEFAULT_K8S_VERSION
+else
+  K8S_VERSION=$(cat $CLUSTER_SPEC | jq .kubeversion -r)
+fi
 
 ###############################################################################
 ### PRE-FLIGHT CHECKS
@@ -58,11 +92,14 @@ printf "I will now provision the EKS cluster using AWS Fargate:\n\n"
 
 # provision the EKS cluster using containerized eksctl:
 fargate task run eksctl \
-          --image quay.io/mhausenblas/eksctl:0.1 \
+          --image quay.io/mhausenblas/eksctl:0.2 \
           --region us-east-2 \
           --env AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id) \
           --env AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key) \
           --env AWS_DEFAULT_REGION=$(aws configure get region) \
+          --env CLUSTER_NAME=$CLUSTER_NAME \
+          --env NUM_WORKERS=$NUM_WORKERS \
+          --env KUBERNETES_VERSION=$KUBERNETES_VERSION \
           --security-group-id $EKSPHEMERAL_SG
 
 printf "Waiting for EKS cluster provisioning to complete. Allow some 15 min to complete, checking status every minute:\n"
