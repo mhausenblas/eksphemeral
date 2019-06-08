@@ -39,7 +39,7 @@ EKSPHEMERAL_SG=${2:-$default_sg}
 # If no name is provided in the cluster spec,
 # generate a unique one as a fallback, otherwise
 # use the one from the JSON doc:
-if ! cat $CLUSTER_SPEC | jq .name -r
+if ! cat $CLUSTER_SPEC | jq .name -r > /dev/null 2>&1
 then
   CLUSTER_NAME=$(uuidgen | tr '[:upper:]' '[:lower:]')
 else
@@ -49,7 +49,7 @@ fi
 # If the number of worker nodes is not provided 
 # in the cluster spec, set default, otherwise
 # use the one from the JSON doc:
-if ! cat $CLUSTER_SPEC | jq .numworkers -r
+if ! cat $CLUSTER_SPEC | jq .numworkers -r > /dev/null 2>&1
 then
   NUM_WORKERS=1
 else
@@ -59,7 +59,7 @@ fi
 # If the Kubernetes version is not provided 
 # in the cluster spec, set default, otherwise
 # use the one from the JSON doc:
-if ! cat $CLUSTER_SPEC | jq .kubeversion -r
+if ! cat $CLUSTER_SPEC | jq .kubeversion -r > /dev/null 2>&1
 then
   K8S_VERSION=$DEFAULT_K8S_VERSION
 else
@@ -88,7 +88,7 @@ fi
 ###############################################################################
 ### DATA PLANE OPERATION
 
-printf "I will now provision the EKS cluster using AWS Fargate:\n\n"
+printf "I will now provision the EKS cluster %s using AWS Fargate:\n\n" $CLUSTER_NAME
 
 # provision the EKS cluster using containerized eksctl:
 fargate task run eksctl \
@@ -99,7 +99,7 @@ fargate task run eksctl \
           --env AWS_DEFAULT_REGION=$(aws configure get region) \
           --env CLUSTER_NAME=$CLUSTER_NAME \
           --env NUM_WORKERS=$NUM_WORKERS \
-          --env KUBERNETES_VERSION=$KUBERNETES_VERSION \
+          --env KUBERNETES_VERSION=$K8S_VERSION \
           --security-group-id $EKSPHEMERAL_SG
 
 printf "Waiting for EKS cluster provisioning to complete. Allow some 15 min to complete, checking status every minute:\n"
