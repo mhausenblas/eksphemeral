@@ -8,7 +8,9 @@ set -o pipefail
 
 printf "Taking down the EKSphemeral control plane, this might take a few minutes ...\n"
 
+cd svc
 make destroy
+cd ..
 
 # TBD: delete all objects in the eks-cluster-meta bucket
 # TBD: Fargate clean-up
