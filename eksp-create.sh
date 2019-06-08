@@ -7,8 +7,9 @@ set -o pipefail
 
 ###############################################################################
 ### COMMAND LINE PARAMETERS
-EKSPHEMERAL_SG=$1
-CLUSTER_SPEC=${2:-svc/default-cc.json}
+CLUSTER_NAME=${1:-$(uuidgen | tr '[:upper:]' '[:lower:]')}
+EKSPHEMERAL_SG=${2:-$(aws ec2 describe-vpcs --filters "Name=isDefault, Values=true" | jq .Vpcs[0].VpcId -r)}
+CLUSTER_SPEC=${3:-svc/default-cc.json}
 
 ###############################################################################
 ### PRE-FLIGHT CHECKS
