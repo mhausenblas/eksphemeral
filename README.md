@@ -38,6 +38,20 @@ First, let's check what clusters are already managed by EKSphemeral:
 
 ```sh
 $ ./eksp-list.sh
+["9be65bee-3baa-4fd0-aa3e-032325d5390c","dd72f73a-3457-4d4b-b997-08a2b376160b"]
+```
+
+Here, we get an array of cluster IDs back. We can use such an ID as follows to look up the spec of a particular cluster:
+
+```sh
+$ ./eksp-list.sh dd72f73a-3457-4d4b-b997-08a2b376160b | jq
+{
+  "name": "default-eksp",
+  "numworkers": 1,
+  "kubeversion": "1.12",
+  "timeout": 20,
+  "owner": "nobody@example.com"
+}
 ```
 
 Now, let's create a throwaway cluster named `2node-111-30`, using the `EKSPHEMERAL_SG` security group, with two worker nodes, using Kubernetes version 1.11, with a 30 min timeout as defined in the example cluster spec file [2node-111-30.json](svc/2node-111-30.json):

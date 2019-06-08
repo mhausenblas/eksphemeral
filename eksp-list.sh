@@ -29,8 +29,8 @@ EKSPHEMERAL_URL=$(aws cloudformation describe-stacks --stack-name eksp | jq '.St
 
 if [ ! -z "$CLUSTER_ID" ]
 then
-  curl --progress "$EKSPHEMERAL_URL/status/$CLUSTER_ID"
+  curl -s "$EKSPHEMERAL_URL/status/$CLUSTER_ID"
 else
-  curl --progress "$EKSPHEMERAL_URL/status/*"
+  curl -s "$EKSPHEMERAL_URL/status/*"
 fi 
 
