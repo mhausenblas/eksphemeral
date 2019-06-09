@@ -86,6 +86,7 @@ Resources:
               - ec2:*
               - autoscaling:*
               - eks:*
+              - ses:*
               Resource: '*'
             - Effect: Allow
               Action:
