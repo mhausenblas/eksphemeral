@@ -8,8 +8,6 @@ EKSphemeral uses, in a nutshell, a AWS Lambda/Amazon S3 combo (as the control pl
 
 ![EKSphemeral architecture](img/architecture.png)
 
-If you like, you can have a look at a [4 min video walk through](https://www.youtube.com/watch?v=2A8olhYL9iI), before you try it out yourself.
-
 1. The `eksp-up.sh` script provisions EKSphemeral's control plane (Lambda+S3). This is a one-time action, think of it as installing EKSphemeral in your AWS environment.
 1. Whenever you want to provision a throwaway EKS cluster, use `eksp-create.sh`. It will do two things: 
 1. Provision the cluster using [eksctl](https://eksctl.io) running in Fargate (what we call the EKSphemeral data plane), and when that is completed,
@@ -17,6 +15,10 @@ If you like, you can have a look at a [4 min video walk through](https://www.you
 1. Once that is done, you can use `eksp-list.sh` to list all managed clusters or, should you wish to gather more information on a specific cluster, use `eksp-list.sh $CLUSTERID` to retrieve it. This script uses the `/status` endpoint of EKSphemeral's HTTP API.
 1. Every 5 minutes, there is a CloudWatch event that triggers the execution of another Lambda function called `DestroyClusterFunc`, which notifies the owners of clusters that are about to expire (send an email up tp 5 minutes before the cluster is destroyed), and when the time comes, it tears the cluster down. 
 1. Last but not least, if you want to get rid of EKSphemeral, use the `eksp-down.sh` script, removing all cluster specs in the S3 bucket and deleting all three Lambda functions.
+
+If you like, you can have a look at a [4 min video walkthrough](https://www.youtube.com/watch?v=2A8olhYL9iI), before you try it out yourself. Since the minimal time for an end-to-end provisioning and usage cycle is ca. 40min, the video walkthrough is showing a 1:10 time compression, roughly.
+
+If you want to try it out yourself, follow the steps below.
 
 ## Preparation
 
