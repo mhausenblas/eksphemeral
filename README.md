@@ -24,27 +24,37 @@ If you want to try it out yourself, follow the steps below.
 
 In order to use EKSphemeral, clone this repo, and make sure you've got `jq`, the `aws` CLI and the [Fargate CLI](https://somanymachines.com/fargate/) installed.
 
-Create an S3 bucket `eks-svc` for the Lambda functions like so:
+
+Make sure to set the respective environment variables before you proceed. This is so that the install process knows which S3 bucket to use for the control plane's Lambda functions (`EKSPHEMERAL_SVC_BUCKET`) and where to put the cluster metadata (`EKSPHEMERAL_CLUSTERMETA_BUCKET`):
+
+```sh
+$ export EKSPHEMERAL_SVC_BUCKET=eks-svc
+$ export EKSPHEMERAL_CLUSTERMETA_BUCKET=eks-cluster-meta
+```
+
+Create the S3 bucket for the Lambda functions like so:
 
 ```sh
 $ aws s3api create-bucket \
-      --bucket eks-svc \
+      --bucket $EKSPHEMERAL_SVC_BUCKET \
       --create-bucket-configuration LocationConstraint=us-east-2 \
       --region us-east-2
 ```
 
-Create an S3 bucket `eks-cluster-meta` for the cluster metadata like so:
+Create the S3 bucket for the cluster metadata like so:
 
 ```sh
 $ aws s3api create-bucket \
-      --bucket eks-cluster-meta \
+      --bucket $EKSPHEMERAL_CLUSTERMETA_BUCKET \
       --create-bucket-configuration LocationConstraint=us-east-2 \
       --region us-east-2
 ```
+
+Now that we have the S3 buckets set up, let's move on to the service code.
 
 ## Usage
 
-The following assumes that the S3 bucket as outlined above is set up and you have access to AWS configured, locally.
+The following assumes that the S3 buckets as outlined above have been set up and you have access to AWS configured, locally.
 
 ```sh
 $ ./eksp-up.sh
