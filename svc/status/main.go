@@ -17,6 +17,10 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3/s3manager"
 )
 
+type StatusFuncInput struct {
+	MetadataBucketName string `json:"metabucket"`
+}
+
 func serverError(err error) (events.APIGatewayProxyResponse, error) {
 	fmt.Println(err.Error())
 	return events.APIGatewayProxyResponse{
@@ -46,7 +50,8 @@ func fetchCluster(bucket, id string) (string, error) {
 	return string(buf.Bytes()), nil
 }
 
-func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func handler(request events.APIGatewayProxyRequest, sfi StatusFuncInput) (events.APIGatewayProxyResponse, error) {
+	clusterbucket := sfi.MetadataBucketName
 	fmt.Printf("DEBUG:: status start\n")
 	cfg, err := external.LoadDefaultAWSConfig()
 	if err != nil {
@@ -60,7 +65,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	// return info on specified cluster if we have an cluster ID in the URL path component:
 	if cID != "*" {
 		fmt.Printf("DEBUG:: cluster info lookup for ID %v start\n", cID)
-		clusterspec, err := fetchCluster("eks-cluster-meta", cID)
+		clusterspec, err := fetchCluster(clusterbucket, cID)
 		if err != nil {
 			return serverError(err)
 		}
@@ -77,7 +82,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	// if we have no specified cluster ID in the path, list all cluster IDs:
 	fmt.Printf("DEBUG:: S3 bucket listing start\n")
 	svc := s3.New(cfg)
-	req := svc.ListObjectsRequest(&s3.ListObjectsInput{Bucket: aws.String("eks-cluster-meta")})
+	req := svc.ListObjectsRequest(&s3.ListObjectsInput{Bucket: &clusterbucket})
 	resp, err := req.Send(context.TODO())
 	if err != nil {
 		return serverError(err)

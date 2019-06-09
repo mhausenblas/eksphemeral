@@ -32,15 +32,15 @@ type DestroyFuncInput struct {
 
 func handler(dfi DestroyFuncInput) error {
 	fmt.Printf("DEBUG:: destroy cluster start\n")
-	metadataBucketName := dfi.MetadataBucketName
+	clusterbucket := dfi.MetadataBucketName
 	cfg, err := external.LoadDefaultAWSConfig()
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
 	svc := s3.New(cfg)
-	fmt.Printf("Scanning bucket %v for cluster specs\n", metadataBucketName)
-	req := svc.ListObjectsRequest(&s3.ListObjectsInput{Bucket: &metadataBucketName})
+	fmt.Printf("Scanning bucket %v for cluster specs\n", clusterbucket)
+	req := svc.ListObjectsRequest(&s3.ListObjectsInput{Bucket: &clusterbucket})
 	resp, err := req.Send(context.TODO())
 	if err != nil {
 		fmt.Println(err)
@@ -52,7 +52,7 @@ func handler(dfi DestroyFuncInput) error {
 		clusterID := strings.TrimSuffix(fn, ".json")
 		ts := obj.LastModified
 		clusterage := time.Since(*ts)
-		cs, err := fetchClusterSpec(metadataBucketName, clusterID)
+		cs, err := fetchClusterSpec(clusterbucket, clusterID)
 		ttl := time.Duration(cs.Timeout) * time.Minute
 		headsuptime := ttl - 5*time.Minute
 		fmt.Printf("DEBUG:: checking TTL of cluster %v:\n", clusterID)
@@ -86,7 +86,7 @@ func handler(dfi DestroyFuncInput) error {
 				return err
 			}
 			// control plane tear down:
-			rmClusterSpec(metadataBucketName, clusterID)
+			rmClusterSpec(clusterbucket, clusterID)
 		case clusterage > headsuptime:
 			if cs.Owner != "" {
 				fmt.Printf("Sending owner %v a warning concerning tear down of cluster %v\n", cs.Owner, clusterID)
