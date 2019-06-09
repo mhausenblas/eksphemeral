@@ -113,6 +113,8 @@ do
     sleep 60 
 done
 
+printf "\nSuccessfully created data plane for cluster %s using AWS Fargate and now movin on to the control plane ...\n\n" $CLUSTER_NAME
+
 # note, one could use https://docs.aws.amazon.com/cli/latest/reference/cloudformation/wait/stack-exists.html as well here, maybe?
 
 
@@ -123,7 +125,7 @@ done
 # let's create a cluster (metadata) entry in S3 via Lambda (our control plane):
 CLUSTERID=$(curl --progress-bar --header "Content-Type: application/json" --request POST --data @$CLUSTER_SPEC $EKSPHEMERAL_URL/create/)
 
-printf "\nCreated control plane entry for cluster %s via AWS Lambda and S3 and now moving on to provision the data plane using AWS Fargate\n\n" $CLUSTERID
+printf "\nSuccessfully created control plane entry for cluster %s via AWS Lambda and Amazon S3 ...\n\n" $CLUSTER_NAME
 
 ###############################################################################
 ### CONFIG AND SMOKE TEST
