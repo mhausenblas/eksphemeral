@@ -23,3 +23,5 @@ then
 else 
     echo "There was an issue setting up the EKSphemeral control plane, check the CloudFormation logs :("
 fi
+
+echo "Next, use the eksp-create script to launch a throwaway cluster."
