@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
-Description: EKSphemeral is a simple EKS cluster manager
+Description: EKSphemeral, a simple Amazon EKS manager for ephemeral dev/test clusters
 
 Globals:
   Function:
@@ -10,6 +10,10 @@ Globals:
       AllowMethods: "'*'"
       AllowHeaders: "'*'"
       AllowOrigin: "'*'"
+
+Parameters:
+    ClusterMetadataBucketName:
+        Type: String
 
 Resources:
   StatusFunc:
@@ -36,8 +40,8 @@ Resources:
               - s3:GetObject
               - s3:ListObjects
               Resource:
-              - 'arn:aws:s3:::eks-cluster-meta/*'
-              - 'arn:aws:s3:::eks-cluster-meta'
+              - arn:aws:s3:::${ClusterMetadataBucketName}/*
+              - arn:aws:s3:::${ClusterMetadataBucketName}
   CreateClusterFunc:
     Type: AWS::Serverless::Function
     Properties:
@@ -62,7 +66,7 @@ Resources:
             - Effect: Allow
               Action:
               - s3:PutObject
-              Resource: 'arn:aws:s3:::eks-cluster-meta/*'
+              Resource: arn:aws:s3:::${ClusterMetadataBucketName}/*
   DestroyClusterFunc:
     Type: AWS::Serverless::Function
     Properties:
@@ -75,6 +79,8 @@ Resources:
           Type: Schedule
           Properties:
             Schedule: rate(5 minutes)
+            Input:
+              Fn::Sub: '{"metabucket": "${ClusterMetadataBucketName}"}'
       Policies:
         - AWSLambdaExecute
         - Version: '2012-10-17'
@@ -92,8 +98,8 @@ Resources:
               Action:
               - s3:*
               Resource:
-              - 'arn:aws:s3:::eks-cluster-meta/*'
-              - 'arn:aws:s3:::eks-cluster-meta'
+              - arn:aws:s3:::${ClusterMetadataBucketName}/*
+              - arn:aws:s3:::${ClusterMetadataBucketName}
 
 
 
