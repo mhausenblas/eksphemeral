@@ -20,10 +20,9 @@ If you like, you can have a look at a [4 min video walkthrough](https://www.yout
 
 If you want to try it out yourself, follow the steps below.
 
-## Preparation
+## Install
 
 In order to use EKSphemeral, clone this repo, and make sure you've got `jq`, the `aws` CLI and the [Fargate CLI](https://somanymachines.com/fargate/) installed.
-
 
 Make sure to set the respective environment variables before you proceed. This is so that the install process knows which S3 bucket to use for the control plane's Lambda functions (`EKSPHEMERAL_SVC_BUCKET`) and where to put the cluster metadata (`EKSPHEMERAL_CLUSTERMETA_BUCKET`):
 
@@ -50,9 +49,9 @@ $ aws s3api create-bucket \
       --region us-east-2
 ```
 
-Now that we have the S3 buckets set up, let's move on to the service code.
+hat one must verify both source and target email address in region, see https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html
 
-## Usage
+Now that we have the S3 buckets set up, let's move on to the service code.
 
 The following assumes that the S3 buckets as outlined above have been set up and you have access to AWS configured, locally.
 
@@ -60,27 +59,26 @@ The following assumes that the S3 buckets as outlined above have been set up and
 $ ./eksp-up.sh
 ```
 
-First, let's check what clusters are already managed by EKSphemeral:
+Now, let's check if there are already clusters are managed by EKSphemeral:
 
 ```sh
 $ ./eksp-list.sh
-["9be65bee-3baa-4fd0-aa3e-032325d5390c","dd72f73a-3457-4d4b-b997-08a2b376160b"]
+[]
 ```
 
-Here, we get an array of cluster IDs back. We can use such an ID as follows to look up the spec of a particular cluster:
+Since we just installed EKSphemeral, there are no clusters, yet. Let's change that.
+
+## Use
+
+### Create clusters
+
+Let's start off by creating a throwaway EKS cluster with the [default](svc/default-cc.json) values:
 
 ```sh
-$ ./eksp-list.sh dd72f73a-3457-4d4b-b997-08a2b376160b | jq
-{
-  "name": "default-eksp",
-  "numworkers": 1,
-  "kubeversion": "1.12",
-  "timeout": 20,
-  "owner": "nobody@example.com"
-}
+$ ./eksp-create.sh
 ```
 
-Now, let's create a throwaway cluster named `2node-111-30`, using the `EKSPHEMERAL_SG` security group, with two worker nodes, using Kubernetes version 1.11, with a 30 min timeout as defined in the example cluster spec file [2node-111-30.json](svc/2node-111-30.json):
+Now, let's create a  cluster named `2node-111-30`, using the `EKSPHEMERAL_SG` security group, with two worker nodes, using Kubernetes version 1.11, with a 30 min timeout as defined in the example cluster spec file [2node-111-30.json](svc/2node-111-30.json):
 
 ```sh
 $ cat svc/2node-111-30.json
@@ -95,16 +93,42 @@ $ cat svc/2node-111-30.json
 $ ./eksp-create.sh 2node-111-30.json $EKSPHEMERAL_SG
 ```
 
-Note that both the security group and the cluster spec file are optional. If not present, the first security group of the default VPC and `default-cc.json` will be used.
+Note that both the security group and the cluster spec file are optional. If not present, the first security group of the default VPC and `default-cc.json` will be used, as we had it in the first example.
 
-## Tear down
+Further, note that, if you want to receive notification emails, you must [verify](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html) both the source and target email address in the Ireland region.
 
-To tear down EKSphemeral, use the following command which will remove control plane elements (Lambda functions, S3 bucket content):
+### List clusters
+
+Next, let's check what clusters are managed by EKSphemeral:
+
+```sh
+$ ./eksp-list.sh
+["9be65bee-3baa-4fd0-aa3e-032325d5390c","dd72f73a-3457-4d4b-b997-08a2b376160b"]
+```
+
+Here, we get an array of cluster IDs back. We can use such a cluster ID as follows to look up the spec of a particular cluster:
+
+```sh
+$ ./eksp-list.sh dd72f73a-3457-4d4b-b997-08a2b376160b | jq
+{
+  "name": "default-eksp",
+  "numworkers": 1,
+  "kubeversion": "1.12",
+  "timeout": 20,
+  "owner": "nobody@example.com"
+}
+```
+
+## Uninstall
+
+To uninstall EKSphemeral, use the following command. This will remove the control plane elements, that is, delete the Lambda functions and remove all cluster specs from the `EKSPHEMERAL_CLUSTERMETA_BUCKET` S3 bucket:
 
 ```bash
 $ ./eksp-down.sh
 ```
 
+Note that the service code bucket and the cluster metadata bucket are still around after this. You can either manually delete them or keep them around, to reuse them later. 
+
 ## Development
 
-See the dedicated [development docs](dev.md) for how to customize and extend EKSphemeral.
+To learn how to customize and extend EKSphemeral or simply toy around with it,see the dedicated [development docs](dev.md).
