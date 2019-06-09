@@ -12,6 +12,7 @@ import (
 
 // deleteStack deletes the respective CF stack
 func deleteStack(name string) error {
+	fmt.Printf("DEBUG:: deleting stack %v\n", name)
 	cfg, err := external.LoadDefaultAWSConfig()
 	if err != nil {
 		return err
@@ -22,8 +23,7 @@ func deleteStack(name string) error {
 	if err != nil {
 		return err
 	}
-	_ = resp
-	// fmt.Printf("%v\n", resp.String())
+	fmt.Printf("DEBUG:: stack deletion result:\n%v\n", resp.String())
 	return nil
 }
 

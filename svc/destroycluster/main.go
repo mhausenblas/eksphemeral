@@ -51,7 +51,7 @@ func handler() error {
 		headsuptime := ttl - 5*time.Minute
 		switch {
 		case clusterage > ttl:
-			fmt.Printf("Tearing down cluster %v\n", clusterID)
+			fmt.Printf("Tearing down EKS cluster %v\n", clusterID)
 			if err != nil {
 				fmt.Println(err)
 				return err
