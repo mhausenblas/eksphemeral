@@ -67,6 +67,12 @@ func handler() error {
 				fmt.Println(err)
 				return err
 			}
+			// this is not great but necessary for CF to cool off,
+			// in other words, if we don't wait a bit, the control plane
+			// stack deletion will fail with an error akin to:
+			// "eksctl-default-eksp-cluster::SharedNodeSecurityGroup cannot
+			//  be deleted as it is in use by eksctl-default-eksp-nodegroup-ng-xxx"
+			time.Sleep(30 * time.Second)
 			err = deleteStack(cpstack)
 			if err != nil {
 				fmt.Println(err)
