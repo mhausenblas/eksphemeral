@@ -31,10 +31,6 @@ type ClusterSpec struct {
 	Owner string `json:"owner"`
 }
 
-type CreateFuncInput struct {
-	MetadataBucketName string `json:"metabucket"`
-}
-
 func upload(region, bucket, jsonfilename, content string) error {
 	cfg, err := external.LoadDefaultAWSConfig()
 	if err != nil {
@@ -60,9 +56,9 @@ func serverError(err error) (events.APIGatewayProxyResponse, error) {
 	}, nil
 }
 
-func handler(request events.APIGatewayProxyRequest, cfi CreateFuncInput) (events.APIGatewayProxyResponse, error) {
+func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	region := os.Getenv("AWS_REGION")
-	clusterbucket := cfi.MetadataBucketName
+	clusterbucket := os.Getenv("CLUSTER_METADATA_BUCKET")
 	fmt.Println("DEBUG:: create start")
 	// parse params:
 	ccr := ClusterSpec{

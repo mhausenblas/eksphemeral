@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
 	"strings"
 	"time"
 
@@ -26,13 +27,9 @@ type ClusterSpec struct {
 	Owner string `json:"owner"`
 }
 
-type DestroyFuncInput struct {
-	MetadataBucketName string `json:"metabucket"`
-}
-
-func handler(dfi DestroyFuncInput) error {
+func handler() error {
 	fmt.Printf("DEBUG:: destroy cluster start\n")
-	clusterbucket := dfi.MetadataBucketName
+	clusterbucket := os.Getenv("CLUSTER_METADATA_BUCKET")
 	cfg, err := external.LoadDefaultAWSConfig()
 	if err != nil {
 		fmt.Println(err)

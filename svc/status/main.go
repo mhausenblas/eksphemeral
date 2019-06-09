@@ -7,6 +7,7 @@ import (
 	_ "image/jpeg"
 	_ "image/png"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -16,10 +17,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/s3manager"
 )
-
-type StatusFuncInput struct {
-	MetadataBucketName string `json:"metabucket"`
-}
 
 func serverError(err error) (events.APIGatewayProxyResponse, error) {
 	fmt.Println(err.Error())
@@ -50,8 +47,8 @@ func fetchCluster(bucket, id string) (string, error) {
 	return string(buf.Bytes()), nil
 }
 
-func handler(request events.APIGatewayProxyRequest, sfi StatusFuncInput) (events.APIGatewayProxyResponse, error) {
-	clusterbucket := sfi.MetadataBucketName
+func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	clusterbucket := os.Getenv("CLUSTER_METADATA_BUCKET")
 	fmt.Printf("DEBUG:: status start\n")
 	cfg, err := external.LoadDefaultAWSConfig()
 	if err != nil {

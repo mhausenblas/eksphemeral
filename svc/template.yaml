@@ -23,14 +23,15 @@ Resources:
       Handler: status
       Runtime: go1.x
       Tracing: Active
+      Environment:
+        Variables:
+          CLUSTER_METADATA_BUCKET: ${ClusterMetadataBucketName}
       Events:
         CatchAll:
           Type: Api
           Properties:
             Path: /status/{clusterid}
             Method: GET
-            Input:
-              Fn::Sub: '{"metabucket": "${ClusterMetadataBucketName}"}'
       Policies:
         - AWSLambdaExecute
         - Version: '2012-10-17'
@@ -51,14 +52,15 @@ Resources:
       Handler: createcluster
       Runtime: go1.x
       Tracing: Active
+      Environment:
+        Variables:
+          CLUSTER_METADATA_BUCKET: ${ClusterMetadataBucketName}
       Events:
         CatchAll:
           Type: Api
           Properties:
             Path: /create
             Method: POST
-            Input:
-              Fn::Sub: '{"metabucket": "${ClusterMetadataBucketName}"}'
       Policies:
         - AWSLambdaExecute
         - Version: '2012-10-17'
@@ -78,13 +80,14 @@ Resources:
       Handler: destroycluster
       Runtime: go1.x
       Tracing: Active
+      Environment:
+        Variables:
+          CLUSTER_METADATA_BUCKET: ${ClusterMetadataBucketName}
       Events:
         Timer:
           Type: Schedule
           Properties:
             Schedule: rate(5 minutes)
-            Input:
-              Fn::Sub: '{"metabucket": "${ClusterMetadataBucketName}"}'
       Policies:
         - AWSLambdaExecute
         - Version: '2012-10-17'
@@ -104,8 +107,6 @@ Resources:
               Resource:
               - arn:aws:s3:::${ClusterMetadataBucketName}/*
               - arn:aws:s3:::${ClusterMetadataBucketName}
-
-
 
 Outputs:
   EKSphemeralAPIEndpoint:
