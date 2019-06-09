@@ -1,4 +1,4 @@
-eksctl_version := 0.1
+eksctl_version := 0.2
 
 .PHONY: publishimg
 
