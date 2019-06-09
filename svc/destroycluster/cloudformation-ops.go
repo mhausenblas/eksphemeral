@@ -23,7 +23,7 @@ func deleteStack(name string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("DEBUG:: stack deletion result:\n%v\n", resp.String())
+	fmt.Printf("DEBUG:: stack deletion result: %v\n", resp.String())
 	return nil
 }
 
