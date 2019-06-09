@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
@@ -27,28 +26,36 @@ type ClusterSpec struct {
 	Owner string `json:"owner"`
 }
 
-func handler() error {
+type DestroyFuncInput struct {
+	MetadataBucketName string `json:"metabucket"`
+}
+
+func handler(dfi DestroyFuncInput) error {
 	fmt.Printf("DEBUG:: destroy cluster start\n")
+	metadataBucketName := dfi.MetadataBucketName
 	cfg, err := external.LoadDefaultAWSConfig()
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
 	svc := s3.New(cfg)
-	req := svc.ListObjectsRequest(&s3.ListObjectsInput{Bucket: aws.String("eks-cluster-meta")})
+	fmt.Printf("Scanning bucket %v for cluster specs\n", metadataBucketName)
+	req := svc.ListObjectsRequest(&s3.ListObjectsInput{Bucket: &metadataBucketName})
 	resp, err := req.Send(context.TODO())
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
+	fmt.Printf("DEBUG:: iterating over cluster specs:\n")
 	for _, obj := range resp.Contents {
 		fn := *obj.Key
 		clusterID := strings.TrimSuffix(fn, ".json")
 		ts := obj.LastModified
 		clusterage := time.Since(*ts)
-		cs, err := fetchClusterSpec("eks-cluster-meta", clusterID)
+		cs, err := fetchClusterSpec(metadataBucketName, clusterID)
 		ttl := time.Duration(cs.Timeout) * time.Minute
 		headsuptime := ttl - 5*time.Minute
+		fmt.Printf("DEBUG:: checking TTL of cluster %v:\n", clusterID)
 		switch {
 		case clusterage > ttl:
 			fmt.Printf("Tearing down EKS cluster %v\n", clusterID)
@@ -79,7 +86,7 @@ func handler() error {
 				return err
 			}
 			// control plane tear down:
-			rmClusterSpec("eks-cluster-meta", clusterID)
+			rmClusterSpec(metadataBucketName, clusterID)
 		case clusterage > headsuptime:
 			if cs.Owner != "" {
 				fmt.Printf("Sending owner %v a warning concerning tear down of cluster %v\n", cs.Owner, clusterID)
