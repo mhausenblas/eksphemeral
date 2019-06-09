@@ -88,10 +88,7 @@ Resources:
               Resource: '*'
             - Effect: Allow
               Action:
-              - s3:ListBucket
-              - s3:GetBucket
-              - s3:GetObject
-              - s3:ListObjects
+              - s3:*
               Resource:
               - 'arn:aws:s3:::eks-cluster-meta/*'
               - 'arn:aws:s3:::eks-cluster-meta'
