@@ -81,12 +81,14 @@ func handler() error {
 			// control plane tear down:
 			rmClusterSpec("eks-cluster-meta", clusterID)
 		case clusterage > headsuptime:
-			fmt.Printf("Sending owner %v a warning concerning tear down of cluster %v\n", cs.Owner, clusterID)
-			subject := fmt.Sprintf("EKS cluster %v shutting down in 5 min", cs.Name)
-			body := fmt.Sprintf("Hi there!\nThis is to inform you that your EKS cluster %v (cluster ID %v) will be shut down and all associated resources destroyed in 5 min.\n Have a nice day!", cs.Name, clusterID)
-			err := informOwner(cs.Owner, subject, body)
-			fmt.Println(err)
-			return err
+			if cs.Owner != "" {
+				fmt.Printf("Sending owner %v a warning concerning tear down of cluster %v\n", cs.Owner, clusterID)
+				subject := fmt.Sprintf("EKS cluster %v shutting down in 5 min", cs.Name)
+				body := fmt.Sprintf("Hello there,\n\nThis is to inform you that your EKS cluster %v (cluster ID %v) will shut down and all associated resources destroyed in 5 min.\n Have a nice day,\nEKSphemeral", cs.Name, clusterID)
+				err := informOwner(cs.Owner, subject, body)
+				fmt.Println(err)
+				return err
+			}
 		default:
 			fmt.Printf("Cluster %v is %.0f min old\n", clusterID, clusterage.Minutes())
 		}
