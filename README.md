@@ -10,6 +10,8 @@ EKSphemeral uses, in a nutshell, a AWS Lambda/Amazon S3 combo (as the control pl
 
 In order to use EKSphemeral, clone this repo, and make sure you've got `jq`, the `aws` CLI and the [Fargate CLI](https://somanymachines.com/fargate/) installed.
 
+If you like, you can have a look at a [4 min video walk through](https://www.youtube.com/watch?v=2A8olhYL9iI), before you try it out yourself.
+
 ## Preparation
 
 Create an S3 bucket `eks-svc` for the Lambda functions like so:
