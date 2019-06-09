@@ -1,8 +1,12 @@
-# EKSphemeral
+# EKSphemeral: The EKS Ephemeral Cluster Manager
 
-> Note: this is a heavy WIP, do not use in production.
+> Do not use in production. This is a service for development and test environments. 
 
-A simple Amazon EKS manager for ephemeral dev/test clusters, using AWS Lambda and AWS Fargate, allowing you to launch an EKS cluster with an automatic tear-down after a given time.
+A simple Amazon EKS manager for ephemeral dev/test clusters, allowing you to launch an EKS cluster with an automatic tear-down after a given time.
+
+EKSphemeral uses, in a nutshell, a AWS Lambda/Amazon S3 combo (as the control plane) and AWS Fargate (as the data plane):
+
+![EKSphemeral architecture](img/architecture.png)
 
 In order to use EKSphemeral, clone this repo, and make sure you've got `jq`, the `aws` CLI and the [Fargate CLI](https://somanymachines.com/fargate/) installed.
 
