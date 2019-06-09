@@ -5,7 +5,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
-	"github.com/aws/aws-sdk-go/service/ses"
+	"github.com/aws/aws-sdk-go-v2/service/ses"
 )
 
 // informOwner sends the cluster owner a mail,
@@ -33,7 +33,7 @@ func informOwner(tomail, subject, body string) error {
 		},
 		Source: aws.String("hausenbl@amazon.com"),
 	})
-	_, err := req.Send(context.Background())
+	_, err = req.Send(context.Background())
 	if err != nil {
 		return err
 	}

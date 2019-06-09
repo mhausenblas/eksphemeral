@@ -74,7 +74,12 @@ func handler() error {
 			// control plane tear down:
 			rmClusterSpec("eks-cluster-meta", clusterID)
 		case ttl > t0-5*time.Minute && ttl <= t0-10*time.Minute:
-			fmt.Printf("DEBUG:: sending owner XXX a warning re tear down of cluster %v\n", clusterID)
+			fmt.Printf("DEBUG:: sending owner %v a warning concerning tear down of cluster %v\n", cs.Owner, clusterID)
+			subject := fmt.Sprintf("EKS cluster %v shutting down in 5 min", cs.Name)
+			body := fmt.Sprintf("Hi there!\nThis is to inform you that your EKS cluster %v (cluster ID %v) will be shut down and all associated resources destroyed in 5 min.\n Have a nice day!", cs.Name, clusterID)
+			err := informOwner(cs.Owner, subject, body)
+			fmt.Println(err)
+			return err
 		default:
 			fmt.Printf("DEBUG:: cluster %v is %v min old\n", clusterID, ttl.Minutes())
 		}
