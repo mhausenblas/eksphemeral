@@ -57,6 +57,27 @@ func fetchClusterSpec(bucket, clusterid string) (ClusterSpec, error) {
 	return ccr, nil
 }
 
+// rmClusterSpec delete the cluster spec JSON doc
+// in the metadata bucket and with that effectively
+// states the cluster doesn't exist anymore.
+func rmClusterSpec(bucket, clusterid string) error {
+	cfg, err := external.LoadDefaultAWSConfig()
+	if err != nil {
+		return err
+	}
+	// Create S3 service client
+	svc := s3.New(cfg)
+	req := svc.DeleteObjectRequest(&s3.DeleteObjectInput{
+		Bucket: aws.String(bucket),
+		Key:    aws.String(clusterid + ".json"),
+	})
+	_, err = req.Send(context.Background())
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // deleteStack deletes the respective CF stack
 func deleteStack(name string) error {
 	cfg, err := external.LoadDefaultAWSConfig()
@@ -102,9 +123,8 @@ func lookupStack(clustername string) (string, string, error) {
 		if err != nil {
 			return "", "", err
 		}
-		fmt.Printf("DEBUG:: checking stack: %v\n", *dsresp.Stacks[0].StackName)
+		// fmt.Printf("DEBUG:: checking stack %v if it has label with cluster name %v\n", *dsresp.Stacks[0].StackName, clustername)
 		cnofstack := tagValueOf(dsresp.Stacks[0], "eksctl.cluster.k8s.io/v1alpha1/cluster-name")
-		fmt.Printf("DEBUG:: got cluster name: %v\n", cnofstack)
 		if cnofstack != "" && cnofstack == clustername {
 			switch {
 			case tagValueOf(dsresp.Stacks[0], "alpha.eksctl.io/nodegroup-name") != "":
@@ -114,12 +134,16 @@ func lookupStack(clustername string) (string, string, error) {
 			}
 		}
 	}
+	fmt.Printf("DEBUG:: found control plane stack %v and data plane stack %v for cluster %v\n", cpstack, dpstack, clustername)
 	return cpstack, dpstack, nil
 }
 
+// tagValueOf searches through the tags of a CF stack and
+// returns the value for the provided key
 func tagValueOf(stack cloudformation.Stack, key string) string {
 	for _, tag := range stack.Tags {
-		if tag.Key == &key {
+		tagk := *tag.Key
+		if tagk == key {
 			return *tag.Value
 		}
 	}
@@ -154,12 +178,8 @@ func handler() error {
 				fmt.Println(err)
 				return err
 			}
+			// data plane tear down:
 			cpstack, dpstack, err := lookupStack(cs.Name)
-			if err != nil {
-				fmt.Println(err)
-				return err
-			}
-			err = deleteStack(cpstack)
 			if err != nil {
 				fmt.Println(err)
 				return err
@@ -169,6 +189,13 @@ func handler() error {
 				fmt.Println(err)
 				return err
 			}
+			err = deleteStack(cpstack)
+			if err != nil {
+				fmt.Println(err)
+				return err
+			}
+			// control plane tear down:
+			rmClusterSpec("eks-cluster-meta", clusterID)
 		case ttl > t0-5*time.Minute && ttl <= t0-10*time.Minute:
 			fmt.Printf("DEBUG:: sending owner XXX a warning re tear down of cluster %v\n", clusterID)
 		default:
