@@ -1,0 +1,7 @@
+{
+    "name": "1node-112-10",
+    "numworkers": 1,
+    "kubeversion": "1.12",
+    "timeout": 10,
+    "owner": "hausenbl+notif@amazon.com"
+}
