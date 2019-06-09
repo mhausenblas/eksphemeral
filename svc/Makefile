@@ -18,7 +18,7 @@ build:
 
 up: 
 	sam package --template-file template.yaml --output-template-file eksp-stack.yaml --s3-bucket ${EKSPHEMERAL_SVC_BUCKET}
-	sam deploy --template-file eksp-stack.yaml --stack-name ${EKSPHEMERAL_STACK_NAME} --capabilities CAPABILITY_IAM
+	sam deploy --template-file eksp-stack.yaml --stack-name ${EKSPHEMERAL_STACK_NAME} --capabilities CAPABILITY_IAM --parameter-overrides ClusterMetadataBucketName=${EKSPHEMERAL_CLUSTERMETA_BUCKET} 
 
 deploy: build up
 
