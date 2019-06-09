@@ -123,7 +123,7 @@ printf "\nSuccessfully created data plane for cluster %s using AWS Fargate and n
 
 # now that the EKS cluster (our data plane) is up and running,
 # let's create a cluster (metadata) entry in S3 via Lambda (our control plane):
-CLUSTERID=$(curl --progress-bar --header "Content-Type: application/json" --request POST --data @$CLUSTER_SPEC $EKSPHEMERAL_URL/create/)
+CLUSTERID=$(curl -s --header "Content-Type: application/json" --request POST --data @$CLUSTER_SPEC $EKSPHEMERAL_URL/create/)
 
 printf "\nSuccessfully created control plane entry for cluster %s via AWS Lambda and Amazon S3 ...\n\n" $CLUSTER_NAME
 
