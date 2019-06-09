@@ -45,12 +45,13 @@ func handler() error {
 		fn := *obj.Key
 		clusterID := strings.TrimSuffix(fn, ".json")
 		ts := obj.LastModified
-		ttl := time.Since(*ts)
+		clusterage := time.Since(*ts)
 		cs, err := fetchClusterSpec("eks-cluster-meta", clusterID)
-		t0 := time.Duration(cs.Timeout) * time.Minute
+		ttl := time.Duration(cs.Timeout) * time.Minute
+		headsuptime := ttl - 5*time.Minute
 		switch {
-		case ttl > t0:
-			fmt.Printf("DEBUG:: tearing down cluster %v\n", clusterID)
+		case clusterage > ttl:
+			fmt.Printf("Tearing down cluster %v\n", clusterID)
 			if err != nil {
 				fmt.Println(err)
 				return err
@@ -73,15 +74,15 @@ func handler() error {
 			}
 			// control plane tear down:
 			rmClusterSpec("eks-cluster-meta", clusterID)
-		case ttl > t0-5*time.Minute && ttl <= t0-10*time.Minute:
-			fmt.Printf("DEBUG:: sending owner %v a warning concerning tear down of cluster %v\n", cs.Owner, clusterID)
+		case clusterage > headsuptime:
+			fmt.Printf("Sending owner %v a warning concerning tear down of cluster %v\n", cs.Owner, clusterID)
 			subject := fmt.Sprintf("EKS cluster %v shutting down in 5 min", cs.Name)
 			body := fmt.Sprintf("Hi there!\nThis is to inform you that your EKS cluster %v (cluster ID %v) will be shut down and all associated resources destroyed in 5 min.\n Have a nice day!", cs.Name, clusterID)
 			err := informOwner(cs.Owner, subject, body)
 			fmt.Println(err)
 			return err
 		default:
-			fmt.Printf("DEBUG:: cluster %v is %v min old\n", clusterID, ttl.Minutes())
+			fmt.Printf("Cluster %v is %.0f min old\n", clusterID, clusterage.Minutes())
 		}
 	}
 	fmt.Printf("DEBUG:: destroy cluster done\n")
