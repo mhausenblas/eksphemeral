@@ -16,9 +16,9 @@ func informOwner(tomail, subject, body string) error {
 	if err != nil {
 		return err
 	}
-	svc := ses.New(cfg)
 	// have to pick a region where SES is available:
-	svc.Region = "eu-west-1"
+	cfg.Region = "eu-west-1"
+	svc := ses.New(cfg)
 	req := svc.SendEmailRequest(&ses.SendEmailInput{
 		Destination: &ses.Destination{ToAddresses: []string{tomail}},
 		Message: &ses.Message{
