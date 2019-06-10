@@ -113,10 +113,9 @@ do
     sleep 60 
 done
 
-printf "\nSuccessfully created data plane for cluster %s using AWS Fargate and now movin on to the control plane ...\n\n" $CLUSTER_NAME
+printf "\nSuccessfully created data plane for cluster %s using AWS Fargate and now moving on to the control plane in AWS Lambda and S3 ...\n\n" $CLUSTER_NAME
 
 # note, one could use https://docs.aws.amazon.com/cli/latest/reference/cloudformation/wait/stack-exists.html as well here, maybe?
-
 
 ###############################################################################
 ### CONTROL PLANE (METADATA) OPERATIONS
@@ -137,4 +136,4 @@ printf "\nYour EKS cluster is now set up and configured:\n"
 kubectl config get-contexts
 
 printf "\nNote that it still can take up to 5 min until the worker nodes are available, check with the following command until you don't see the 'No resources found.' message anymore:\n"
-kubectl get nodes 
+echo "kubectl get nodes" 
