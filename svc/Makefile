@@ -2,7 +2,7 @@ EKSPHEMERAL_STACK_NAME?=eksp
 EKSPHEMERAL_SVC_BUCKET?=eks-svc
 EKSPHEMERAL_CLUSTERMETA_BUCKET?=eks-cluster-meta
 
-.PHONY: deps clean deploy destroy status
+.PHONY: deps clean build up downloadbin deploy destroy status
 
 deps:
 	go get -u ./...
@@ -21,7 +21,17 @@ up:
 	sam package --template-file template.yaml --output-template-file eksp-stack.yaml --s3-bucket ${EKSPHEMERAL_SVC_BUCKET}
 	sam deploy --template-file eksp-stack.yaml --stack-name ${EKSPHEMERAL_STACK_NAME} --capabilities CAPABILITY_IAM --parameter-overrides ClusterMetadataBucketName=${EKSPHEMERAL_CLUSTERMETA_BUCKET} 
 
+downloadbin:
+	mkdir -p bin
+	curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.1.0/createcluster -o bin/createcluster
+	curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.1.0/destroycluster -o bin/destroycluster
+	curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.1.0/prolongcluster -o bin/prolongcluster
+	curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.1.0/status -o bin/status
+	chmod +x bin/*
+
 deploy: build up
+
+install: downloadbin up
 
 destroy: 
 	aws s3 rm s3://${EKSPHEMERAL_CLUSTERMETA_BUCKET} --recursive
