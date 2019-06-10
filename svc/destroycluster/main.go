@@ -66,24 +66,33 @@ func handler() error {
 				fmt.Println(err)
 				return err
 			}
-			err = deleteStack(dpstack)
-			if err != nil {
-				fmt.Println(err)
-				return err
+			switch {
+			// if this time around there's a stack
+			// representing the data plane, delete it:
+			case dpstack != "":
+				err = deleteStack(dpstack)
+				if err != nil {
+					fmt.Println(err)
+					return err
+				}
+			// if this time around there's no more stack
+			// representing the data plane but there's still
+			// a control plane stack, delete it:
+			case dpstack == "" && cpstack != "":
+				err = deleteStack(cpstack)
+				if err != nil {
+					fmt.Println(err)
+					return err
+				}
+			// if this time around there's neither a stack
+			// representing the data plane nor a control plane
+			// stack, we're ready to delete the cluster spec entry
+			// from the metadata bucket:
+			case dpstack == "" && cpstack == "":
+				rmClusterSpec(clusterbucket, clusterID)
+			default:
+				fmt.Printf("DEBUG:: seems both control and data plane stacks and all cluster metadata have been deleted, so this would be a NOP. \o/\n")
 			}
-			// this is not great but necessary for CF to cool off,
-			// in other words, if we don't wait a bit, the control plane
-			// stack deletion will fail with an error akin to:
-			// "eksctl-default-eksp-cluster::SharedNodeSecurityGroup cannot
-			//  be deleted as it is in use by eksctl-default-eksp-nodegroup-ng-xxx"
-			time.Sleep(30 * time.Second)
-			err = deleteStack(cpstack)
-			if err != nil {
-				fmt.Println(err)
-				return err
-			}
-			// control plane tear down:
-			rmClusterSpec(clusterbucket, clusterID)
 		case clusterage > headsuptime:
 			if cs.Owner != "" {
 				fmt.Printf("Sending owner %v a warning concerning tear down of cluster %v\n", cs.Owner, clusterID)
