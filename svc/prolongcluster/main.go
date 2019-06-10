@@ -134,7 +134,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	if err != nil {
 		return serverError(err)
 	}
-	fmt.Printf("DEBUG:: cluster is %.0f min old\n", age)
+	fmt.Printf("DEBUG:: cluster is %v old\n", age)
 	clusterspec.Timeout = clusterspec.Timeout - int(age.Minutes()) + timeInMin
 	fmt.Printf("DEBUG:: new TTL is %v min starting now\n", clusterspec.Timeout)
 	err = storeClusterSpec(clusterbucket, cID, clusterspec)
