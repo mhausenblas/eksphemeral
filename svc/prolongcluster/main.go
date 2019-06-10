@@ -87,7 +87,7 @@ func getClusterAge(bucket, clusterid string) (time.Duration, error) {
 	if err != nil {
 		return 0, err
 	}
-	clusterage := time.Since(&resp.LastModified)
+	clusterage := time.Since(*resp.LastModified)
 	return clusterage, nil
 }
 
@@ -134,14 +134,16 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	if err != nil {
 		return serverError(err)
 	}
-	clusterspec.Timeout = age + timeInMin
+	fmt.Printf("DEBUG:: cluster is %.0f min old\n", age)
+	clusterspec.Timeout = clusterspec.Timeout - int(age.Minutes()) + timeInMin
+	fmt.Printf("DEBUG:: new TTL is %v min starting now\n", clusterspec.Timeout)
 	err = storeClusterSpec(clusterbucket, cID, clusterspec)
 	if err != nil {
 		return serverError(err)
 	}
 	fmt.Printf("DEBUG:: updating cluster done\n")
 	fmt.Printf("DEBUG:: prolong done\n")
-	successmsg := fmt.Sprintf("Successfully prolonged the lifetime of cluster %v for %v minutes.", cID, timeInMin)
+	successmsg := fmt.Sprintf("Successfully prolonged the lifetime of cluster %v for %v minutes. New TTL is %v min starting now!", cID, timeInMin, clusterspec.Timeout)
 	return events.APIGatewayProxyResponse{
 		StatusCode: http.StatusOK,
 		Headers: map[string]string{

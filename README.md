@@ -134,6 +134,33 @@ $ ./eksp-list.sh dd72f73a-3457-4d4b-b997-08a2b376160b | jq
 }
 ```
 
+### Prolong cluster lifetime
+
+When you get a notification that one of your clusters is about to shut down or really at any time 
+before it shuts down, you can prolong the cluster lifetime using the `eksp-prolong.sh` script.
+
+Let's say we want to keep the cluster with the ID `7a4aa952-9582-4d99-98a0-0ab1a4e56337` around 
+for 40 min longer (with a remaining cluster runtime of 2 min). Here's what you would do:
+
+```sh
+$ ./eksp-prolong.sh 7a4aa952-9582-4d99-98a0-0ab1a4e56337 40
+
+Trying to set the TTL of cluster 7a4aa952-9582-4d99-98a0-0ab1a4e56337 to 42 minutes, starting now
+Successfully prolonged the lifetime of cluster 7a4aa952-9582-4d99-98a0-0ab1a4e56337 for 40 minutes. New TTL is 42 min starting now!
+
+$ ./eksp-list.sh 7a4aa952-9582-4d99-98a0-0ab1a4e56337 | jq
+{
+  "name": "1node-112-10",
+  "numworkers": 1,
+  "kubeversion": "1.12",
+  "timeout": 42,
+  "owner": "hausenbl+notif@amazon.com"
+}
+```
+
+Note that the prolong command updates the `timeout` field of your cluster spec, that is, the cluster TTL is 
+counted from the moment you issue the prolong command, taking the remaining cluster runtime into account.
+
 ## Uninstall
 
 To uninstall EKSphemeral, use the following command. This will remove the control plane elements, that is, delete the Lambda functions and remove all cluster specs from the `EKSPHEMERAL_CLUSTERMETA_BUCKET` S3 bucket:
