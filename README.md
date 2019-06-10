@@ -115,9 +115,28 @@ Let's start off by creating a throwaway EKS cluster with the [default](svc/defau
 
 ```sh
 $ ./eksp-create.sh
+I will now provision the EKS cluster default-eksp using AWS Fargate:
+
+[i] Running task eksctl
+Waiting for EKS cluster provisioning to complete. Allow some 15 min to complete, checking status every minute:
+........
+Successfully created data plane for cluster default-eksp using AWS Fargate and now moving on to the control plane in AWS Lambda and S3 ...
+
+Successfully created control plane entry for cluster default-eksp via AWS Lambda and Amazon S3 ...
+
+Now moving on to configure kubectl to point to your EKS cluster:
+Updated context arn:aws:eks:us-east-2:661776721573:cluster/default-eksp in /Users/hausenbl/.kube/config
+
+Your EKS cluster is now set up and configured:
+CURRENT   NAME                                                      CLUSTER                                                   AUTHINFO                                                  NAMESPACE
+*         arn:aws:eks:us-east-2:661776721573:cluster/default-eksp   arn:aws:eks:us-east-2:661776721573:cluster/default-eksp   arn:aws:eks:us-east-2:661776721573:cluster/default-eksp
+
+Note that it still can take up to 5 min until the worker nodes are available, check with the following command until you don't see the 'No resources found.' message anymore:
+kubectl get nodes
 ```
 
-Now, let's create a  cluster named `2node-111-30`, using the `EKSPHEMERAL_SG` security group, with two worker nodes, using Kubernetes version 1.11, with a 30 min timeout as defined in the example cluster spec file [2node-111-30.json](svc/2node-111-30.json):
+Now, let's create a  cluster named `2node-111-30`, using the `EKSPHEMERAL_SG` security group, with two worker nodes, 
+using Kubernetes version 1.11, with a 30 min timeout as defined in the example cluster spec file [2node-111-30.json](svc/2node-111-30.json):
 
 ```sh
 $ cat svc/2node-111-30.json
@@ -130,6 +149,7 @@ $ cat svc/2node-111-30.json
 }
 
 $ ./eksp-create.sh 2node-111-30.json $EKSPHEMERAL_SG
+...
 ```
 
 Note that both the security group and the cluster spec file are optional. If not present, the first security group of the default VPC and `default-cc.json` will be used, as we had it in the first example.

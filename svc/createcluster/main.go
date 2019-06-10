@@ -74,7 +74,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		return serverError(err)
 	}
 	fmt.Println("DEBUG:: parsing input cluster spec from HTTP POST payload done")
-	fmt.Printf("Creating %v, a %v cluster with %v nodes for %v minutes which is owned by %v. Adding a respective entry to bucket %v\n", ccr.Name, ccr.KubeVersion, ccr.NumWorkers, ccr.Timeout, ccr.Owner, clusterbucket)
+	fmt.Printf("Creating %v, a %v cluster with %v nodes for %v minutes which is owned by %v and adding a respective entry to bucket %v\n", ccr.Name, ccr.KubeVersion, ccr.NumWorkers, ccr.Timeout, ccr.Owner, clusterbucket)
 	// create unique cluster ID:
 	clusterID, err := uuid.NewV4()
 	if err != nil {
@@ -91,7 +91,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	// the cluster is ready now:
 	if ccr.Owner != "" {
 		fmt.Println("DEBUG:: begin inform owner")
-		fmt.Printf("Sending owner %v an info concerning creat of cluster %v\n", ccr.Owner, clusterID)
+		fmt.Printf("Sending owner %v an info concerning the creation of cluster %v\n", ccr.Owner, clusterID)
 		subject := fmt.Sprintf("EKS cluster %v created and available", ccr.Name)
 		body := fmt.Sprintf("Hello there,\n\nThis is to inform you that your EKS cluster %v (cluster ID %v) is now available for you to use.\n\nHave a nice day,\nEKSphemeral", ccr.Name, clusterID)
 		err := informOwner(ccr.Owner, subject, body)
