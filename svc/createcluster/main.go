@@ -68,21 +68,18 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		Timeout:     10,
 		Owner:       "nobody@example.com",
 	}
-
 	// Unmarshal the JSON payload in the POST:
 	err := json.Unmarshal([]byte(request.Body), &ccr)
 	if err != nil {
 		return serverError(err)
 	}
-	fmt.Printf("Creating %v, a %v cluster with %v nodes for %v minutes which is owned by %v\n", ccr.Name, ccr.KubeVersion, ccr.NumWorkers, ccr.Timeout, ccr.Owner)
-	fmt.Println("DEBUG:: parse done")
-
+	fmt.Println("DEBUG:: parsing input cluster spec from HTTP POST payload done")
+	fmt.Printf("Creating %v, a %v cluster with %v nodes for %v minutes which is owned by %v. Adding a respective entry to bucket %v\n", ccr.Name, ccr.KubeVersion, ccr.NumWorkers, ccr.Timeout, ccr.Owner, clusterbucket)
 	// create unique cluster ID:
 	clusterID, err := uuid.NewV4()
 	if err != nil {
 		return serverError(err)
 	}
-
 	// store cluster spec in S3 bucket keyed by cluster ID:
 	jsonfilename := clusterID.String() + ".json"
 	err = upload(region, clusterbucket, jsonfilename, string([]byte(request.Body)))
