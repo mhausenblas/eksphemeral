@@ -45,7 +45,6 @@ Resources:
               Resource:
               - !Sub "arn:aws:s3:::${ClusterMetadataBucketName}/*"
               - !Sub "arn:aws:s3:::${ClusterMetadataBucketName}"
-              
   CreateClusterFunc:
     Type: AWS::Serverless::Function
     Properties:
@@ -102,6 +101,32 @@ Resources:
               - eks:*
               - ses:*
               Resource: '*'
+            - Effect: Allow
+              Action:
+              - s3:*
+              Resource:
+              - !Sub "arn:aws:s3:::${ClusterMetadataBucketName}/*"
+              - !Sub "arn:aws:s3:::${ClusterMetadataBucketName}"
+  ProlongFunc:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: bin/
+      Handler: prolong
+      Runtime: go1.x
+      Tracing: Active
+      Environment:
+        Variables:
+          CLUSTER_METADATA_BUCKET: !Sub "${ClusterMetadataBucketName}"
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /prolong/{clusterid}/{timeinmin}
+            Method: POST
+      Policies:
+        - AWSLambdaExecute
+        - Version: '2012-10-17'
+          Statement:
             - Effect: Allow
               Action:
               - s3:*
