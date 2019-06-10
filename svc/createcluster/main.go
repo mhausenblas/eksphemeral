@@ -87,7 +87,19 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		return serverError(err)
 	}
 	fmt.Println("DEBUG:: state sync done")
-
+	// if the owner shared their mail address, let's inform them that
+	// the cluster is ready now:
+	if ccr.Owner != "" {
+		fmt.Println("DEBUG:: begin inform owner")
+		fmt.Printf("Sending owner %v an info concerning creat of cluster %v\n", ccr.Owner, clusterID)
+		subject := fmt.Sprintf("EKS cluster %v created and available", ccr.Name)
+		body := fmt.Sprintf("Hello there,\n\nThis is to inform you that your EKS cluster %v (cluster ID %v) is now available for you to use.\n\nHave a nice day,\nEKSphemeral", ccr.Name, clusterID)
+		err := informOwner(ccr.Owner, subject, body)
+		if err != nil {
+			return serverError(err)
+		}
+		fmt.Println("DEBUG:: inform owner done")
+	}
 	fmt.Println("DEBUG:: create done")
 	return events.APIGatewayProxyResponse{
 		StatusCode: http.StatusOK,
