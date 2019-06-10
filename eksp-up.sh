@@ -8,7 +8,7 @@ set -o pipefail
 printf "Installing the EKSphemeral control plane, this might take a few minutes ...\n"
 
 cd svc
-make up
+make install
 cd ..
 
 printf "\nControl plane should be up now, let us verify that:\n"
