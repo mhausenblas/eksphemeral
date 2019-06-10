@@ -1,24 +1,39 @@
 # EKSphemeral: The EKS Ephemeral Cluster Manager
 
-> Do not use in production. This is a service for development and test environments. 
+> Do not use in production. This is a service for development and test environments. Also, this is not an official AWS offering but something MH9 cooked up.
 
-A simple Amazon EKS manager for ephemeral dev/test clusters, allowing you to launch an EKS cluster with an automatic tear-down after a given time.
+Managing EKS clusters for dev/test environments manually is boring. You have to wait until they're up and available and have to remember to tear them down again to minimize costs.
 
-EKSphemeral uses, in a nutshell, a AWS Lambda/Amazon S3 combo (as the control plane) and AWS Fargate (as the data plane):
+How about automate these steps? Meet EKSphemeral :)
+
+EKSphemeral is a simple Amazon EKS manager for ephemeral dev/test clusters, allowing you to launch an EKS cluster with an automatic tear-down after a given time.
+
+0. [Architecture](#architecture)
+1. [Install](#install)
+2. [Use](#use)
+   - [Create clusters](#create-clusters)
+   - [List clusters](#list-clusters)
+3. [Uninstall](#uninstall)
+4. [Development](#development)
+
+## Architecture
+
+EKSphemeral has a control plane implemented in an AWS Lambda/Amazon S3 combo, and as its data plane it is using [eksctl](https://eksctl.io) running in AWS Fargate. There are four scripts, `eksp-*.sh` allowing you to install/uninstall EKSphemeral and to create and query clusters. Overall, the architecture looks as follows:  
 
 ![EKSphemeral architecture](img/architecture.png)
 
 1. The `eksp-up.sh` script provisions EKSphemeral's control plane (Lambda+S3). This is a one-time action, think of it as installing EKSphemeral in your AWS environment.
-1. Whenever you want to provision a throwaway EKS cluster, use `eksp-create.sh`. It will do two things: 
-1. Provision the cluster using [eksctl](https://eksctl.io) running in Fargate (what we call the EKSphemeral data plane), and when that is completed,
-1. Create an cluster spec entry in S3, via the `/create` endpoint of EKSphemeral's HTTP API.
-1. Once that is done, you can use `eksp-list.sh` to list all managed clusters or, should you wish to gather more information on a specific cluster, use `eksp-list.sh $CLUSTERID` to retrieve it. This script uses the `/status` endpoint of EKSphemeral's HTTP API.
-1. Every 5 minutes, there is a CloudWatch event that triggers the execution of another Lambda function called `DestroyClusterFunc`, which notifies the owners of clusters that are about to expire (send an email up to 5 minutes before the cluster is destroyed), and when the time comes, it tears the cluster down. 
-1. Last but not least, if you want to get rid of EKSphemeral, use the `eksp-down.sh` script, removing all cluster specs in the S3 bucket and deleting all three Lambda functions.
+2. Whenever you want to provision a throwaway EKS cluster, use `eksp-create.sh`. It will do two things: 
+3. Provision the cluster using `eksctl` running in Fargate (what we call the EKSphemeral data plane), and when that is completed,
+4. Create an cluster spec entry in S3, via the `/create` endpoint of EKSphemeral's HTTP API.
+5. Once that is done, you can use `eksp-list.sh` to list all managed clusters or, should you wish to gather more information on a specific cluster, use `eksp-list.sh $CLUSTERID` to retrieve it. This script uses the `/status` endpoint of EKSphemeral's HTTP API.
+6. Every 5 minutes, there is a CloudWatch event that triggers the execution of another Lambda function called `DestroyClusterFunc`, which notifies the owners of clusters that are about to expire (send an email up to 5 minutes before the cluster is destroyed), and when the time comes, it tears the cluster down. 
+7. Last but not least, if you want to get rid of EKSphemeral, use the `eksp-down.sh` script, removing all cluster specs in the S3 bucket and deleting all three Lambda functions.
 
 If you like, you can have a look at a [4 min video walkthrough](https://www.youtube.com/watch?v=2A8olhYL9iI), before you try it out yourself. Since the minimal time for an end-to-end provisioning and usage cycle is ca. 40min, the video walkthrough is showing a 1:10 time compression, roughly.
 
 If you want to try it out yourself, follow the steps below.
+
 
 ## Install
 
