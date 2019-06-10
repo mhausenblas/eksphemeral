@@ -1,5 +1,5 @@
 EKSPHEMERAL_STACK_NAME?=eksp
-EKSPHEMERAL_SVC_BUCKET?=eksp-svc
+EKSPHEMERAL_SVC_BUCKET?=eks-svc
 EKSPHEMERAL_CLUSTERMETA_BUCKET?=eks-cluster-meta
 
 .PHONY: deps clean deploy destroy status
