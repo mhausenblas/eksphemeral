@@ -28,5 +28,7 @@ PROLONG_TIME=${2}
 
 EKSPHEMERAL_URL=$(aws cloudformation describe-stacks --stack-name eksp | jq '.Stacks[].Outputs[] | select(.OutputKey=="EKSphemeralAPIEndpoint").OutputValue' -r)
 
+printf "\nTrying to set the TTL of cluster %s to %s minutes, starting now\n" $CLUSTER_ID $PROLONG_TIME
+
 curl -s --request POST "$EKSPHEMERAL_URL/prolong/$CLUSTER_ID/$PROLONG_TIME"
 

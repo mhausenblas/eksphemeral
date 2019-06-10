@@ -107,7 +107,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	if err != nil {
 		return serverError(err)
 	}
-	clusterspec.Timeout += timeInMin
+	clusterspec.Timeout = timeInMin
 	err = storeClusterSpec(clusterbucket, cID, clusterspec)
 	if err != nil {
 		return serverError(err)
