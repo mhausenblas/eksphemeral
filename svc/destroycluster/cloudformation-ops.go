@@ -65,7 +65,7 @@ func lookupStack(clustername string) (string, string, error) {
 			}
 		}
 	}
-	fmt.Printf("DEBUG:: found control plane stack %v and data plane stack %v for cluster %v\n", cpstack, dpstack, clustername)
+	fmt.Printf("DEBUG:: found control plane stack [%v] and data plane stack [%v] for cluster %v\n", cpstack, dpstack, clustername)
 	return cpstack, dpstack, nil
 }
 
