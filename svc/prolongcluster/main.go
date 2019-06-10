@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	_ "image/jpeg"
@@ -9,6 +10,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -68,6 +70,27 @@ func fetchClusterSpec(bucket, clusterid string) (ClusterSpec, error) {
 	return cs, nil
 }
 
+// getClusterAge returns the age of the cluster,
+// that is, the last modified field of the JSON file
+// that contains the cluster spec.
+func getClusterAge(bucket, clusterid string) (time.Duration, error) {
+	cfg, err := external.LoadDefaultAWSConfig()
+	if err != nil {
+		return 0, err
+	}
+	svc := s3.New(cfg)
+	req := svc.GetObjectRequest(&s3.GetObjectInput{
+		Bucket: aws.String(bucket),
+		Key:    aws.String(clusterid + ".json"),
+	})
+	resp, err := req.Send(context.Background())
+	if err != nil {
+		return 0, err
+	}
+	clusterage := time.Since(&resp.LastModified)
+	return clusterage, nil
+}
+
 // storeClusterSpec stores the cluster spec
 // in a given bucket, with a given cluster ID
 func storeClusterSpec(bucket, clusterid string, cs ClusterSpec) error {
@@ -107,7 +130,11 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	if err != nil {
 		return serverError(err)
 	}
-	clusterspec.Timeout = timeInMin
+	age, err := getClusterAge(clusterbucket, cID)
+	if err != nil {
+		return serverError(err)
+	}
+	clusterspec.Timeout = age + timeInMin
 	err = storeClusterSpec(clusterbucket, cID, clusterspec)
 	if err != nil {
 		return serverError(err)

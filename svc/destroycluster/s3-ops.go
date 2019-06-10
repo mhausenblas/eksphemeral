@@ -42,7 +42,6 @@ func rmClusterSpec(bucket, clusterid string) error {
 	if err != nil {
 		return err
 	}
-	// Create S3 service client
 	svc := s3.New(cfg)
 	req := svc.DeleteObjectRequest(&s3.DeleteObjectInput{
 		Bucket: aws.String(bucket),
