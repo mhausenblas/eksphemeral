@@ -19,11 +19,10 @@ func deleteStack(name string) error {
 	}
 	svc := cloudformation.New(cfg)
 	dsreq := svc.DeleteStackRequest(&cloudformation.DeleteStackInput{StackName: aws.String(name)})
-	resp, err := dsreq.Send(context.TODO())
+	_, err = dsreq.Send(context.TODO())
 	if err != nil {
 		return err
 	}
-	fmt.Printf("DEBUG:: stack deletion result: %v\n", resp.String())
 	return nil
 }
 
