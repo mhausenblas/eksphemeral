@@ -91,7 +91,7 @@ func handler() error {
 			case dpstack == "" && cpstack == "":
 				rmClusterSpec(clusterbucket, clusterID)
 			default:
-				fmt.Printf("DEBUG:: seems both control and data plane stacks and all cluster metadata have been deleted, so this would be a NOP. \o/\n")
+				fmt.Printf("DEBUG:: seems both control and data plane stacks and all cluster metadata have been deleted, so this would be a NOP.\n")
 			}
 		case clusterage > headsuptime:
 			if cs.Owner != "" {
