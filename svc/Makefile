@@ -2,6 +2,8 @@ EKSPHEMERAL_STACK_NAME?=eksp
 EKSPHEMERAL_SVC_BUCKET?=eks-svc
 EKSPHEMERAL_CLUSTERMETA_BUCKET?=eks-cluster-meta
 
+release_version := v0.1.0
+
 .PHONY: deps clean build up downloadbin deploy destroy status
 
 deps:
@@ -23,10 +25,10 @@ up:
 
 downloadbin:
 	mkdir -p bin
-	curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.1.0/createcluster -o bin/createcluster
-	curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.1.0/destroycluster -o bin/destroycluster
-	curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.1.0/prolongcluster -o bin/prolongcluster
-	curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.1.0/status -o bin/status
+	curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/${release_version}/createcluster -o bin/createcluster
+	curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/${release_version}/destroycluster -o bin/destroycluster
+	curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/${release_version}/prolongcluster -o bin/prolongcluster
+	curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/${release_version}/status -o bin/status
 	chmod +x bin/*
 
 deploy: build up
