@@ -70,6 +70,23 @@ The following assumes that the S3 buckets as outlined above have been set up and
 
 ```sh
 $ ./eksp-up.sh
+Installing the EKSphemeral control plane, this might take a few minutes ...
+mkdir -p bin
+curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.1.0/createcluster -o bin/createcluster
+curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.1.0/destroycluster -o bin/destroycluster
+curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.1.0/prolongcluster -o bin/prolongcluster
+curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.1.0/status -o bin/status
+chmod +x bin/*
+sam package --template-file template.yaml --output-template-file eksp-stack.yaml --s3-bucket eks-svc
+sam deploy --template-file eksp-stack.yaml --stack-name eksp --capabilities CAPABILITY_IAM --parameter-overrides ClusterMetadataBucketName=eks-cluster-meta
+
+Waiting for changeset to be created..
+Waiting for stack create/update to complete
+Successfully created/updated stack - eksp
+
+Control plane should be up now, let us verify that:
+All good, ready to launch ephemeral clusters now using 'eksp-launch.sh' now ...
+Next, use the eksp-create script to launch a throwaway cluster.
 ```
 
 Note that in order to receive mail notifications about cluster creation and destruction (optional feature), you MUST [verify](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html) both source and target email address in the Ireland region.

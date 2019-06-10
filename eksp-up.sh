@@ -19,7 +19,7 @@ CONTROLPLANE_STATUS=$(curl -sL -w "%{http_code}" -o /dev/null "$EKSPHEMERAL_URL/
 
 if [ $CONTROLPLANE_STATUS == "200" ]
 then
-    echo "All good, ready to launch emphemeral clusters now using 'eksp-launch.sh' now ..."
+    echo "All good, ready to launch ephemeral clusters now using 'eksp-launch.sh' now ..."
 else 
     echo "There was an issue setting up the EKSphemeral control plane, check the CloudFormation logs :("
 fi
