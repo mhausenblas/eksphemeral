@@ -85,8 +85,10 @@ Waiting for stack create/update to complete
 Successfully created/updated stack - eksp
 
 Control plane should be up now, let us verify that:
-All good, ready to launch ephemeral clusters now using 'eksp-launch.sh' now ...
-Next, use the eksp-create script to launch a throwaway cluster.
+
+All good, ready to launch ephemeral clusters now using the 'eksp-launch.sh' script
+
+Next, use the 'eksp-create.sh' script to launch a throwaway cluster or 'eksp-list.sh' to view them
 ```
 
 Note that in order to receive mail notifications about cluster creation and destruction (optional feature), you MUST [verify](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html) both source and target email address in the Ireland region.
