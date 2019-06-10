@@ -70,7 +70,32 @@ and deploy the Lambda functions:
 
 ```sh
 $ ./eksp-up.sh
+Installing the EKSphemeral control plane, this might take a few minutes ...
+Using eks-svc as the control plane service code bucket
+Using eks-cluster-meta as the bucket to store cluster
+metadata
+mkdir -p bin
+curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.1.0/createcluster -o bin/createcluster
+curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.1.0/destroycluster -o bin/destroycluster
+curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.1.0/prolongcluster -o bin/prolongcluster
+curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.1.0/status -o bin/status
+chmod +x bin/*
+sam package --template-file template.yaml --output-template-file eksp-stack.yaml --s3-bucket eks-svc
+Uploading to 226fe5d95508b95aa57845beffffc654  18278955 / 18278955.0  (100.00%)
+Successfully packaged artifacts and wrote output template to file eksp-stack.yaml.
+Execute the following command to deploy the packaged template
+aws cloudformation deploy --template-file /Users/hausenbl/go/src/github.com/mhausenblas/eksphemeral/svc/eksp-stack.yaml --stack-name <YOUR STACK NAME>
+sam deploy --template-file eksp-stack.yaml --stack-name eksp --capabilities CAPABILITY_IAM --parameter-overrides ClusterMetadataBucketName="eks-cluster-meta" NotificationFromEmailAddress="hausenbl+eksphemeral@amazon.com"
 
+Waiting for changeset to be created..
+Waiting for stack create/update to complete
+Successfully created/updated stack - eksp
+
+Control plane should be up now, let us verify that:
+
+All good, ready to launch ephemeral clusters now using the 'eksp-launch.sh' script
+
+Next, use the 'eksp-create.sh' script to launch a throwaway cluster or 'eksp-list.sh' to view them
 ```
 
 Now, let's check if there are already clusters are managed by EKSphemeral:
