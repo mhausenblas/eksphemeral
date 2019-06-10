@@ -64,8 +64,6 @@ $ aws s3api create-bucket \
       --region us-east-2
 ```
 
-hat one must verify both source and target email address in region, see https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html
-
 Now that we have the S3 buckets set up, let's move on to the service code.
 
 The following assumes that the S3 buckets as outlined above have been set up and you have access to AWS configured, locally.
@@ -73,6 +71,8 @@ The following assumes that the S3 buckets as outlined above have been set up and
 ```sh
 $ ./eksp-up.sh
 ```
+
+Note that in order to receive mail notifications about cluster creation and destruction (optional feature), you MUST [verify](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html) both source and target email address in the Ireland region.
 
 Now, let's check if there are already clusters are managed by EKSphemeral:
 
