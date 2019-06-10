@@ -29,9 +29,10 @@ EKSphemeral has a control plane implemented in an AWS Lambda/Amazon S3 combo, an
 4. Create an cluster spec entry in S3, via the `/create` endpoint of EKSphemeral's HTTP API.
 5. Once that is done, you can use `eksp-list.sh` to list all managed clusters or, should you wish to gather more information on a specific cluster, use `eksp-list.sh $CLUSTERID` to retrieve it. This script uses the `/status` endpoint of EKSphemeral's HTTP API.
 6. Every 5 minutes, there is a CloudWatch event that triggers the execution of another Lambda function called `DestroyClusterFunc`, which notifies the owners of clusters that are about to expire (send an email up to 5 minutes before the cluster is destroyed), and when the time comes, it tears the cluster down. 
-7. Last but not least, if you want to get rid of EKSphemeral, use the `eksp-down.sh` script, removing all cluster specs in the S3 bucket and deleting all three Lambda functions.
+7. Last but not least, if you want to get rid of EKSphemeral, use the `eksp-down.sh` script, removing all cluster specs in the S3 bucket and deleting all Lambda functions.
 
-If you like, you can have a look at a [4 min video walkthrough](https://www.youtube.com/watch?v=2A8olhYL9iI), before you try it out yourself. Since the minimal time for an end-to-end provisioning and usage cycle is ca. 40min, the video walkthrough is showing a 1:10 time compression, roughly.
+If you like, you can have a look at a [4 min video walkthrough](https://www.youtube.com/watch?v=2A8olhYL9iI), before you try it out yourself.
+Since the minimal time for an end-to-end provisioning and usage cycle is ca. 40min, the video walkthrough is showing a 1:10 time compression, roughly.
 
 If you want to try it out yourself, follow the steps below.
 
@@ -64,49 +65,12 @@ both the source email, that is, the address you provide in `EKSPHEMERAL_EMAIL_FR
 target email address (in the `owner` field of the cluster spec, see below for details) in the 
 [EU (Ireland)](https://docs.aws.amazon.com/general/latest/gr/rande.html) `eu-west-1` region. 
 
-Now, create the S3 bucket for the Lambda functions like so:
-
-```sh
-$ aws s3api create-bucket \
-      --bucket $EKSPHEMERAL_SVC_BUCKET \
-      --create-bucket-configuration LocationConstraint=us-east-2 \
-      --region us-east-2
-```
-
-Create the S3 bucket for the cluster metadata like so:
-
-```sh
-$ aws s3api create-bucket \
-      --bucket $EKSPHEMERAL_CLUSTERMETA_BUCKET \
-      --create-bucket-configuration LocationConstraint=us-east-2 \
-      --region us-east-2
-```
-
-Now that we have the S3 buckets set up, let's move on to the service code.
-
-The following assumes that the S3 buckets as outlined above have been set up and you have access to AWS configured, locally.
+Now we're in the position to install the EKSphemeral control plane, that is, to create S3 buckets if they don't exist yet 
+and deploy the Lambda functions:
 
 ```sh
 $ ./eksp-up.sh
-Installing the EKSphemeral control plane, this might take a few minutes ...
-mkdir -p bin
-curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.1.0/createcluster -o bin/createcluster
-curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.1.0/destroycluster -o bin/destroycluster
-curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.1.0/prolongcluster -o bin/prolongcluster
-curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.1.0/status -o bin/status
-chmod +x bin/*
-sam package --template-file template.yaml --output-template-file eksp-stack.yaml --s3-bucket eks-svc
-sam deploy --template-file eksp-stack.yaml --stack-name eksp --capabilities CAPABILITY_IAM --parameter-overrides ClusterMetadataBucketName=eks-cluster-meta
 
-Waiting for changeset to be created..
-Waiting for stack create/update to complete
-Successfully created/updated stack - eksp
-
-Control plane should be up now, let us verify that:
-
-All good, ready to launch ephemeral clusters now using the 'eksp-launch.sh' script
-
-Next, use the 'eksp-create.sh' script to launch a throwaway cluster or 'eksp-list.sh' to view them
 ```
 
 Now, let's check if there are already clusters are managed by EKSphemeral:

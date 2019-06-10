@@ -7,6 +7,33 @@ set -o pipefail
 
 printf "Installing the EKSphemeral control plane, this might take a few minutes ...\n"
 
+###############################################################################
+### S3 BUCKET OPERATIONS
+
+if [[ -z $(aws s3api head-bucket --bucket $EKSPHEMERAL_SVC_BUCKET) ]]; then
+    echo "Using $EKSPHEMERAL_SVC_BUCKET as the control plane service code bucket"
+else
+    aws s3api create-bucket \
+      --bucket $EKSPHEMERAL_SVC_BUCKET \
+      --create-bucket-configuration LocationConstraint=$(aws configure get region) \
+      --region $(aws configure get region)
+    echo "Created $EKSPHEMERAL_SVC_BUCKET and using it as the control plane service code bucket"
+fi
+
+if [[ -z $(aws s3api head-bucket --bucket $EKSPHEMERAL_CLUSTERMETA_BUCKET) ]]; then
+    echo "Using $EKSPHEMERAL_CLUSTERMETA_BUCKET as the bucket to store cluster 
+metadata"
+else
+    aws s3api create-bucket \
+      --bucket $EKSPHEMERAL_CLUSTERMETA_BUCKET \
+      --create-bucket-configuration LocationConstraint=$(aws configure get region) \
+      --region $(aws configure get region)
+    echo "Created $EKSPHEMERAL_CLUSTERMETA_BUCKET and using it as the bucket to store cluster metadata"
+fi
+
+###############################################################################
+### INSTALL CONTROL PLANE
+
 cd svc
 make install
 cd ..
