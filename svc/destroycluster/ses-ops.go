@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"os"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -15,8 +16,10 @@ import (
 func informOwner(tomail, subject, body string) error {
 	// get the source email address from env provided by user at install time:
 	srcmailaddress := os.Getenv("NOTIFICATION_EMAIL_ADDRESS")
+	fmt.Printf("DEBUG:: got source email address from env: [%v]\n", srcmailaddress)
 	// if no source email address provided this is a NOP:
 	if srcmailaddress == "" {
+		fmt.Println("DEBUG:: no source email address set, so no notification sent")
 		return nil
 	}
 	cfg, err := external.LoadDefaultAWSConfig()

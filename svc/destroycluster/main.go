@@ -95,7 +95,7 @@ func handler() error {
 			}
 		case clusterage > headsuptime:
 			if cs.Owner != "" {
-				fmt.Printf("Sending owner %v a warning concerning tear down of cluster %v\n", cs.Owner, clusterID)
+				fmt.Printf("Attempting to send owner %v a warning concerning tear down of cluster %v\n", cs.Owner, clusterID)
 				subject := fmt.Sprintf("EKS cluster %v shutting down in 5 min", cs.Name)
 				body := fmt.Sprintf("Hello there,\n\nThis is to inform you that your EKS cluster %v (cluster ID %v) will shut down and all associated resources destroyed within the next few minutes.\n\nHave a nice day,\nEKSphemeral", cs.Name, clusterID)
 				err := informOwner(cs.Owner, subject, body)
