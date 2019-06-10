@@ -5,6 +5,16 @@ set -o errtrace
 set -o nounset
 set -o pipefail
 
+###############################################################################
+### PRE-FLIGHT CHECK
+
+if aws cloudformation describe-stacks --stack-name eksp > /dev/null 2>&1
+then
+    EKSPHEMERAL_URL=$(aws cloudformation describe-stacks --stack-name eksp | jq '.Stacks[].Outputs[] | select(.OutputKey=="EKSphemeralAPIEndpoint").OutputValue' -r)
+    printf "Pre-flight check failed: the control plane is already up and available at %s\n... are you trying to install it again?" $EKSPHEMERAL_URL >&2
+    exit 1
+fi
+
 printf "Installing the EKSphemeral control plane, this might take a few minutes ...\n"
 
 ###############################################################################
