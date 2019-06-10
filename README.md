@@ -38,16 +38,33 @@ If you want to try it out yourself, follow the steps below.
 
 ## Install
 
-In order to use EKSphemeral, clone this repo, and make sure you've got `jq`, the `aws` CLI and the [Fargate CLI](https://somanymachines.com/fargate/) installed.
+In order to use EKSphemeral, clone this repo, and make sure you've got `jq`, the `aws` CLI 
+and the [Fargate CLI](https://somanymachines.com/fargate/) installed.
 
-Make sure to set the respective environment variables before you proceed. This is so that the install process knows which S3 bucket to use for the control plane's Lambda functions (`EKSPHEMERAL_SVC_BUCKET`) and where to put the cluster metadata (`EKSPHEMERAL_CLUSTERMETA_BUCKET`):
+Make sure to set the respective environment variables before you proceed. 
+This is so that the install process knows which S3 bucket to use for the control 
+plane's Lambda functions (`EKSPHEMERAL_SVC_BUCKET`) and where to put the cluster 
+metadata (`EKSPHEMERAL_CLUSTERMETA_BUCKET`):
 
 ```sh
 $ export EKSPHEMERAL_SVC_BUCKET=eks-svc
 $ export EKSPHEMERAL_CLUSTERMETA_BUCKET=eks-cluster-meta
 ```
 
-Create the S3 bucket for the Lambda functions like so:
+Optionally, in order to receive email notifications about cluster creation and destruction,
+you need to set the following environment variable: 
+
+```sh
+$ export EKSPHEMERAL_EMAIL_FROM=hausenbl+eksphemeral@amazon.com
+```
+
+Note, that you in addition to set the `EKSPHEMERAL_EMAIL_FROM` environment variable, you
+MUST [verify](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html) 
+both the source email, that is, the address you provide in `EKSPHEMERAL_EMAIL_FROM` as well as the
+target email address (in the `owner` field of the cluster spec, see below for details) in the 
+[EU (Ireland)](https://docs.aws.amazon.com/general/latest/gr/rande.html) `eu-west-1` region. 
+
+Now, create the S3 bucket for the Lambda functions like so:
 
 ```sh
 $ aws s3api create-bucket \
@@ -91,8 +108,6 @@ All good, ready to launch ephemeral clusters now using the 'eksp-launch.sh' scri
 
 Next, use the 'eksp-create.sh' script to launch a throwaway cluster or 'eksp-list.sh' to view them
 ```
-
-Note that in order to receive mail notifications about cluster creation and destruction (optional feature), you MUST [verify](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html) both source and target email address in the Ireland region.
 
 Now, let's check if there are already clusters are managed by EKSphemeral:
 

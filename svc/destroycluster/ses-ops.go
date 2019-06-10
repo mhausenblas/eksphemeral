@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"os"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
@@ -12,6 +13,12 @@ import (
 // which can be used to give them heads-up about
 // an upcoming tear down, for example.
 func informOwner(tomail, subject, body string) error {
+	// get the source email address from env provided by user at install time:
+	srcmailaddress := os.Getenv("NOTIFICATION_EMAIL_ADDRESS")
+	// if no source email address provided this is a NOP:
+	if srcmailaddress == "" {
+		return nil
+	}
 	cfg, err := external.LoadDefaultAWSConfig()
 	if err != nil {
 		return err
@@ -33,7 +40,7 @@ func informOwner(tomail, subject, body string) error {
 				Data:    aws.String(subject),
 			},
 		},
-		Source: aws.String("hausenbl+eksphemeral@amazon.com"),
+		Source: &srcmailaddress,
 	})
 	_, err = req.Send(context.Background())
 	if err != nil {
