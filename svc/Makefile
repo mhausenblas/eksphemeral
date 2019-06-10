@@ -35,7 +35,7 @@ deploy: build up
 
 install: downloadbin up
 
-destroy: 
+destroy: clean
 	aws s3 rm s3://${EKSPHEMERAL_CLUSTERMETA_BUCKET} --recursive
 	aws cloudformation delete-stack --stack-name ${EKSPHEMERAL_STACK_NAME}
 
