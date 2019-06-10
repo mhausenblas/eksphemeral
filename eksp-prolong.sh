@@ -21,7 +21,7 @@ then
 fi
 
 CLUSTER_ID=${1}
-PROLONG_TIME${2}
+PROLONG_TIME=${2}
 
 ###############################################################################
 ### PROLONG TTL OF AN ACTIVE CLUSTER

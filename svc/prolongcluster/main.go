@@ -99,7 +99,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	// validate time to prolong cluster TTL:
 	timeInMinParam := request.PathParameters["timeinmin"]
 	timeInMin, err := strconv.Atoi(timeInMinParam)
-	if err == nil {
+	if err != nil {
 		return serverError(fmt.Errorf("Invalid prolong request, please specify the time in minutes as a plain integer."))
 	}
 	fmt.Printf("DEBUG:: updating cluster with ID %v start\n", cID)
@@ -114,7 +114,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	}
 	fmt.Printf("DEBUG:: updating cluster done\n")
 	fmt.Printf("DEBUG:: prolong done\n")
-	successmsg := fmt.Sprintf("Successfully prolonged the live time of cluster %v for  %v minutes. Have a nice day!", cID, timeInMin)
+	successmsg := fmt.Sprintf("Successfully prolonged the lifetime of cluster %v for %v minutes.", cID, timeInMin)
 	return events.APIGatewayProxyResponse{
 		StatusCode: http.StatusOK,
 		Headers: map[string]string{

@@ -111,7 +111,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: bin/
-      Handler: prolong
+      Handler: prolongcluster
       Runtime: go1.x
       Tracing: Active
       Environment:
