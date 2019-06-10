@@ -93,9 +93,7 @@ Successfully created/updated stack - eksp
 
 Control plane should be up now, let us verify that:
 
-All good, ready to launch ephemeral clusters now using the 'eksp-launch.sh' script
-
-Next, use the 'eksp-create.sh' script to launch a throwaway cluster or 'eksp-list.sh' to view them
+All good, ready to launch ephemeral clusters now using the 'eksp-create.sh' script or 'eksp-list.sh' to view them
 ```
 
 Now, let's check if there are already clusters are managed by EKSphemeral:
