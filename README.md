@@ -1,12 +1,17 @@
 # EKSphemeral: The EKS Ephemeral Cluster Manager
 
-> Do not use in production. This is a service for development and test environments. Also, this is not an official AWS offering but something MH9 cooked up.
+> Do not use in production. This is a service for development and test environments.
+> Also, this is not an official AWS offering but something I cooked up, so use at your own risk.
 
-Managing EKS clusters for dev/test environments manually is boring. You have to wait until they're up and available and have to remember to tear them down again to minimize costs.
+Managing EKS clusters for dev/test environments manually is boring. 
+You have to wait until they're up and available and have to remember 
+to tear them down again to minimize costs.
 
 How about automate these steps? Meet EKSphemeral :)
 
-EKSphemeral is a simple Amazon EKS manager for ephemeral dev/test clusters, allowing you to launch an EKS cluster with an automatic tear-down after a given time.
+EKSphemeral is a simple Amazon EKS manager for ephemeral dev/test clusters,
+ allowing you to launch EKS clusters that auto-tear down after a time period,
+ and you can also prolong their lifetime if you want to continue to use them.
 
 0. [Architecture](#architecture)
 1. [Install](#install)
