@@ -9,12 +9,11 @@ set -o pipefail
 ### USER-DEFINED GLOBAL CONSTANTS
 
 DEFAULT_K8S_VERSION=1.12
+EKSCTL_IMAGE=base
 
 if [[ ! -z "$EKSPHEMERAL_EKSCTL_IMG" ]]
 then
-  EKSCTL_IMAGE=base
-else
-  EKSCTL_IMAGE=deluxe
+  EKSCTL_IMAGE=$EKSPHEMERAL_EKSCTL_IMG
 fi
 
 ###############################################################################
