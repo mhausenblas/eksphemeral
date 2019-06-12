@@ -17,4 +17,4 @@ printf "\nTear-down will complete within some 5 min. You can check the status ma
 # TBD: delete all objects in the eks-cluster-meta bucket
 # TBD: Fargate clean-up
 
-printf "\n\nThanks for using EKSphemeral and hope to see ya soon ;)\n"
+printf "\nThanks for using EKSphemeral and hope to see ya soon ;)\n"

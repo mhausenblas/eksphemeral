@@ -97,7 +97,7 @@ fi
 
 if ! aws cloudformation describe-stacks --stack-name eksp > /dev/null 2>&1
 then
-  echo "Pre-flight check failed: the control plane seems not to be up, are you sure you executed eksp-up.sh already?" >&2
+  echo "Pre-flight check failed: the control plane seems not to be up, are you sure you installed EKSphemeral?" >&2
   exit 1
 fi
 
