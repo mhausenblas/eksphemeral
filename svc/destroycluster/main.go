@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -35,6 +36,11 @@ type ClusterSpec struct {
 	TTL int `json:"ttl"`
 	// Owner specifies the email address of the owner (will be notified when cluster is created and 5 min before destruction)
 	Owner string `json:"owner"`
+	// CreationTime is the UTC timestamp of when the cluster was created
+	// which equals the point in time of the creation of the respective
+	// JSON representation of the cluster spec as an object in the metadata
+	// bucket
+	CreationTime string `json:"created"`
 }
 
 func updateTTL(clusterbucket string, cs ClusterSpec) error {
@@ -53,6 +59,16 @@ func updateTTL(clusterbucket string, cs ClusterSpec) error {
 		Body:   strings.NewReader(string(csjson)),
 	})
 	return err
+}
+
+// getClusterAge returns the age of the cluster
+func getClusterAge(cs ClusterSpec) (time.Duration, error) {
+	ct, err := strconv.ParseInt(cs.CreationTime, 10, 64)
+	if err != nil {
+		return 0 * time.Minute, err
+	}
+	clusterage := time.Since(time.Unix(ct, 0))
+	return clusterage, nil
 }
 
 func handler() error {
@@ -75,9 +91,12 @@ func handler() error {
 	for _, obj := range resp.Contents {
 		fn := *obj.Key
 		clusterID := strings.TrimSuffix(fn, ".json")
-		ts := obj.LastModified
-		clusterage := time.Since(*ts)
 		cs, err := fetchClusterSpec(clusterbucket, clusterID)
+		clusterage, err := getClusterAge(cs)
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
 		ttl := time.Duration(cs.Timeout) * time.Minute
 		headsuptime := ttl - 5*time.Minute
 		fmt.Printf("DEBUG:: checking TTL of cluster %v:\n", clusterID)

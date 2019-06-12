@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	uuid "github.com/satori/go.uuid"
 
@@ -36,6 +37,11 @@ type ClusterSpec struct {
 	TTL int `json:"ttl"`
 	// Owner specifies the email address of the owner (will be notified when cluster is created and 5 min before destruction)
 	Owner string `json:"owner"`
+	// CreationTime is the UTC timestamp of when the cluster was created
+	// which equals the point in time of the creation of the respective
+	// JSON representation of the cluster spec as an object in the metadata
+	// bucket
+	CreationTime string `json:"created"`
 }
 
 func upload(region, bucket, jsonfilename, content string) error {
@@ -69,13 +75,14 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	fmt.Println("DEBUG:: create start")
 	// parse params:
 	cs := ClusterSpec{
-		ID:          "",
-		Name:        "unknown",
-		NumWorkers:  1,
-		KubeVersion: "1.12",
-		Timeout:     10,
-		TTL:         10,
-		Owner:       "nobody@example.com",
+		ID:           "",
+		Name:         "unknown",
+		NumWorkers:   1,
+		KubeVersion:  "1.12",
+		Timeout:      10,
+		TTL:          10,
+		Owner:        "nobody@example.com",
+		CreationTime: fmt.Sprintf("%v", time.Now().Unix()),
 	}
 	// Unmarshal the JSON payload in the POST:
 	err := json.Unmarshal([]byte(request.Body), &cs)

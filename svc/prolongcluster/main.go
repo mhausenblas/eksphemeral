@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	_ "image/jpeg"
@@ -40,6 +39,11 @@ type ClusterSpec struct {
 	TTL int `json:"ttl"`
 	// Owner specifies the email address of the owner (will be notified when cluster is created and 5 min before destruction)
 	Owner string `json:"owner"`
+	// CreationTime is the UTC timestamp of when the cluster was created
+	// which equals the point in time of the creation of the respective
+	// JSON representation of the cluster spec as an object in the metadata
+	// bucket
+	CreationTime string `json:"created"`
 }
 
 func serverError(err error) (events.APIGatewayProxyResponse, error) {
@@ -77,24 +81,13 @@ func fetchClusterSpec(bucket, clusterid string) (ClusterSpec, error) {
 	return cs, nil
 }
 
-// getClusterAge returns the age of the cluster,
-// that is, the last modified field of the JSON file
-// that contains the cluster spec.
-func getClusterAge(bucket, clusterid string) (time.Duration, error) {
-	cfg, err := external.LoadDefaultAWSConfig()
+// getClusterAge returns the age of the cluster
+func getClusterAge(cs ClusterSpec) (time.Duration, error) {
+	ct, err := strconv.ParseInt(cs.CreationTime, 10, 64)
 	if err != nil {
-		return 0, err
+		return 0 * time.Minute, err
 	}
-	svc := s3.New(cfg)
-	req := svc.GetObjectRequest(&s3.GetObjectInput{
-		Bucket: aws.String(bucket),
-		Key:    aws.String(clusterid + ".json"),
-	})
-	resp, err := req.Send(context.Background())
-	if err != nil {
-		return 0, err
-	}
-	clusterage := time.Since(*resp.LastModified)
+	clusterage := time.Since(time.Unix(ct, 0))
 	return clusterage, nil
 }
 
@@ -133,24 +126,24 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		return serverError(fmt.Errorf("Invalid prolong request, please specify the time in minutes as a plain integer."))
 	}
 	fmt.Printf("DEBUG:: updating cluster with ID %v start\n", cID)
-	clusterspec, err := fetchClusterSpec(clusterbucket, cID)
+	cs, err := fetchClusterSpec(clusterbucket, cID)
 	if err != nil {
 		return serverError(err)
 	}
-	age, err := getClusterAge(clusterbucket, cID)
+	age, err := getClusterAge(cs)
 	if err != nil {
 		return serverError(err)
 	}
 	fmt.Printf("DEBUG:: cluster is %v old\n", age)
-	clusterspec.Timeout = clusterspec.Timeout - int(age.Minutes()) + timeInMin
-	fmt.Printf("DEBUG:: new TTL is %v min starting now\n", clusterspec.Timeout)
-	err = storeClusterSpec(clusterbucket, clusterspec)
+	cs.Timeout = cs.Timeout - int(age.Minutes()) + timeInMin
+	fmt.Printf("DEBUG:: new TTL is %v min starting now\n", cs.Timeout)
+	err = storeClusterSpec(clusterbucket, cs)
 	if err != nil {
 		return serverError(err)
 	}
 	fmt.Printf("DEBUG:: updating cluster done\n")
 	fmt.Printf("DEBUG:: prolong done\n")
-	successmsg := fmt.Sprintf("Successfully prolonged the lifetime of cluster %v for %v minutes. New TTL is %v min starting now!", cID, timeInMin, clusterspec.Timeout)
+	successmsg := fmt.Sprintf("Successfully prolonged the lifetime of cluster %v for %v minutes. New TTL is %v min starting now!", cID, timeInMin, cs.Timeout)
 	return events.APIGatewayProxyResponse{
 		StatusCode: http.StatusOK,
 		Headers: map[string]string{

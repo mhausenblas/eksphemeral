@@ -31,6 +31,11 @@ type ClusterSpec struct {
 	TTL int `json:"ttl"`
 	// Owner specifies the email address of the owner (will be notified when cluster is created and 5 min before destruction)
 	Owner string `json:"owner"`
+	// CreationTime is the UTC timestamp of when the cluster was created
+	// which equals the point in time of the creation of the respective
+	// JSON representation of the cluster spec as an object in the metadata
+	// bucket
+	CreationTime string `json:"created"`
 }
 
 var Version string
