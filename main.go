@@ -2,12 +2,10 @@ package main
 
 import (
 	"bufio"
-	"bytes"
 	"fmt"
 	"io"
 	"os"
 	"os/exec"
-	"strings"
 )
 
 var Version string
@@ -16,7 +14,7 @@ func main() {
 	if len(os.Args) <= 1 {
 		pinfo(fmt.Sprintf("This is EKSphemeral in version %v", Version))
 		perr("Please specify one of the following commands: install, uninstall, create, list, or prolong", nil)
-		os.Exit(-1)
+		os.Exit(1)
 	}
 	cmd := os.Args[1]
 	switch cmd {
@@ -32,7 +30,7 @@ func main() {
 			pinfo("... using cluster spec " + os.Args[2])
 			if _, err := os.Stat(os.Args[2]); os.IsNotExist(err) {
 				perr("Can't create a cluster due to invalid spec:", err)
-				os.Exit(-1)
+				os.Exit(2)
 			}
 			shellout("./eksp-create.sh", os.Args[2])
 			break
@@ -50,7 +48,7 @@ func main() {
 	case "prolong", "p":
 		if len(os.Args) < 4 {
 			perr("Can't prolong cluster lifetime without both the cluster ID and the time in minutes provided", nil)
-			os.Exit(-1)
+			os.Exit(3)
 		}
 		cID := os.Args[2]
 		prolongFor := os.Args[3]
@@ -61,44 +59,38 @@ func main() {
 }
 
 // shellout shells out to execute a command with a variable number
-// of arguments and returns the literal result. Optionally, you can
-// including stderr output and echoing the command when verbose is true.
-func shelloutold(withstderr, verbose bool, cmd string, args ...string) (result string, err error) {
-	var out bytes.Buffer
-	if verbose {
-		pinfo(cmd + " " + strings.Join(args, " "))
-	}
-	c := exec.Command(cmd, args...)
-	c.Env = os.Environ()
-	if withstderr {
-		c.Stderr = os.Stderr
-	}
-	c.Stdout = &out
-	err = c.Run()
-	if err != nil {
-		return "", err
-	}
-	result = strings.TrimSpace(out.String())
-	return result, nil
-}
-
+// of arguments and prints the literal results from both stdout and stderr
 func shellout(command string, args ...string) {
 	cmd := exec.Command(command, args...)
 	cmd.Env = os.Environ()
-	stderr, _ := cmd.StderrPipe()
-	stdout, _ := cmd.StdoutPipe()
-	cmd.Start()
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		perr("Can't shell out due to issues with stderr:", err)
+		return
+	}
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		perr("Can't shell out due to issues with stdout:", err)
+		return
+	}
+	err = cmd.Start()
+	if err != nil {
+		perr("Can't shell out due to issues with starting command:", err)
+		return
+	}
 	go echo(stderr)
 	go echo(stdout)
-	cmd.Wait()
+	err = cmd.Wait()
+	if err != nil {
+		perr("Something bad happened after command completed:", err)
+	}
 }
 
+// echo prints the character stream as a set of lines
 func echo(rc io.ReadCloser) {
 	scanner := bufio.NewScanner(rc)
-	scanner.Split(bufio.ScanWords)
 	for scanner.Scan() {
-		m := scanner.Text()
-		fmt.Print(m)
+		fmt.Println(scanner.Text())
 	}
 }
 
