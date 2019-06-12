@@ -2,11 +2,29 @@ package main
 
 import (
 	"bufio"
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"os"
 	"os/exec"
 )
+
+// ClusterSpec represents the parameters for eksctl,
+// TTL, and ownership of a cluster.
+type ClusterSpec struct {
+	ID string
+	// Name specifies the cluster name
+	Name string `json:"name"`
+	// NumWorkers specifies the number of worker nodes, defaults to 1
+	NumWorkers int `json:"numworkers"`
+	// KubeVersion  specifies the Kubernetes version to use, defaults to `1.12`
+	KubeVersion string `json:"kubeversion"`
+	// Timeout specifies the timeout in minutes, after which the cluster is destroyed, defaults to 10
+	Timeout int `json:"timeout"`
+	// Owner specifies the email address of the owner (will be notified when cluster is created and 5 min before destruction)
+	Owner string `json:"owner"`
+}
 
 var Version string
 
@@ -27,20 +45,24 @@ func main() {
 	case "create", "c":
 		pinfo("Trying to create a new ephemeral cluster ...")
 		if len(os.Args) > 2 {
-			pinfo("... using cluster spec " + os.Args[2])
-			if _, err := os.Stat(os.Args[2]); os.IsNotExist(err) {
+			clusterSpecFile := os.Args[2]
+			pinfo("... using cluster spec " + clusterSpecFile)
+			if _, err := os.Stat(clusterSpecFile); os.IsNotExist(err) {
 				perr("Can't create a cluster due to invalid spec:", err)
 				os.Exit(2)
 			}
-			shellout("./eksp-create.sh", os.Args[2])
+			shellout("./eksp-create.sh", clusterSpecFile)
 			break
 		}
 		// creating cluster with defaults:
 		shellout("./eksp-create.sh", os.Args[2])
 	case "list", "ls", "l":
 		if len(os.Args) > 2 { // we have a cluster ID, try looking up cluster spec
-			clusterSpecFile := os.Args[2]
-			shellout("./eksp-list.sh", clusterSpecFile)
+			cID := os.Args[2]
+			res := bshellout("./eksp-list.sh", cID)
+			cs := parseCS(res)
+			cs.ID = cID
+			fmt.Println(cs)
 			break
 		}
 		// listing all cluster:
@@ -86,12 +108,52 @@ func shellout(command string, args ...string) {
 	}
 }
 
+// bshellout shells out to execute a command with a variable number
+// of arguments in a blocking manner. It returns the combined literal
+// output from both stdout and stderr
+func bshellout(command string, args ...string) string {
+	cmd := exec.Command(command, args...)
+	cmd.Env = os.Environ()
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		perr("Can't shell out due to issues with stderr:", err)
+		return ""
+	}
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		perr("Can't shell out due to issues with stdout:", err)
+		return ""
+	}
+	err = cmd.Start()
+	if err != nil {
+		perr("Can't shell out due to issues with starting command:", err)
+		return ""
+	}
+	go echo(stderr)
+	result := slurp(stdout)
+	err = cmd.Wait()
+	if err != nil {
+		perr("Something bad happened after command completed:", err)
+	}
+	return result
+}
+
 // echo prints the character stream as a set of lines
 func echo(rc io.ReadCloser) {
 	scanner := bufio.NewScanner(rc)
 	for scanner.Scan() {
 		fmt.Println(scanner.Text())
 	}
+}
+
+// slurp collects the character stream into one string
+func slurp(rc io.ReadCloser) string {
+	var buf bytes.Buffer
+	scanner := bufio.NewScanner(rc)
+	for scanner.Scan() {
+		buf.WriteString(scanner.Text())
+	}
+	return buf.String()
 }
 
 // pinfo writes msg in light blue to stderr
@@ -108,4 +170,17 @@ func perr(msg string, err error) {
 		return
 	}
 	_, _ = fmt.Fprintf(os.Stderr, "\x1b[91m%v\x1b[0m\n", msg)
+}
+
+func parseCS(clusterspec string) (cs ClusterSpec) {
+	err := json.Unmarshal([]byte(clusterspec), &cs)
+	if err != nil {
+		perr("Can't render cluster spec due to:", err)
+	}
+	return cs
+}
+
+func (c ClusterSpec) String() string {
+	// return fmt.Sprintf("ID:            %s\nName:          %s\nKubernetes:    v%s\nWorker nodes:  %d\nTimeout:       %d\nOwner:         %s", c.ID, c.Name, c.KubeVersion, c.NumWorkers, c.Timeout, c.Owner)
+	return fmt.Sprintf("ID:\t\t%s\nName:\t\t%s\nKubernetes:\tv%s\nWorker nodes:\t%d\nTimeout:\t%d min\nOwner:\t\t%s", c.ID, c.Name, c.KubeVersion, c.NumWorkers, c.Timeout, c.Owner)
 }
