@@ -93,7 +93,7 @@ printf "I will now provision the EKS cluster %s using AWS Fargate:\n\n" $CLUSTER
 # provision the EKS cluster using containerized eksctl:
 fargate task run eksctl \
           --image quay.io/mhausenblas/eksctl:0.2 \
-          --region us-east-2 \
+          --region $(aws configure get region) \
           --env AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id) \
           --env AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key) \
           --env AWS_DEFAULT_REGION=$(aws configure get region) \
