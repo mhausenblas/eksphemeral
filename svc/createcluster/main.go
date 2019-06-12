@@ -83,7 +83,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		return serverError(err)
 	}
 	fmt.Println("DEBUG:: parsing input cluster spec from HTTP POST payload done")
-	fmt.Printf("Creating %v, a %v cluster with %v nodes for %v minutes which is owned by %v and adding a respective entry to bucket %v\n", ccr.Name, ccr.KubeVersion, ccr.NumWorkers, ccr.Timeout, ccr.Owner, clusterbucket)
+	fmt.Printf("Creating %v, a %v cluster with %v nodes for %v minutes which is owned by %v and adding a respective entry to bucket %v\n", cs.Name, cs.KubeVersion, cs.NumWorkers, cs.Timeout, cs.Owner, clusterbucket)
 	// create unique cluster ID and assign:
 	clusterID, err := uuid.NewV4()
 	if err != nil {
