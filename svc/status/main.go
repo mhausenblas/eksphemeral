@@ -18,6 +18,28 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3/s3manager"
 )
 
+// ClusterSpec represents the parameters for eksctl,
+// as cluster metadata including owner and how long the cluster
+// still has to live.
+type ClusterSpec struct {
+	// ID is a unique identifier for the cluster
+	ID string `json:"id"`
+	// Name specifies the cluster name
+	Name string `json:"name"`
+	// NumWorkers specifies the number of worker nodes, defaults to 1
+	NumWorkers int `json:"numworkers"`
+	// KubeVersion  specifies the Kubernetes version to use, defaults to `1.12`
+	KubeVersion string `json:"kubeversion"`
+	// Timeout specifies the timeout in minutes, after which the cluster
+	// is destroyed, defaults to 10
+	Timeout int `json:"timeout"`
+	// Timeout specifies the cluster time to live in minutes.
+	// In other words: the remaining time the cluster has before it is destroyed
+	TTL int `json:"ttl"`
+	// Owner specifies the email address of the owner (will be notified when cluster is created and 5 min before destruction)
+	Owner string `json:"owner"`
+}
+
 func serverError(err error) (events.APIGatewayProxyResponse, error) {
 	fmt.Println(err.Error())
 	return events.APIGatewayProxyResponse{
@@ -29,22 +51,28 @@ func serverError(err error) (events.APIGatewayProxyResponse, error) {
 	}, nil
 }
 
-// fetchCluster returns the cluster spec of the cluster with given ID
-func fetchCluster(bucket, id string) (string, error) {
+// fetchClusterSpec returns the cluster spec
+// in a given bucket, with a given cluster ID
+func fetchClusterSpec(bucket, clusterid string) (ClusterSpec, error) {
+	cs := ClusterSpec{}
 	cfg, err := external.LoadDefaultAWSConfig()
 	if err != nil {
-		return "", err
+		return cs, err
 	}
 	downloader := s3manager.NewDownloader(cfg)
 	buf := aws.NewWriteAtBuffer([]byte{})
 	_, err = downloader.Download(buf, &s3.GetObjectInput{
 		Bucket: aws.String(bucket),
-		Key:    aws.String(id + ".json"),
+		Key:    aws.String(clusterid + ".json"),
 	})
 	if err != nil {
-		return "", err
+		return cs, err
 	}
-	return string(buf.Bytes()), nil
+	err = json.Unmarshal(buf.Bytes(), &cs)
+	if err != nil {
+		return cs, err
+	}
+	return cs, nil
 }
 
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
@@ -62,7 +90,11 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	// return info on specified cluster if we have an cluster ID in the URL path component:
 	if cID != "*" {
 		fmt.Printf("DEBUG:: cluster info lookup for ID %v start\n", cID)
-		clusterspec, err := fetchCluster(clusterbucket, cID)
+		cs, err := fetchClusterSpec(clusterbucket, cID)
+		if err != nil {
+			return serverError(err)
+		}
+		csjson, err := json.Marshal(cs)
 		if err != nil {
 			return serverError(err)
 		}
@@ -73,27 +105,25 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 				"Content-Type":                "application/json",
 				"Access-Control-Allow-Origin": "*",
 			},
-			Body: clusterspec,
+			Body: string(csjson),
 		}, nil
 	}
 	// if we have no specified cluster ID in the path, list all cluster IDs:
-	fmt.Printf("DEBUG:: S3 bucket listing start\n")
+	fmt.Printf("DEBUG:: list cluster IDs start\n")
+	// list all objects in the bucket:
 	svc := s3.New(cfg)
 	req := svc.ListObjectsRequest(&s3.ListObjectsInput{Bucket: &clusterbucket})
 	resp, err := req.Send(context.TODO())
 	if err != nil {
 		return serverError(err)
 	}
-	fmt.Printf("DEBUG:: S3 bucket listing done\n")
-
-	fmt.Printf("DEBUG:: list cluster IDs start\n")
 	clusterIDs := []string{}
-	// get all objects in the bucket:
+	// get the content of all objects (cluster specs) in the bucket:
 	for _, obj := range resp.Contents {
 		fn := *obj.Key
 		clusterIDs = append(clusterIDs, strings.TrimSuffix(fn, ".json"))
 	}
-	js, err := json.Marshal(clusterIDs)
+	clusteridsjson, err := json.Marshal(clusterIDs)
 	if err != nil {
 		return serverError(err)
 	}
@@ -106,7 +136,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 			"Content-Type":                "application/json",
 			"Access-Control-Allow-Origin": "*",
 		},
-		Body: string(js),
+		Body: string(clusteridsjson),
 	}, nil
 }
 

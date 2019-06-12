@@ -21,16 +21,23 @@ import (
 )
 
 // ClusterSpec represents the parameters for eksctl,
-// TTL, and ownership of a cluster.
+// as cluster metadata including owner and how long the cluster
+// still has to live.
 type ClusterSpec struct {
+	// ID is a unique identifier for the cluster
+	ID string `json:"id"`
 	// Name specifies the cluster name
 	Name string `json:"name"`
 	// NumWorkers specifies the number of worker nodes, defaults to 1
 	NumWorkers int `json:"numworkers"`
 	// KubeVersion  specifies the Kubernetes version to use, defaults to `1.12`
 	KubeVersion string `json:"kubeversion"`
-	// Timeout specifies the timeout in minutes, after which the cluster is destroyed, defaults to 10
+	// Timeout specifies the timeout in minutes, after which the cluster
+	// is destroyed, defaults to 10
 	Timeout int `json:"timeout"`
+	// Timeout specifies the cluster time to live in minutes.
+	// In other words: the remaining time the cluster has before it is destroyed
+	TTL int `json:"ttl"`
 	// Owner specifies the email address of the owner (will be notified when cluster is created and 5 min before destruction)
 	Owner string `json:"owner"`
 }
@@ -93,7 +100,7 @@ func getClusterAge(bucket, clusterid string) (time.Duration, error) {
 
 // storeClusterSpec stores the cluster spec
 // in a given bucket, with a given cluster ID
-func storeClusterSpec(bucket, clusterid string, cs ClusterSpec) error {
+func storeClusterSpec(bucket string, cs ClusterSpec) error {
 	cfg, err := external.LoadDefaultAWSConfig()
 	if err != nil {
 		return err
@@ -105,7 +112,7 @@ func storeClusterSpec(bucket, clusterid string, cs ClusterSpec) error {
 	uploader := s3manager.NewUploader(cfg)
 	_, err = uploader.Upload(&s3manager.UploadInput{
 		Bucket: aws.String(bucket),
-		Key:    aws.String(clusterid + ".json"),
+		Key:    aws.String(cs.ID + ".json"),
 		Body:   strings.NewReader(string(csjson)),
 	})
 	return err
@@ -137,7 +144,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	fmt.Printf("DEBUG:: cluster is %v old\n", age)
 	clusterspec.Timeout = clusterspec.Timeout - int(age.Minutes()) + timeInMin
 	fmt.Printf("DEBUG:: new TTL is %v min starting now\n", clusterspec.Timeout)
-	err = storeClusterSpec(clusterbucket, cID, clusterspec)
+	err = storeClusterSpec(clusterbucket, clusterspec)
 	if err != nil {
 		return serverError(err)
 	}

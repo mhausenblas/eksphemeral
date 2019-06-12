@@ -12,17 +12,23 @@ import (
 )
 
 // ClusterSpec represents the parameters for eksctl,
-// TTL, and ownership of a cluster.
+// as cluster metadata including owner and how long the cluster
+// still has to live.
 type ClusterSpec struct {
-	ID string
+	// ID is a unique identifier for the cluster
+	ID string `json:"id"`
 	// Name specifies the cluster name
 	Name string `json:"name"`
 	// NumWorkers specifies the number of worker nodes, defaults to 1
 	NumWorkers int `json:"numworkers"`
 	// KubeVersion  specifies the Kubernetes version to use, defaults to `1.12`
 	KubeVersion string `json:"kubeversion"`
-	// Timeout specifies the timeout in minutes, after which the cluster is destroyed, defaults to 10
+	// Timeout specifies the timeout in minutes, after which the cluster
+	// is destroyed, defaults to 10
 	Timeout int `json:"timeout"`
+	// Timeout specifies the cluster time to live in minutes.
+	// In other words: the remaining time the cluster has before it is destroyed
+	TTL int `json:"ttl"`
 	// Owner specifies the email address of the owner (will be notified when cluster is created and 5 min before destruction)
 	Owner string `json:"owner"`
 }
@@ -191,19 +197,19 @@ func listClusters(cIDs string) {
 
 	const padding = 3
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, padding, ' ', 0)
-	fmt.Fprintln(w, "NAME\tID\tKUBERNETES\tNUM WORKERS\tTIMEOUT\tOWNER\t")
+	fmt.Fprintln(w, "NAME\tID\tKUBERNETES\tNUM WORKERS\tTIMEOUT\tTTL\tOWNER\t")
 	for _, cID := range cl {
 		res := bshellout("./eksp-list.sh", cID)
 		cs := parseCS(res)
 		cs.ID = cID
-		fmt.Fprintf(w, "%s\t%s\tv%s\t%d\t%d min\t%s\t\n", cs.Name, cs.ID, cs.KubeVersion, cs.NumWorkers, cs.Timeout, cs.Owner)
+		fmt.Fprintf(w, "%s\t%s\tv%s\t%d\t%d min\t%d min\t%s\t\n", cs.Name, cs.ID, cs.KubeVersion, cs.NumWorkers, cs.Timeout, cs.TTL, cs.Owner)
 	}
 	w.Flush()
 }
 
 func (c ClusterSpec) String() string {
 	return fmt.Sprintf(
-		"ID:\t\t%s\nName:\t\t%s\nKubernetes:\tv%s\nWorker nodes:\t%d\nTimeout:\t%d min\nOwner:\t\t%s",
-		c.ID, c.Name, c.KubeVersion, c.NumWorkers, c.Timeout, c.Owner,
+		"ID:\t\t%s\nName:\t\t%s\nKubernetes:\tv%s\nWorker nodes:\t%d\nTimeout:\t%d min\nTTL:\t\t%d min\nOwner:\t\t%s",
+		c.ID, c.Name, c.KubeVersion, c.NumWorkers, c.Timeout, c.TTL, c.Owner,
 	)
 }

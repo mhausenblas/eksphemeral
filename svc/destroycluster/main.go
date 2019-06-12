@@ -2,29 +2,57 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
 	"time"
 
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/s3/s3manager"
 )
 
 // ClusterSpec represents the parameters for eksctl,
-// TTL, and ownership of a cluster.
+// as cluster metadata including owner and how long the cluster
+// still has to live.
 type ClusterSpec struct {
+	// ID is a unique identifier for the cluster
+	ID string `json:"id"`
 	// Name specifies the cluster name
 	Name string `json:"name"`
 	// NumWorkers specifies the number of worker nodes, defaults to 1
 	NumWorkers int `json:"numworkers"`
 	// KubeVersion  specifies the Kubernetes version to use, defaults to `1.12`
 	KubeVersion string `json:"kubeversion"`
-	// Timeout specifies the timeout in minutes, after which the cluster is destroyed, defaults to 10
+	// Timeout specifies the timeout in minutes, after which the cluster
+	// is destroyed, defaults to 10
 	Timeout int `json:"timeout"`
+	// Timeout specifies the cluster time to live in minutes.
+	// In other words: the remaining time the cluster has before it is destroyed
+	TTL int `json:"ttl"`
 	// Owner specifies the email address of the owner (will be notified when cluster is created and 5 min before destruction)
 	Owner string `json:"owner"`
+}
+
+func updateTTL(clusterbucket string, cs ClusterSpec) error {
+	cfg, err := external.LoadDefaultAWSConfig()
+	if err != nil {
+		return err
+	}
+	csjson, err := json.Marshal(cs)
+	if err != nil {
+		return err
+	}
+	uploader := s3manager.NewUploader(cfg)
+	_, err = uploader.Upload(&s3manager.UploadInput{
+		Bucket: aws.String(clusterbucket),
+		Key:    aws.String(cs.ID + ".json"),
+		Body:   strings.NewReader(string(csjson)),
+	})
+	return err
 }
 
 func handler() error {
@@ -107,6 +135,8 @@ func handler() error {
 		default:
 			fmt.Printf("Cluster %v is %.0f min old\n", clusterID, clusterage.Minutes())
 		}
+		cs.TTL = int(clusterage.Minutes())
+		updateTTL(clusterbucket, cs)
 	}
 	fmt.Printf("DEBUG:: destroy cluster done\n")
 	return nil
