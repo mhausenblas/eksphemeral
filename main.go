@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"strings"
@@ -20,12 +22,10 @@ func main() {
 	switch cmd {
 	case "install", "i":
 		pinfo("Trying to install EKSphemeral ...")
-		r, _ := shellout(true, false, "./eksp-up.sh", "-al")
-		fmt.Println(r)
+		shellout("./eksp-up.sh")
 	case "uninstall", "u":
 		pinfo("Trying to uninstall EKSphemeral ...")
-		r, _ := shellout(true, false, "./eksp-down.sh", "-al")
-		fmt.Println(r)
+		shellout("./eksp-down.sh")
 	case "create", "c":
 		pinfo("Trying to create a new ephemeral cluster ...")
 		if len(os.Args) > 2 {
@@ -34,23 +34,19 @@ func main() {
 				perr("Can't create a cluster due to invalid spec:", err)
 				os.Exit(-1)
 			}
-			r, _ := shellout(true, false, "./eksp-create.sh", os.Args[2])
-			fmt.Println(r)
+			shellout("./eksp-create.sh", os.Args[2])
 			break
 		}
 		// creating cluster with defaults:
-		r, _ := shellout(true, false, "./eksp-create.sh", os.Args[2])
-		fmt.Println(r)
+		shellout("./eksp-create.sh", os.Args[2])
 	case "list", "ls", "l":
 		if len(os.Args) > 2 { // we have a cluster ID, try looking up cluster spec
 			clusterSpecFile := os.Args[2]
-			r, _ := shellout(true, false, "./eksp-list.sh", clusterSpecFile)
-			fmt.Println(r)
+			shellout("./eksp-list.sh", clusterSpecFile)
 			break
 		}
 		// listing all cluster:
-		r, _ := shellout(true, false, "./eksp-list.sh")
-		fmt.Println(r)
+		shellout("./eksp-list.sh")
 	case "prolong", "p":
 		if len(os.Args) < 4 {
 			perr("Can't prolong cluster lifetime without both the cluster ID and the time in minutes provided", nil)
@@ -58,8 +54,7 @@ func main() {
 		}
 		cID := os.Args[2]
 		prolongFor := os.Args[3]
-		r, _ := shellout(true, false, "./eksp-prolong.sh", cID, prolongFor)
-		fmt.Println(r)
+		shellout("./eksp-prolong.sh", cID, prolongFor)
 	default:
 		perr("Please specify one of the following commands: install, uninstall, create, list, or prolong", nil)
 	}
@@ -68,7 +63,7 @@ func main() {
 // shellout shells out to execute a command with a variable number
 // of arguments and returns the literal result. Optionally, you can
 // including stderr output and echoing the command when verbose is true.
-func shellout(withstderr, verbose bool, cmd string, args ...string) (result string, err error) {
+func shelloutold(withstderr, verbose bool, cmd string, args ...string) (result string, err error) {
 	var out bytes.Buffer
 	if verbose {
 		pinfo(cmd + " " + strings.Join(args, " "))
@@ -85,6 +80,26 @@ func shellout(withstderr, verbose bool, cmd string, args ...string) (result stri
 	}
 	result = strings.TrimSpace(out.String())
 	return result, nil
+}
+
+func shellout(command string, args ...string) {
+	cmd := exec.Command(command, args...)
+	cmd.Env = os.Environ()
+	stderr, _ := cmd.StderrPipe()
+	stdout, _ := cmd.StdoutPipe()
+	cmd.Start()
+	go echo(stderr)
+	go echo(stdout)
+	cmd.Wait()
+}
+
+func echo(rc io.ReadCloser) {
+	scanner := bufio.NewScanner(rc)
+	scanner.Split(bufio.ScanWords)
+	for scanner.Scan() {
+		m := scanner.Text()
+		fmt.Print(m)
+	}
 }
 
 // pinfo writes msg in light blue to stderr
