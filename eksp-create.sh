@@ -10,6 +10,13 @@ set -o pipefail
 
 DEFAULT_K8S_VERSION=1.12
 
+if [[ ! -z "$EKSPHEMERAL_EKSCTL_IMG" ]]
+then
+  EKSCTL_IMAGE=base
+else
+  EKSCTL_IMAGE=deluxe
+fi
+
 ###############################################################################
 ### DEPENDENCIES CHECKS
 
@@ -118,7 +125,7 @@ printf "I will now provision the EKS cluster %s using AWS Fargate:\n\n" $CLUSTER
 
 # provision the EKS cluster using containerized eksctl:
 fargate task run eksctl \
-          --image quay.io/mhausenblas/eksctl:0.2 \
+          --image quay.io/mhausenblas/eksctl:$EKSCTL_IMAGE \
           --region $(aws configure get region) \
           --env AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id) \
           --env AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key) \

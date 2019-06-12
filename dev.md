@@ -48,8 +48,8 @@ You can manually kick off the EKS cluster provisioning as described in the follo
 Note that, optionally, you can build a custom container image using your own registry coordinates and customize what's in the `eksctl` image used to provision the EKS cluster via a Fargate task like so:
 
 ```sh
-$ docker build -t quay.io/mhausenblas/eksctl:0.2 .
-$ docker push quay.io/mhausenblas/eksctl:0.2
+$ docker build -t quay.io/mhausenblas/eksctl:base .
+$ docker push quay.io/mhausenblas/eksctl:base
 ```
 
 Back to the provisioning. First, set the security group to use:
@@ -82,7 +82,7 @@ using your local AWS credentials, for example like so:
 
 ```sh
 $ fargate task run eksctl \
-          --image quay.io/mhausenblas/eksctl:0.2 \
+          --image quay.io/mhausenblas/eksctl:base \
           --region us-east-2 \
           --env AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id) \
           --env AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key) \
