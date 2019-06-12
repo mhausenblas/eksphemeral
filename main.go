@@ -8,6 +8,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"text/tabwriter"
 )
 
 // ClusterSpec represents the parameters for eksctl,
@@ -66,7 +67,8 @@ func main() {
 			break
 		}
 		// listing all cluster:
-		shellout("./eksp-list.sh")
+		res := bshellout("./eksp-list.sh")
+		listClusters(res)
 	case "prolong", "p":
 		if len(os.Args) < 4 {
 			perr("Can't prolong cluster lifetime without both the cluster ID and the time in minutes provided", nil)
@@ -180,7 +182,28 @@ func parseCS(clusterspec string) (cs ClusterSpec) {
 	return cs
 }
 
+func listClusters(cIDs string) {
+	cl := []string{}
+	err := json.Unmarshal([]byte(cIDs), &cl)
+	if err != nil {
+		perr("Can't render cluster spec due to:", err)
+	}
+
+	const padding = 3
+	w := tabwriter.NewWriter(os.Stdout, 0, 0, padding, ' ', 0)
+	fmt.Fprintln(w, "NAME\tID\tKUBERNETES\tNUM WORKERS\tTIMEOUT\tOWNER\t")
+	for _, cID := range cl {
+		res := bshellout("./eksp-list.sh", cID)
+		cs := parseCS(res)
+		cs.ID = cID
+		fmt.Fprintf(w, "%s\t%s\tv%s\t%d\t%d min\t%s\t\n", cs.Name, cs.ID, cs.KubeVersion, cs.NumWorkers, cs.Timeout, cs.Owner)
+	}
+	w.Flush()
+}
+
 func (c ClusterSpec) String() string {
-	// return fmt.Sprintf("ID:            %s\nName:          %s\nKubernetes:    v%s\nWorker nodes:  %d\nTimeout:       %d\nOwner:         %s", c.ID, c.Name, c.KubeVersion, c.NumWorkers, c.Timeout, c.Owner)
-	return fmt.Sprintf("ID:\t\t%s\nName:\t\t%s\nKubernetes:\tv%s\nWorker nodes:\t%d\nTimeout:\t%d min\nOwner:\t\t%s", c.ID, c.Name, c.KubeVersion, c.NumWorkers, c.Timeout, c.Owner)
+	return fmt.Sprintf(
+		"ID:\t\t%s\nName:\t\t%s\nKubernetes:\tv%s\nWorker nodes:\t%d\nTimeout:\t%d min\nOwner:\t\t%s",
+		c.ID, c.Name, c.KubeVersion, c.NumWorkers, c.Timeout, c.Owner,
+	)
 }
