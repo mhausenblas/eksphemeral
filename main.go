@@ -8,8 +8,11 @@ import (
 	"strings"
 )
 
+var Version string
+
 func main() {
 	if len(os.Args) <= 1 {
+		pinfo(fmt.Sprintf("This is EKSphemeral in version %v", Version))
 		perr("Please specify one of the following commands: install, uninstall, create, list, or prolong", nil)
 		os.Exit(-1)
 	}
