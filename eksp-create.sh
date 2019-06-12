@@ -2,7 +2,7 @@
 
 set -o errexit
 set -o errtrace
-set -o nounset
+# set -o nounset
 set -o pipefail
 
 ###############################################################################
@@ -21,7 +21,33 @@ fi
 
 if ! [ -x "$(command -v aws)" ]
 then
-  echo "Pre-flight check failed: aws is not installed. Yo, please install it via https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html and try again, cool?" >&2
+  echo "Pre-flight check failed: the aws CLI is not installed. Yo, please install it via https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html and try again, cool?" >&2
+  exit 1
+fi
+
+## Note for the following check the precedence, that is, order in which confiig
+## options are checked as per https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html
+## is as follows: CLI runtime options > environment variables > aws configure
+
+# let's check if EKS is available in your region, assuming user either has set 
+# env variable or used CLI to configure default region, otherwise fails:
+if [[ ! -z "$AWS_DEFAULT_REGION" ]]
+then
+  TARGET_REGION=$AWS_DEFAULT_REGION
+else
+  TARGET_REGION=$(aws configure get region)
+fi
+
+if [[ -z "$TARGET_REGION" ]]
+then
+  echo "Pre-flight check failed: I was not able to determine the AWS region you want to target. Either set AWS_DEFAULT_REGION or use aws configure to set a region."
+else
+  echo "Seems you've set '$TARGET_REGION' as the target region, using this for all following operations"
+fi
+
+if ! aws eks list-clusters --region $TARGET_REGION > /dev/null 2>&1
+then
+  echo "Pre-flight check failed: EKS is not available in $region_cli" >&2
   exit 1
 fi
 
