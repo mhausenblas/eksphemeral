@@ -82,7 +82,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		Timeout:      10,
 		TTL:          10,
 		Owner:        "nobody@example.com",
-		CreationTime: fmt.Sprintf("%v", time.Now().Unix()),
+		CreationTime: "",
 	}
 	// Unmarshal the JSON payload in the POST:
 	err := json.Unmarshal([]byte(request.Body), &cs)
@@ -97,6 +97,8 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		return serverError(err)
 	}
 	cs.ID = clusterID.String()
+	cs.CreationTime = fmt.Sprintf("%v", time.Now().Unix())
+	fmt.Printf("DEBUG:: created cluster spec %v", cs)
 	// store cluster spec in S3 bucket keyed by cluster ID:
 	err = upload(region, clusterbucket, clusterID.String()+".json", string([]byte(request.Body)))
 	if err != nil {
@@ -107,7 +109,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	// the cluster is ready now:
 	if cs.Owner != "" {
 		fmt.Println("DEBUG:: begin inform owner")
-		fmt.Printf("Attempting to send owner %v an info concerning the creation of cluster %v\n", cs.Owner, clusterID)
+		fmt.Printf("Attempting to send owner %v an info concerning the creation of cluster %v\n", cs.Owner, cs.ID)
 		subject := fmt.Sprintf("EKS cluster %v created and available", cs.Name)
 		body := fmt.Sprintf("Hello there,\n\nThis is to inform you that your EKS cluster %v (cluster ID %v) is now available for you to use.\n\nHave a nice day,\nEKSphemeral", cs.Name, cs.ID)
 		err := informOwner(cs.Owner, subject, body)

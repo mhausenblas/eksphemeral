@@ -81,18 +81,7 @@ func fetchClusterSpec(bucket, clusterid string) (ClusterSpec, error) {
 	return cs, nil
 }
 
-// getClusterAge returns the age of the cluster
-func getClusterAge(cs ClusterSpec) (time.Duration, error) {
-	ct, err := strconv.ParseInt(cs.CreationTime, 10, 64)
-	if err != nil {
-		return 0 * time.Minute, err
-	}
-	clusterage := time.Since(time.Unix(ct, 0))
-	return clusterage, nil
-}
-
-// storeClusterSpec stores the cluster spec
-// in a given bucket, with a given cluster ID
+// storeClusterSpec stores the cluster spec in a given bucket
 func storeClusterSpec(bucket string, cs ClusterSpec) error {
 	cfg, err := external.LoadDefaultAWSConfig()
 	if err != nil {
@@ -109,6 +98,16 @@ func storeClusterSpec(bucket string, cs ClusterSpec) error {
 		Body:   strings.NewReader(string(csjson)),
 	})
 	return err
+}
+
+// getClusterAge returns the age of the cluster
+func getClusterAge(cs ClusterSpec) (time.Duration, error) {
+	ct, err := strconv.ParseInt(cs.CreationTime, 10, 64)
+	if err != nil {
+		return 0 * time.Minute, err
+	}
+	clusterage := time.Since(time.Unix(ct, 0))
+	return clusterage, nil
 }
 
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {

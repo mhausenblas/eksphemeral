@@ -97,8 +97,9 @@ func handler() error {
 			fmt.Println(err)
 			return err
 		}
-		ttl := time.Duration(cs.Timeout) * time.Minute
-		headsuptime := ttl - 5*time.Minute
+		timeout := time.Duration(cs.Timeout) * time.Minute
+		headsuptime := timeout - 5*time.Minute
+		ttl := timeout - clusterage
 		fmt.Printf("DEBUG:: checking TTL of cluster %v:\n", clusterID)
 		switch {
 		case clusterage > ttl:
@@ -154,7 +155,7 @@ func handler() error {
 		default:
 			fmt.Printf("Cluster %v is %.0f min old\n", clusterID, clusterage.Minutes())
 		}
-		cs.TTL = int(clusterage.Minutes())
+		cs.TTL = int(ttl)
 		updateTTL(clusterbucket, cs)
 	}
 	fmt.Printf("DEBUG:: destroy cluster done\n")
