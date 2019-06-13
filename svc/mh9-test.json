@@ -1,0 +1,9 @@
+{
+    "id": "",
+    "name": "mh9-test",
+    "numworkers": 2,
+    "kubeversion": "1.12",
+    "timeout": 1500,
+    "owner": "hausenbl+notif@amazon.com",
+    "created": ""
+}
