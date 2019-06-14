@@ -1,0 +1,10 @@
+{
+    "id": "3b7d6fc7-4db6-4dfb-a73d-0621e8cb3ed5",
+    "name": "mh9-eksp",
+    "numworkers": 2,
+    "kubeversion": "1.12",
+    "timeout": 15,
+    "ttl": 15,
+    "owner": "hausenbl+notif@amazon.com",
+    "created": "1560510070"
+}

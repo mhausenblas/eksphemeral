@@ -118,31 +118,14 @@ Let's start off by creating a throwaway EKS cluster with the [default](svc/defau
 
 ```sh
 $ ./eksp-create.sh
-I will now provision the EKS cluster default-eksp using AWS Fargate:
 
-[i] Running task eksctl
-Waiting for EKS cluster provisioning to complete. Allow some 15 min to complete, checking status every minute:
-........
-Successfully created data plane for cluster default-eksp using AWS Fargate and now moving on to the control plane in AWS Lambda and S3 ...
-
-Successfully created control plane entry for cluster default-eksp via AWS Lambda and Amazon S3 ...
-
-Now moving on to configure kubectl to point to your EKS cluster:
-Updated context arn:aws:eks:us-east-2:661776721573:cluster/default-eksp in /Users/hausenbl/.kube/config
-
-Your EKS cluster is now set up and configured:
-CURRENT   NAME                                                      CLUSTER                                                   AUTHINFO                                                  NAMESPACE
-*         arn:aws:eks:us-east-2:661776721573:cluster/default-eksp   arn:aws:eks:us-east-2:661776721573:cluster/default-eksp   arn:aws:eks:us-east-2:661776721573:cluster/default-eksp
-
-Note that it still can take up to 5 min until the worker nodes are available, check with the following command until you don't see the 'No resources found.' message anymore:
-kubectl get nodes
 ```
 
 Now, let's create a  cluster named `2node-111-30`, using the `EKSPHEMERAL_SG` security group, with two worker nodes, 
-using Kubernetes version 1.11, with a 30 min timeout as defined in the example cluster spec file [2node-111-30.json](svc/2node-111-30.json):
+using Kubernetes version 1.11, with a 30 min timeout as defined in the example cluster spec file [2node-111-30.json](svc/dev/2node-111-30.json):
 
 ```sh
-$ cat svc/2node-111-30.json
+$ cat svc/dev/2node-111-30.json
 {
     "name": "2node-111-30",
     "numworkers": 2,
@@ -151,7 +134,7 @@ $ cat svc/2node-111-30.json
     "owner": "hausenbl+notif@amazon.com"
 }
 
-$ ./eksp-create.sh 2node-111-30.json $EKSPHEMERAL_SG
+$ ./eksp-create.sh svc/dev/2node-111-30.json $EKSPHEMERAL_SG
 ...
 ```
 
@@ -165,20 +148,14 @@ Next, let's check what clusters are managed by EKSphemeral:
 
 ```sh
 $ ./eksp-list.sh
-["9be65bee-3baa-4fd0-aa3e-032325d5390c","dd72f73a-3457-4d4b-b997-08a2b376160b"]
+
 ```
 
 Here, we get an array of cluster IDs back. We can use such a cluster ID as follows to look up the spec of a particular cluster:
 
 ```sh
 $ ./eksp-list.sh dd72f73a-3457-4d4b-b997-08a2b376160b | jq
-{
-  "name": "default-eksp",
-  "numworkers": 1,
-  "kubeversion": "1.12",
-  "timeout": 20,
-  "owner": "nobody@example.com"
-}
+
 ```
 
 ### Prolong cluster lifetime
@@ -196,13 +173,7 @@ Trying to set the TTL of cluster 7a4aa952-9582-4d99-98a0-0ab1a4e56337 to 42 minu
 Successfully prolonged the lifetime of cluster 7a4aa952-9582-4d99-98a0-0ab1a4e56337 for 40 minutes. New TTL is 42 min starting now!
 
 $ ./eksp-list.sh 7a4aa952-9582-4d99-98a0-0ab1a4e56337 | jq
-{
-  "name": "1node-112-10",
-  "numworkers": 1,
-  "kubeversion": "1.12",
-  "timeout": 42,
-  "owner": "hausenbl+notif@amazon.com"
-}
+
 ```
 
 Note that the prolong command updates the `timeout` field of your cluster spec, that is, the cluster TTL is 
