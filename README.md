@@ -168,9 +168,12 @@ kubectl get nodes
 Note that if no cluster spec is provided, [default](svc/default-cc.json) will be
 used along with first security group of the default VPC.
 
-Further, note that, if you want to receive notification emails, you must
- [verify](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html) 
- both the source and target email address in the Ireland (`eu-west-1`) region.
+Once the cluster is ready (and you've verified your email addresses) you should
+get a notification that looks something like the following:
+
+![EKSphemeral mail notification on cluster create](img/mail-notif-example.png)
+
+The same is true 5 minutes before the cluster shuts down.
 
 ### List clusters
 
