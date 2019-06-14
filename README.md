@@ -32,13 +32,17 @@ Fargate. There are four scripts, `eksp-*.sh` allowing you to install/uninstall
 
 ![EKSphemeral architecture](img/architecture.png)
 
-1. The `eksp-up.sh` script provisions EKSphemeral's control plane (Lambda+S3). This is a one-time action, think of it as installing EKSphemeral in your AWS environment.
-2. Whenever you want to provision a throwaway EKS cluster, use `eksp-create.sh`. It will do two things: 
-3. Provision the cluster using `eksctl` running in Fargate (what we call the EKSphemeral data plane), and when that is completed,
+1. With `eksp install` you provisions EKSphemeral's control plane (Lambda+S3).
+2. Whenever you want to provision a throwaway EKS cluster, use `eksp create`. It will do two things: 
+3. Provision the cluster using `eksctl` running in Fargate, and when that is completed,
 4. Create an cluster spec entry in S3, via the `/create` endpoint of EKSphemeral's HTTP API.
-5. Once that is done, you can use `eksp-list.sh` to list all managed clusters or, should you wish to gather more information on a specific cluster, use `eksp-list.sh $CLUSTERID` to retrieve it. This script uses the `/status` endpoint of EKSphemeral's HTTP API.
-6. Every 5 minutes, there is a CloudWatch event that triggers the execution of another Lambda function called `DestroyClusterFunc`, which notifies the owners of clusters that are about to expire (send an email up to 5 minutes before the cluster is destroyed), and when the time comes, it tears the cluster down. 
-7. Last but not least, if you want to get rid of EKSphemeral, use the `eksp-down.sh` script, removing all cluster specs in the S3 bucket and deleting all Lambda functions.
+5. Every five minutes, a CloudWatch event triggers the execution of another Lambda function called `DestroyClusterFunc`,
+   which notifies the owners of clusters that are about to expire (send an email up to 5 minutes before the cluster is destroyed),
+   and when the time comes, it tears the cluster down. 
+6. Once the EKS cluster is provisioned (and the Kubernetes is configured) you can use your cluster.
+7. Once that is done, you can use `eksp list` (via the `/status` endpoint) to list managed clusters.
+8. If you want to keep your cluster around longer, use `eksp prolong` (via the `/prolong` endpoint) to extend its lifetime.
+9. Last but not least, if you want to get rid of EKSphemeral, use the `eksp uninstall`, removing all cluster specs in the S3 bucket and deleting all Lambda functions.
 
 If you like, you can have a look at a [4 min video walkthrough](https://www.youtube.com/watch?v=2A8olhYL9iI), before you try it out yourself.
 Since the minimal time for an end-to-end provisioning and usage cycle is ca. 40min, the video walkthrough is showing a 1:10 time compression, roughly.
