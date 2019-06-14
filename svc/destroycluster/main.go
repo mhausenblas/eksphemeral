@@ -78,7 +78,7 @@ func handler() error {
 		headsuptime := timeout - 5*time.Minute
 		ttl := timeout - clusterage
 		switch {
-		case clusterage > ttl: // time is up, let's get rid of dat thing
+		case clusterage > timeout: // time is up, let's get rid of dat thing
 			fmt.Printf("Tearing down EKS cluster %v\n", clusterID)
 			if err != nil {
 				return err
