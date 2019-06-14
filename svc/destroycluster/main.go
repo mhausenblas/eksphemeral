@@ -126,7 +126,7 @@ func handler() error {
 		default: // business as usual, just log age
 			fmt.Printf("Cluster %v is %.0f min old has %.0f min to live, left\n", clusterID, clusterage.Minutes(), ttl.Minutes())
 		}
-		cs.TTL = int(ttl)
+		cs.TTL = int(ttl.Minutes())
 		storeClusterSpec(clusterbucket, cs)
 	}
 	fmt.Printf("DEBUG:: destroy cluster done\n")
