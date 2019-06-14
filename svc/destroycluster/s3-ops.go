@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -71,5 +72,6 @@ func rmClusterSpec(clusterbucket, clusterid string) error {
 	if err != nil {
 		return err
 	}
+	fmt.Printf("DEBUG:: removed cluster spec for cluster with ID %v", clusterid)
 	return nil
 }

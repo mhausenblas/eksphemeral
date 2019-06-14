@@ -109,7 +109,10 @@ func handler() error {
 			// stack, we're ready to delete the cluster spec entry
 			// from the metadata bucket:
 			case dpstack == "" && cpstack == "":
-				rmClusterSpec(clusterbucket, clusterID)
+				err := rmClusterSpec(clusterbucket, clusterID)
+				if err != nil {
+					return err
+				}
 			default:
 				fmt.Printf("DEBUG:: seems both control and data plane stacks and all cluster metadata have been deleted, so this would be a NOP.\n")
 			}
