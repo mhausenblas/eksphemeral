@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
@@ -12,39 +13,58 @@ import (
 
 // fetchClusterSpec returns the cluster spec
 // in a given bucket, with a given cluster ID
-func fetchClusterSpec(bucket, clusterid string) (ClusterSpec, error) {
-	ccr := ClusterSpec{}
+func fetchClusterSpec(clusterbucket, clusterid string) (ClusterSpec, error) {
+	cs := ClusterSpec{}
 	cfg, err := external.LoadDefaultAWSConfig()
 	if err != nil {
-		return ccr, err
+		return cs, err
 	}
 	downloader := s3manager.NewDownloader(cfg)
 	buf := aws.NewWriteAtBuffer([]byte{})
 	_, err = downloader.Download(buf, &s3.GetObjectInput{
-		Bucket: aws.String(bucket),
+		Bucket: aws.String(clusterbucket),
 		Key:    aws.String(clusterid + ".json"),
 	})
 	if err != nil {
-		return ccr, err
+		return cs, err
 	}
-	err = json.Unmarshal(buf.Bytes(), &ccr)
+	err = json.Unmarshal(buf.Bytes(), &cs)
 	if err != nil {
-		return ccr, err
+		return cs, err
 	}
-	return ccr, nil
+	return cs, nil
+}
+
+// storeClusterSpec stores the cluster spec in a given bucket
+func storeClusterSpec(clusterbucket string, cs ClusterSpec) error {
+	cfg, err := external.LoadDefaultAWSConfig()
+	if err != nil {
+		return err
+	}
+	csjson, err := json.Marshal(cs)
+	if err != nil {
+		return err
+	}
+	uploader := s3manager.NewUploader(cfg)
+	_, err = uploader.Upload(&s3manager.UploadInput{
+		Bucket: aws.String(clusterbucket),
+		Key:    aws.String(cs.ID + ".json"),
+		Body:   strings.NewReader(string(csjson)),
+	})
+	return err
 }
 
 // rmClusterSpec delete the cluster spec JSON doc
 // in the metadata bucket and with that effectively
-// states the cluster doesn't exist anymore.
-func rmClusterSpec(bucket, clusterid string) error {
+// states the cluster doesn't exist anymore
+func rmClusterSpec(clusterbucket, clusterid string) error {
 	cfg, err := external.LoadDefaultAWSConfig()
 	if err != nil {
 		return err
 	}
 	svc := s3.New(cfg)
 	req := svc.DeleteObjectRequest(&s3.DeleteObjectInput{
-		Bucket: aws.String(bucket),
+		Bucket: aws.String(clusterbucket),
 		Key:    aws.String(clusterid + ".json"),
 	})
 	_, err = req.Send(context.Background())

@@ -124,7 +124,6 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	if err != nil {
 		return serverError(fmt.Errorf("Invalid prolong request, please specify the time in minutes as a plain integer."))
 	}
-	fmt.Printf("DEBUG:: updating cluster with ID %v start\n", cID)
 	cs, err := fetchClusterSpec(clusterbucket, cID)
 	if err != nil {
 		return serverError(err)
@@ -133,14 +132,12 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	if err != nil {
 		return serverError(err)
 	}
-	fmt.Printf("DEBUG:: cluster is %v old\n", age)
 	cs.Timeout = cs.Timeout - int(age.Minutes()) + timeInMin
 	fmt.Printf("DEBUG:: new TTL is %v min starting now\n", cs.Timeout)
 	err = storeClusterSpec(clusterbucket, cs)
 	if err != nil {
 		return serverError(err)
 	}
-	fmt.Printf("DEBUG:: updating cluster done\n")
 	fmt.Printf("DEBUG:: prolong done\n")
 	successmsg := fmt.Sprintf("Successfully prolonged the lifetime of cluster %v for %v minutes. New TTL is %v min starting now!", cID, timeInMin, cs.Timeout)
 	return events.APIGatewayProxyResponse{

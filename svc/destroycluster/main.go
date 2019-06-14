@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"os"
 	"strconv"
@@ -10,10 +9,8 @@ import (
 	"time"
 
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/aws/aws-sdk-go-v2/service/s3/s3manager"
 )
 
 // ClusterSpec represents the parameters for eksctl,
@@ -43,24 +40,6 @@ type ClusterSpec struct {
 	CreationTime string `json:"created"`
 }
 
-func updateTTL(clusterbucket string, cs ClusterSpec) error {
-	cfg, err := external.LoadDefaultAWSConfig()
-	if err != nil {
-		return err
-	}
-	csjson, err := json.Marshal(cs)
-	if err != nil {
-		return err
-	}
-	uploader := s3manager.NewUploader(cfg)
-	_, err = uploader.Upload(&s3manager.UploadInput{
-		Bucket: aws.String(clusterbucket),
-		Key:    aws.String(cs.ID + ".json"),
-		Body:   strings.NewReader(string(csjson)),
-	})
-	return err
-}
-
 // getClusterAge returns the age of the cluster
 func getClusterAge(cs ClusterSpec) (time.Duration, error) {
 	ct, err := strconv.ParseInt(cs.CreationTime, 10, 64)
@@ -87,31 +66,26 @@ func handler() error {
 		fmt.Println(err)
 		return err
 	}
-	fmt.Printf("DEBUG:: iterating over cluster specs:\n")
 	for _, obj := range resp.Contents {
 		fn := *obj.Key
 		clusterID := strings.TrimSuffix(fn, ".json")
 		cs, err := fetchClusterSpec(clusterbucket, clusterID)
 		clusterage, err := getClusterAge(cs)
 		if err != nil {
-			fmt.Println(err)
 			return err
 		}
 		timeout := time.Duration(cs.Timeout) * time.Minute
 		headsuptime := timeout - 5*time.Minute
 		ttl := timeout - clusterage
-		fmt.Printf("DEBUG:: checking TTL of cluster %v:\n", clusterID)
 		switch {
-		case clusterage > ttl:
+		case clusterage > ttl: // time is up, let's get rid of dat thing
 			fmt.Printf("Tearing down EKS cluster %v\n", clusterID)
 			if err != nil {
-				fmt.Println(err)
 				return err
 			}
 			// data plane tear down:
 			cpstack, dpstack, err := lookupStack(cs.Name)
 			if err != nil {
-				fmt.Println(err)
 				return err
 			}
 			switch {
@@ -120,7 +94,6 @@ func handler() error {
 			case dpstack != "":
 				err = deleteStack(dpstack)
 				if err != nil {
-					fmt.Println(err)
 					return err
 				}
 			// if this time around there's no more stack
@@ -129,7 +102,6 @@ func handler() error {
 			case dpstack == "" && cpstack != "":
 				err = deleteStack(cpstack)
 				if err != nil {
-					fmt.Println(err)
 					return err
 				}
 			// if this time around there's neither a stack
@@ -141,22 +113,21 @@ func handler() error {
 			default:
 				fmt.Printf("DEBUG:: seems both control and data plane stacks and all cluster metadata have been deleted, so this would be a NOP.\n")
 			}
-		case clusterage > headsuptime:
+		case clusterage > headsuptime: // oho, it's time to nudge the owner
 			if cs.Owner != "" {
 				fmt.Printf("Attempting to send owner %v a warning concerning tear down of cluster %v\n", cs.Owner, clusterID)
 				subject := fmt.Sprintf("EKS cluster %v shutting down in 5 min", cs.Name)
 				body := fmt.Sprintf("Hello there,\n\nThis is to inform you that your EKS cluster %v (cluster ID %v) will shut down and all associated resources destroyed within the next few minutes.\n\nHave a nice day,\nEKSphemeral", cs.Name, clusterID)
 				err := informOwner(cs.Owner, subject, body)
 				if err != nil {
-					fmt.Println(err)
 					return err
 				}
 			}
-		default:
-			fmt.Printf("Cluster %v is %.0f min old\n", clusterID, clusterage.Minutes())
+		default: // business as usual, just log age
+			fmt.Printf("Cluster %v is %.0f min old has %.0f min to live, left\n", clusterID, clusterage.Minutes(), ttl.Minutes())
 		}
 		cs.TTL = int(ttl)
-		updateTTL(clusterbucket, cs)
+		storeClusterSpec(clusterbucket, cs)
 	}
 	fmt.Printf("DEBUG:: destroy cluster done\n")
 	return nil

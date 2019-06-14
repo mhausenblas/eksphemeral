@@ -38,6 +38,11 @@ type ClusterSpec struct {
 	TTL int `json:"ttl"`
 	// Owner specifies the email address of the owner (will be notified when cluster is created and 5 min before destruction)
 	Owner string `json:"owner"`
+	// CreationTime is the UTC timestamp of when the cluster was created
+	// which equals the point in time of the creation of the respective
+	// JSON representation of the cluster spec as an object in the metadata
+	// bucket
+	CreationTime string `json:"created"`
 }
 
 func serverError(err error) (events.APIGatewayProxyResponse, error) {
@@ -109,7 +114,6 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		}, nil
 	}
 	// if we have no specified cluster ID in the path, list all cluster IDs:
-	fmt.Printf("DEBUG:: list cluster IDs start\n")
 	// list all objects in the bucket:
 	svc := s3.New(cfg)
 	req := svc.ListObjectsRequest(&s3.ListObjectsInput{Bucket: &clusterbucket})
@@ -127,7 +131,6 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	if err != nil {
 		return serverError(err)
 	}
-	fmt.Printf("DEBUG:: list cluster IDs done\n")
 
 	fmt.Printf("DEBUG:: status done\n")
 	return events.APIGatewayProxyResponse{

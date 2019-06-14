@@ -44,16 +44,21 @@ type ClusterSpec struct {
 	CreationTime string `json:"created"`
 }
 
-func upload(region, bucket, jsonfilename, content string) error {
+// storeClusterSpec stores the cluster spec in a given bucket
+func storeClusterSpec(clusterbucket string, cs ClusterSpec) error {
 	cfg, err := external.LoadDefaultAWSConfig()
+	if err != nil {
+		return err
+	}
+	csjson, err := json.Marshal(cs)
 	if err != nil {
 		return err
 	}
 	uploader := s3manager.NewUploader(cfg)
 	_, err = uploader.Upload(&s3manager.UploadInput{
-		Bucket: aws.String(bucket),
-		Key:    aws.String(jsonfilename),
-		Body:   strings.NewReader(content),
+		Bucket: aws.String(clusterbucket),
+		Key:    aws.String(cs.ID + ".json"),
+		Body:   strings.NewReader(string(csjson)),
 	})
 	return err
 }
@@ -70,7 +75,7 @@ func serverError(err error) (events.APIGatewayProxyResponse, error) {
 }
 
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	region := os.Getenv("AWS_REGION")
+	// region := os.Getenv("AWS_REGION")
 	clusterbucket := os.Getenv("CLUSTER_METADATA_BUCKET")
 	fmt.Println("DEBUG:: create start")
 	// parse params:
@@ -100,7 +105,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	cs.CreationTime = fmt.Sprintf("%v", time.Now().Unix())
 	fmt.Printf("DEBUG:: created cluster spec %v", cs)
 	// store cluster spec in S3 bucket keyed by cluster ID:
-	err = upload(region, clusterbucket, clusterID.String()+".json", string([]byte(request.Body)))
+	err = storeClusterSpec(clusterbucket, cs)
 	if err != nil {
 		return serverError(err)
 	}
