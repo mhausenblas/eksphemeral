@@ -139,7 +139,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		return serverError(err)
 	}
 	fmt.Printf("DEBUG:: prolong done\n")
-	successmsg := fmt.Sprintf("Successfully prolonged the lifetime of cluster %v for %v minutes. New TTL is %v min starting now!", cID, timeInMin, cs.Timeout)
+	successmsg := fmt.Sprintf("Successfully prolonged the lifetime of cluster %v for %v minutes", cID, timeInMin)
 	return events.APIGatewayProxyResponse{
 		StatusCode: http.StatusOK,
 		Headers: map[string]string{

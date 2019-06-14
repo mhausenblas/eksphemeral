@@ -3,8 +3,8 @@
     "name": "mh9-eksp",
     "numworkers": 2,
     "kubeversion": "1.12",
-    "timeout": 1500,
-    "ttl": 1500,
+    "timeout": 45,
+    "ttl": 45,
     "owner": "hausenbl+notif@amazon.com",
     "created": ""
 }

@@ -1,7 +1,10 @@
 {
-    "name": "default-eksp",
+    "id": "",
+    "name": "default-cc",
     "numworkers": 1,
     "kubeversion": "1.12",
-    "timeout": 20,
-    "owner": "nobody@example.com"
+    "timeout": 60,
+    "ttl": 60,
+    "owner": "nobody@example.com",
+    "created": ""
 }
