@@ -1,7 +1,8 @@
 # EKSphemeral: The EKS Ephemeral Cluster Manager
 
-> Do not use in production. This is a service for development and test environments.
-> Also, this is not an official AWS offering but something I cooked up, so use at your own risk.
+> This is a service for development and test environments.
+> Also, note that this is not an official AWS offering but 
+> something I cooked up, so use at your own risk.
 
 Managing EKS clusters for dev/test environments manually is boring. 
 You have to wait until they're up and available and have to remember 
