@@ -217,9 +217,10 @@ func listClusters(cIDs string) {
 }
 
 func (cs ClusterSpec) String() string {
-	details := fmt.Sprintf("Status:\t\t%s\n\t\tEndpoint:\t%s\n",
-		cs.ClusterDetails["status"], cs.ClusterDetails["endpoint"],
+	details := fmt.Sprintf("Status:\t\t%s\n\t\tEndpoint:\t%s\n\t\tPlatform version:\t%s\n\t\tVPC config:\t%s\n\t\tIAM role:\t%s\n",
+		cs.ClusterDetails["status"], cs.ClusterDetails["endpoint"], cs.ClusterDetails["platformv"], cs.ClusterDetails["vpcconf"], cs.ClusterDetails["iamrole"],
 	)
+
 	return fmt.Sprintf(
 		"ID:\t\t%s\nName:\t\t%s\nKubernetes:\tv%s\nWorker nodes:\t%d\nTimeout:\t%d min\nTTL:\t\t%d min\nOwner:\t\t%s\nDetails:\n\t\t%s",
 		cs.ID, cs.Name, cs.KubeVersion, cs.NumWorkers, cs.Timeout, cs.TTL, cs.Owner, details,

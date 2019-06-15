@@ -136,6 +136,9 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		cs.ClusterDetails = make(map[string]string)
 		cs.ClusterDetails["endpoint"] = *cd.Endpoint
 		cs.ClusterDetails["status"] = fmt.Sprintf("%v", cd.Status)
+		cs.ClusterDetails["platformv"] = *cd.PlatformVersion
+		cs.ClusterDetails["vpcconf"] = fmt.Sprintf("%v", cd.ResourcesVpcConfig)
+		cs.ClusterDetails["iamrole"] = *cd.RoleArn
 		csjson, err := json.Marshal(cs)
 		if err != nil {
 			return serverError(err)
