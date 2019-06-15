@@ -75,11 +75,9 @@ fi
 
 mkdir -p $EKSPHEMERAL_HOME
 
+git clone https://github.com/mhausenblas/eksphemeral.git $EKSPHEMERAL_HOME
+
 cd $EKSPHEMERAL_HOME
-
-git clone https://github.com/mhausenblas/eksphemeral.git
-
-cd eksphemeral
 
 # Install CLI
 installEKSphemeralCLI
