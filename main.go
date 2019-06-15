@@ -93,7 +93,7 @@ func main() {
 		}
 		// listing all cluster:
 		res := bshellout(eksphome + "/eksp-list.sh")
-		listClusters(res)
+		listClusters(eksphome, res)
 	case "prolong", "p":
 		if len(os.Args) < 4 {
 			perr("Can't prolong cluster lifetime without both the cluster ID and the time in minutes provided", nil)
@@ -207,7 +207,7 @@ func parseCS(clusterspec string) (cs ClusterSpec, err error) {
 	return cs, nil
 }
 
-func listClusters(cIDs string) {
+func listClusters(eksphome, cIDs string) {
 	cl := []string{}
 	err := json.Unmarshal([]byte(cIDs), &cl)
 	if err != nil {
@@ -222,7 +222,7 @@ func listClusters(cIDs string) {
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, padding, ' ', 0)
 	fmt.Fprintln(w, "NAME\tID\tKUBERNETES\tNUM WORKERS\tTIMEOUT\tTTL\tOWNER\t")
 	for _, cID := range cl {
-		res := bshellout("./eksp-list.sh", cID)
+		res := bshellout(eksphome+"./eksp-list.sh", cID)
 		cs, err := parseCS(res)
 		if err != nil {
 			continue
