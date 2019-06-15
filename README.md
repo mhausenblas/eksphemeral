@@ -64,7 +64,7 @@ We're then in the position to install the EKSphemeral CLI and control plane
 (here shown for an install below your home directory):
 
 ```sh
-$ curl -sL http://get.eksphemeral.info/install.sh | sudo bash
+$ curl -sL http://get.eksphemeral.info/install.sh | sudo --preserve-env bash
 ```
 
 Now, let's check if there are already clusters are managed by EKSphemeral:
