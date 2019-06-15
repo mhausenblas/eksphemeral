@@ -41,8 +41,7 @@ Resources:
             - Effect: Allow
               Action:
               - eks:DescribeCluster
-              Resource:
-              - "arn:aws:eks:::*"
+              Resource: '*'
             - Effect: Allow
               Action:
               - s3:ListBucket
