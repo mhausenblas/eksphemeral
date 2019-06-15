@@ -33,16 +33,16 @@ If you want to try it out yourself, follow the steps below.
 
 ## Install
 
-In order to use EKSphemeral, clone or download this GitHub repo and make sure you've got
-`jq` and the `aws` CLI installed. The other dependencies, including 
-the [Fargate CLI](https://somanymachines.com/fargate/) will be installed
-automatically, if not present on the system.
+In order to use EKSphemeral all you need is `jq` and the `aws` CLI installed.
+The other dependencies, including the [Fargate CLI](https://somanymachines.com/fargate/) 
+will be installed automatically, if not present on the system.
 
 Make sure to set the respective environment variables before you proceed. 
-This is so that the [install process](https://raw.githubusercontent.com/mhausenblas/eksphemeral/master/img/screen-shot-2019-06-15-install.png) knows where the dependencies are and 
-which S3 bucket to use for the control plane's Lambda functions 
-(`EKSPHEMERAL_SVC_BUCKET`) and where to put the cluster 
-metadata (`EKSPHEMERAL_CLUSTERMETA_BUCKET`). For example:
+This is so that the [install process](https://raw.githubusercontent.com/mhausenblas/eksphemeral/master/img/screen-shot-2019-06-15-install.png) 
+knows where the dependencies are and which S3 bucket to use for the control plane 
+(`EKSPHEMERAL_SVC_BUCKET`) and where to put the cluster metadata (`EKSPHEMERAL_CLUSTERMETA_BUCKET`).
+
+For example:
 
 ```sh
 $ export EKSPHEMERAL_HOME=~/eksp
