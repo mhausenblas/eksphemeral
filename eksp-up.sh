@@ -21,7 +21,7 @@ then
     exit 1
 fi
 
-printf "Installing the EKSphemeral control plane, this might take a few minutes ...\n"
+printf "Installing the EKSphemeral control plane, this might take a few minutes\n"
 
 ###############################################################################
 ### S3 BUCKET OPERATIONS
@@ -37,8 +37,7 @@ else
 fi
 
 if [[ -z $(aws s3api head-bucket --bucket $EKSPHEMERAL_CLUSTERMETA_BUCKET) ]]; then
-    echo "Using $EKSPHEMERAL_CLUSTERMETA_BUCKET as the bucket to store cluster 
-metadata"
+    echo "Using $EKSPHEMERAL_CLUSTERMETA_BUCKET as the bucket to store cluster metadata"
 else
     aws s3api create-bucket \
       --bucket $EKSPHEMERAL_CLUSTERMETA_BUCKET \
