@@ -222,7 +222,7 @@ func listClusters(eksphome, cIDs string) {
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, padding, ' ', 0)
 	fmt.Fprintln(w, "NAME\tID\tKUBERNETES\tNUM WORKERS\tTIMEOUT\tTTL\tOWNER\t")
 	for _, cID := range cl {
-		res := bshellout(eksphome+"./eksp-list.sh", cID)
+		res := bshellout(eksphome+"/eksp-list.sh", cID)
 		cs, err := parseCS(res)
 		if err != nil {
 			continue
