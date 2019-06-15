@@ -117,6 +117,10 @@ func handler() error {
 				if err != nil {
 					return err
 				}
+				// now we need to exit in order to avoid cluster
+				// update (storing the spec) as per usual
+				// this solves the orphaned cluster issue
+				return nil
 			default:
 				fmt.Printf("DEBUG:: seems both control and data plane stacks and all cluster metadata have been deleted, so this would be a NOP.\n")
 			}
