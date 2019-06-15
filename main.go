@@ -50,6 +50,12 @@ func main() {
 		perr("Please specify one of the following commands: install, uninstall, create, list, or prolong", nil)
 		os.Exit(1)
 	}
+	eksphome := os.Getenv("EKSPHEMERAL_HOME")
+	if eksphome == "" {
+		perr("Please set the EKSPHEMERAL_HOME environment variable ", nil)
+		os.Exit(1)
+	}
+
 	cmd := os.Args[1]
 	switch cmd {
 	case "install", "i":

@@ -1,4 +1,4 @@
-eksphemeral_version:= v0.2.0
+eksphemeral_version:= v0.3.0
 eksctl_base_image:= base
 eksctl_deluxe_image:= deluxe
 
