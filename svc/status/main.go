@@ -48,7 +48,7 @@ type ClusterSpec struct {
 	// ClusterDetails is only valid for lookup of individual clusters,
 	// that is, when user does, for example, a eksp l CLUSTERID. It
 	// holds info such as cluster status and config
-	ClusterDetails string `json:"details"`
+	ClusterDetails map[string]string `json:"details"`
 }
 
 func serverError(err error) (events.APIGatewayProxyResponse, error) {
@@ -133,7 +133,9 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		if err != nil {
 			return serverError(err)
 		}
-		cs.ClusterDetails = cd.String()
+		cs.ClusterDetails = make(map[string]string)
+		cs.ClusterDetails["endpoint"] = *cd.Endpoint
+		cs.ClusterDetails["status"] = fmt.Sprintf("%v", cd.Status)
 		csjson, err := json.Marshal(cs)
 		if err != nil {
 			return serverError(err)
