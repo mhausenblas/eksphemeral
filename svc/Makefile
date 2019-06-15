@@ -8,10 +8,6 @@ eksphemeral_version:= v0.3.0
 
 deps:
 	go get -u ./...
-
-clean: 
-	rm ./bin/*
-	rm eksp-stack.yaml
 	
 build:
 	GOOS=linux GOARCH=amd64 go build -v -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o bin/status ./status
@@ -35,7 +31,7 @@ deploy: build up
 
 install: downloadbin up
 
-destroy: clean
+destroy:
 	aws s3 rm s3://${EKSPHEMERAL_CLUSTERMETA_BUCKET} --recursive
 	aws cloudformation delete-stack --stack-name ${EKSPHEMERAL_STACK_NAME}
 
