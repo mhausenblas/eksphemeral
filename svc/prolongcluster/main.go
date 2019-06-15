@@ -9,7 +9,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -100,16 +99,6 @@ func storeClusterSpec(bucket string, cs ClusterSpec) error {
 	return err
 }
 
-// getClusterAge returns the age of the cluster
-func getClusterAge(cs ClusterSpec) (time.Duration, error) {
-	ct, err := strconv.ParseInt(cs.CreationTime, 10, 64)
-	if err != nil {
-		return 0 * time.Minute, err
-	}
-	clusterage := time.Since(time.Unix(ct, 0))
-	return clusterage, nil
-}
-
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	clusterbucket := os.Getenv("CLUSTER_METADATA_BUCKET")
 	fmt.Printf("DEBUG:: prolong start\n")
@@ -128,12 +117,8 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	if err != nil {
 		return serverError(err)
 	}
-	age, err := getClusterAge(cs)
-	if err != nil {
-		return serverError(err)
-	}
-	cs.Timeout = cs.Timeout - int(age.Minutes()) + timeInMin
-	fmt.Printf("DEBUG:: new TTL is %v min starting now\n", cs.Timeout)
+	cs.Timeout = cs.TTL + timeInMin
+	fmt.Printf("DEBUG:: new TTL is %v min, starting now\n", cs.TTL)
 	err = storeClusterSpec(clusterbucket, cs)
 	if err != nil {
 		return serverError(err)
