@@ -14,6 +14,9 @@ EKSphemeral is a simple Amazon EKS manager for ephemeral dev/test clusters,
  allowing you to launch EKS clusters that auto-tear down after a time period,
  and you can also prolong their lifetime if you want to continue to use them.
 
+
+ [![EKSphemeral in action](https://i.gyazo.com/021bb295ca7f53e5e0dd2a5d50bc0088.gif)](img/screen-shot-2019-06-15-ls.png)
+
 1. [Install](#install)
 2. [Use](#use)
    - [Create clusters](#create-clusters)
@@ -147,13 +150,7 @@ Here, we get an array of cluster IDs back. We can use such a cluster ID as follo
 
 ```sh
 $ eksp list e90379cf-ee0a-49c7-8f82-1660760d6bb5
-ID:             e90379cf-ee0a-49c7-8f82-1660760d6bb5
-Name:           mh9-eksp
-Kubernetes:     v1.12
-Worker nodes:   2
-Timeout:        45 min
-TTL:            37 min
-Owner:          hausenbl+notif@amazon.com
+
 ```
 
 ### Prolong cluster lifetime
