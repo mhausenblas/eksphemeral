@@ -109,7 +109,7 @@ func handler() error {
 			// stack, we're ready to delete the cluster spec entry
 			// from the metadata bucket:
 			case dpstack == "" && cpstack == "":
-				err := rmClusterSpec(clusterbucket, clusterID)
+				err := rmClusterSpec(clusterbucket, cs.ID)
 				if err != nil {
 					return err
 				}

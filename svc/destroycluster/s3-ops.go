@@ -72,6 +72,6 @@ func rmClusterSpec(clusterbucket, clusterid string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("DEBUG:: removed cluster spec for cluster with ID %v", clusterid)
+	fmt.Printf("DEBUG:: removed cluster spec for cluster with ID %v from bucket %v\n", clusterid, clusterbucket)
 	return nil
 }
