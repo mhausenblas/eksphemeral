@@ -60,10 +60,10 @@ func main() {
 	switch cmd {
 	case "install", "i":
 		pinfo("Trying to install EKSphemeral ...")
-		shellout("./eksp-up.sh")
+		shellout(eksphome + "/eksp-up.sh")
 	case "uninstall", "u":
 		pinfo("Trying to uninstall EKSphemeral ...")
-		shellout("./eksp-down.sh")
+		shellout(eksphome + "/eksp-down.sh")
 	case "create", "c":
 		pinfo("Trying to create a new ephemeral cluster ...")
 		if len(os.Args) > 2 {
@@ -73,15 +73,15 @@ func main() {
 				perr("Can't create a cluster due to invalid spec:", err)
 				os.Exit(2)
 			}
-			shellout("./eksp-create.sh", clusterSpecFile)
+			shellout(eksphome+"/eksp-create.sh", clusterSpecFile)
 			break
 		}
 		// creating cluster with defaults:
-		shellout("./eksp-create.sh", os.Args[2])
+		shellout(eksphome+"/eksp-create.sh", os.Args[2])
 	case "list", "ls", "l":
 		if len(os.Args) > 2 { // we have a cluster ID, try looking up cluster spec
 			cID := os.Args[2]
-			res := bshellout("./eksp-list.sh", cID)
+			res := bshellout(eksphome+"/eksp-list.sh", cID)
 			cs, err := parseCS(res)
 			if err != nil {
 				perr("Can't render cluster details. Cluster could be gone or control plane is down :(", nil)
@@ -92,7 +92,7 @@ func main() {
 			break
 		}
 		// listing all cluster:
-		res := bshellout("./eksp-list.sh")
+		res := bshellout(eksphome + "/eksp-list.sh")
 		listClusters(res)
 	case "prolong", "p":
 		if len(os.Args) < 4 {
@@ -101,7 +101,7 @@ func main() {
 		}
 		cID := os.Args[2]
 		prolongFor := os.Args[3]
-		shellout("./eksp-prolong.sh", cID, prolongFor)
+		shellout(eksphome+"/eksp-prolong.sh", cID, prolongFor)
 	default:
 		perr("Please specify one of the following commands: install, uninstall, create, list, or prolong", nil)
 	}
