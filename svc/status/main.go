@@ -128,16 +128,16 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		if err != nil {
 			return serverError(err)
 		}
-		csjson, err := json.Marshal(cs)
-		if err != nil {
-			return serverError(err)
-		}
 		clustername := cs.Name
 		cd, err := getClusterDetails(clustername)
 		if err != nil {
 			return serverError(err)
 		}
 		cs.ClusterDetails = cd.String()
+		csjson, err := json.Marshal(cs)
+		if err != nil {
+			return serverError(err)
+		}
 		fmt.Printf("DEBUG:: cluster info lookup done\n")
 		return events.APIGatewayProxyResponse{
 			StatusCode: http.StatusOK,
