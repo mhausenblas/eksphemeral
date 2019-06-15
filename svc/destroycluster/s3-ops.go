@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/s3manager"
+	"github.com/aws/aws-sdk-go/aws/awserr"
 )
 
 // fetchClusterSpec returns the cluster spec
@@ -70,6 +71,12 @@ func rmClusterSpec(clusterbucket, clusterid string) error {
 	})
 	_, err = req.Send(context.Background())
 	if err != nil {
+		if aerr, ok := err.(awserr.Error); ok {
+			switch aerr.Code() {
+			default:
+				return aerr
+			}
+		}
 		return err
 	}
 	fmt.Printf("DEBUG:: removed cluster spec for cluster with ID %v from bucket %v\n", clusterid, clusterbucket)
