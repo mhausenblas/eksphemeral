@@ -8,7 +8,7 @@ set -o pipefail
 ### GLOBALS
 
 fargateversion=0.3.0
-ekspversion=v0.3.0
+ekspversion=v0.2.0
 
 unameres="$(uname -s)"
 case "${unameres}" in
@@ -33,7 +33,7 @@ function installFargate() {
   rm fargate$fargateversion
 }
 
-func installEKSphemeralCLI() {
+function installEKSphemeralCLI() {
   case "${machine}" in
     Linux*)     srcURL=https://github.com/mhausenblas/eksphemeral/releases/download/$ekspversion/eksp-linux ;;
     MacOS*)    srcURL=https://github.com/mhausenblas/eksphemeral/releases/download/$ekspversion/eksp-macos ;;
@@ -59,7 +59,7 @@ then
   exit 1
 fi
 
-if ! [ -x "$(command -v fargateother)" ]
+if ! [ -x "$(command -v fargate)" ]
 then
   installFargate
 fi
