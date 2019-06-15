@@ -217,7 +217,7 @@ func listClusters(cIDs string) {
 }
 
 func (cs ClusterSpec) String() string {
-	details := fmt.Sprintf("Status:\t\t%s\n\t\tEndpoint:\t%s\n\t\tPlatform version:\t%s\n\t\tVPC config:\t%s\n\t\tIAM role:\t%s\n",
+	details := fmt.Sprintf("Status:\t\t\t%s\n\t\tEndpoint:\t\t%s\n\t\tPlatform version:\t%s\n\t\tVPC config:\t\t%s\n\t\tIAM role:\t%s\n",
 		cs.ClusterDetails["status"], cs.ClusterDetails["endpoint"], cs.ClusterDetails["platformv"], cs.ClusterDetails["vpcconf"], cs.ClusterDetails["iamrole"],
 	)
 
