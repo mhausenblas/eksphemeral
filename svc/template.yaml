@@ -40,6 +40,11 @@ Resources:
           Statement:
             - Effect: Allow
               Action:
+              - eks:DescribeCluster
+              Resource:
+              - "arn:aws:eks:::*"
+            - Effect: Allow
+              Action:
               - s3:ListBucket
               - s3:GetBucket
               - s3:GetObject
