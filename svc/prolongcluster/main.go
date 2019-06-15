@@ -119,6 +119,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		return serverError(err)
 	}
 	cs.Timeout = cs.TTL + timeInMin
+	cs.TTL = cs.Timeout
 	cs.CreationTime = fmt.Sprintf("%v", time.Now().Unix())
 	fmt.Printf("DEBUG:: new TTL is %v min, starting now\n", cs.TTL)
 	err = storeClusterSpec(clusterbucket, cs)
