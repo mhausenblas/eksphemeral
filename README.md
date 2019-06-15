@@ -61,8 +61,7 @@ target email address (in the `owner` field of the cluster spec, see below for de
 We're then in the position to install the EKSphemeral CLI and control plane:
 
 ```sh
-$ ./install.sh
-
+$ curl https://get.eksphemeral.info/install.sh | sudo bash
 ```
 
 Now, let's check if there are already clusters are managed by EKSphemeral:
@@ -228,7 +227,7 @@ Fargate. The architecture looks as follows:
 
 ## Development
 
-To manuall install the binary CLI, for example on macOS, do:
+To manually install the binary CLI, for example on macOS, do:
 
 ```sh
 $ curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.3.0/eksp-macos -o eksp
