@@ -158,11 +158,11 @@ Timeout:        45 min
 TTL:            38 min
 Owner:          hausenbl+notif@amazon.com
 Details:
-        Status:                 ACTIVE
-        Endpoint:               https://A377918A0CA6D8BE793FF8BEC88964FE.sk1.us-east-2.eks.amazonaws.com
-        Platform version:       eks.2
-        VPC config:              private access: false, public access: true
-        IAM role:               arn:aws:iam::661776721573:role/eksctl-mh9-eksp-cluster-ServiceRole-1HT8OAOGNNY2Y
+        Status:             ACTIVE
+        Endpoint:           https://A377918A0CA6D8BE793FF8BEC88964FE.sk1.us-east-2.eks.amazonaws.com
+        Platform version:   eks.2
+        VPC config:          private access: false, public access: true
+        IAM role:           arn:aws:iam::661776721573:role/eksctl-mh9-eksp-cluster-ServiceRole-1HT8OAOGNNY2Y
 ```
 
 ### Prolong cluster lifetime
@@ -179,15 +179,9 @@ $ eksp prolong e90379cf-ee0a-49c7-8f82-1660760d6bb5 13
 Trying to set the TTL of cluster e90379cf-ee0a-49c7-8f82-1660760d6bb5 to 13 minutes, starting now
 Successfully prolonged the lifetime of cluster e90379cf-ee0a-49c7-8f82-1660760d6bb5 for 13 minutes.
 
-$ eksp list e90379cf-ee0a-49c7-8f82-1660760d6bb5
-ID:             e90379cf-ee0a-49c7-8f82-1660760d6bb5
-Name:           mh9-eksp
-Kubernetes:     v1.12
-Worker nodes:   2
-Timeout:        48 min
-TTL:            37 min
-Owner:          hausenbl+notif@amazon.com
-
+$ eksp list
+NAME       ID                                     KUBERNETES   NUM WORKERS   TIMEOUT   TTL      OWNER
+mh9-eksp   e90379cf-ee0a-49c7-8f82-1660760d6bb5   v1.12        2             13 min    13 min   hausenbl+notif@amazon.com
 ```
 
 Note that the prolong command updates the `timeout` field of your cluster spec, that is, the cluster TTL is 
