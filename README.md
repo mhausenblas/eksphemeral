@@ -161,7 +161,7 @@ Details:
         Status:             ACTIVE
         Endpoint:           https://A377918A0CA6D8BE793FF8BEC88964FE.sk1.us-east-2.eks.amazonaws.com
         Platform version:   eks.2
-        VPC config:          private access: false, public access: true
+        VPC config:         private access: false, public access: true
         IAM role:           arn:aws:iam::661776721573:role/eksctl-mh9-eksp-cluster-ServiceRole-1HT8OAOGNNY2Y
 ```
 
