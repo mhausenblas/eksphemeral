@@ -8,7 +8,7 @@ set -o pipefail
 ### GLOBALS
 
 fargateversion=0.3.0
-ekspversion=v0.2.0
+ekspversion=v0.3.0
 
 unameres="$(uname -s)"
 case "${unameres}" in
