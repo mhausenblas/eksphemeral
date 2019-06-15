@@ -76,7 +76,11 @@ func main() {
 		if len(os.Args) > 2 { // we have a cluster ID, try looking up cluster spec
 			cID := os.Args[2]
 			res := bshellout("./eksp-list.sh", cID)
-			cs := parseCS(res)
+			cs, err := parseCS(res)
+			if err != nil {
+				perr("Can't render cluster details. Cluster could be gone or control plane is down :(", nil)
+				break
+			}
 			cs.ID = cID
 			fmt.Println(cs)
 			break
@@ -176,7 +180,7 @@ func slurp(rc io.ReadCloser) string {
 // pinfo writes msg in light blue to stderr
 // see also https://misc.flogisoft.com/bash/tip_colors_and_formatting
 func pinfo(msg string) {
-	_, _ = fmt.Fprintf(os.Stderr, "\x1b[94m%v\x1b[0m\n", msg)
+	_, _ = fmt.Fprintf(os.Stdout, "\x1b[94m%v\x1b[0m\n", msg)
 }
 
 // perr writes message (and optionally error) in light red to stderr
@@ -189,12 +193,12 @@ func perr(msg string, err error) {
 	_, _ = fmt.Fprintf(os.Stderr, "\x1b[91m%v\x1b[0m\n", msg)
 }
 
-func parseCS(clusterspec string) (cs ClusterSpec) {
-	err := json.Unmarshal([]byte(clusterspec), &cs)
+func parseCS(clusterspec string) (cs ClusterSpec, err error) {
+	err = json.Unmarshal([]byte(clusterspec), &cs)
 	if err != nil {
-		perr("Can't render cluster spec due to:", err)
+		return cs, err
 	}
-	return cs
+	return cs, nil
 }
 
 func listClusters(cIDs string) {
@@ -203,13 +207,20 @@ func listClusters(cIDs string) {
 	if err != nil {
 		perr("Can't render cluster spec due to:", err)
 	}
+	if len(cl) == 0 {
+		pinfo("No clusters found")
+		return
+	}
 
 	const padding = 3
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, padding, ' ', 0)
 	fmt.Fprintln(w, "NAME\tID\tKUBERNETES\tNUM WORKERS\tTIMEOUT\tTTL\tOWNER\t")
 	for _, cID := range cl {
 		res := bshellout("./eksp-list.sh", cID)
-		cs := parseCS(res)
+		cs, err := parseCS(res)
+		if err != nil {
+			continue
+		}
 		cs.ID = cID
 		fmt.Fprintf(w, "%s\t%s\tv%s\t%d\t%d min\t%d min\t%s\t\n", cs.Name, cs.ID, cs.KubeVersion, cs.NumWorkers, cs.Timeout, cs.TTL, cs.Owner)
 	}
@@ -217,12 +228,15 @@ func listClusters(cIDs string) {
 }
 
 func (cs ClusterSpec) String() string {
-	details := fmt.Sprintf("Status:\t\t\t%s\n\t\tEndpoint:\t\t%s\n\t\tPlatform version:\t%s\n\t\tVPC config:\t\t%s\n\t\tIAM role:\t%s\n",
+	if cs.Name == "" {
+		return fmt.Sprintf("Cluster does not exist or control plane is down")
+	}
+	details := fmt.Sprintf("Status:\t\t\t%s\n\tEndpoint:\t\t%s\n\tPlatform version:\t%s\n\tVPC config:\t\t%s\n\tIAM role:\t\t%s\n",
 		cs.ClusterDetails["status"], cs.ClusterDetails["endpoint"], cs.ClusterDetails["platformv"], cs.ClusterDetails["vpcconf"], cs.ClusterDetails["iamrole"],
 	)
 
 	return fmt.Sprintf(
-		"ID:\t\t%s\nName:\t\t%s\nKubernetes:\tv%s\nWorker nodes:\t%d\nTimeout:\t%d min\nTTL:\t\t%d min\nOwner:\t\t%s\nDetails:\n\t\t%s",
+		"ID:\t\t%s\nName:\t\t%s\nKubernetes:\tv%s\nWorker nodes:\t%d\nTimeout:\t%d min\nTTL:\t\t%d min\nOwner:\t\t%s\nDetails:\n\t%s",
 		cs.ID, cs.Name, cs.KubeVersion, cs.NumWorkers, cs.Timeout, cs.TTL, cs.Owner, details,
 	)
 }
