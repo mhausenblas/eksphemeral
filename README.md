@@ -150,7 +150,19 @@ Here, we get an array of cluster IDs back. We can use such a cluster ID as follo
 
 ```sh
 $ eksp list e90379cf-ee0a-49c7-8f82-1660760d6bb5
-
+ID:             e90379cf-ee0a-49c7-8f82-1660760d6bb5
+Name:           mh9-eksp
+Kubernetes:     v1.12
+Worker nodes:   2
+Timeout:        45 min
+TTL:            38 min
+Owner:          hausenbl+notif@amazon.com
+Details:
+        Status:                 ACTIVE
+        Endpoint:               https://A377918A0CA6D8BE793FF8BEC88964FE.sk1.us-east-2.eks.amazonaws.com
+        Platform version:       eks.2
+        VPC config:              private access: false, public access: true
+        IAM role:               arn:aws:iam::661776721573:role/eksctl-mh9-eksp-cluster-ServiceRole-1HT8OAOGNNY2Y
 ```
 
 ### Prolong cluster lifetime
