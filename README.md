@@ -15,7 +15,7 @@ EKSphemeral is a simple Amazon EKS manager for ephemeral dev/test clusters,
  and you can also prolong their lifetime if you want to continue to use them.
 
 
- [![EKSphemeral in action](https://i.gyazo.com/021bb295ca7f53e5e0dd2a5d50bc0088.gif)](img/screen-shot-2019-06-15-ls.png)
+ [![EKSphemeral in action](https://i.gyazo.com/923543f2f6c427cc33a40a4ba16834da.gif)](img/screen-shot-2019-06-15-ls.png)
 
 1. [Install](#install)
 2. [Use](#use)
