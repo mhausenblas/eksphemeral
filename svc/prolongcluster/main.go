@@ -9,6 +9,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -118,6 +119,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		return serverError(err)
 	}
 	cs.Timeout = cs.TTL + timeInMin
+	cs.CreationTime = fmt.Sprintf("%v", time.Now().Unix())
 	fmt.Printf("DEBUG:: new TTL is %v min, starting now\n", cs.TTL)
 	err = storeClusterSpec(clusterbucket, cs)
 	if err != nil {
