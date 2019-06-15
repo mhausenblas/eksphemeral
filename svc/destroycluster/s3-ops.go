@@ -60,6 +60,7 @@ func storeClusterSpec(clusterbucket string, cs ClusterSpec) error {
 // in the metadata bucket and with that effectively
 // states the cluster doesn't exist anymore
 func rmClusterSpec(clusterbucket, clusterid string) error {
+	fmt.Printf("DEBUG:: attempting to remove cluster spec %v from bucket %v\n", clusterid+".json", clusterbucket)
 	cfg, err := external.LoadDefaultAWSConfig()
 	if err != nil {
 		return err
@@ -71,6 +72,7 @@ func rmClusterSpec(clusterbucket, clusterid string) error {
 	})
 	_, err = req.Send(context.Background())
 	if err != nil {
+		fmt.Printf("DEBUG:: error removing cluster spec %v", err)
 		if aerr, ok := err.(awserr.Error); ok {
 			switch aerr.Code() {
 			default:
@@ -79,6 +81,5 @@ func rmClusterSpec(clusterbucket, clusterid string) error {
 		}
 		return err
 	}
-	fmt.Printf("DEBUG:: removed cluster spec for cluster with ID %v from bucket %v\n", clusterid, clusterbucket)
 	return nil
 }

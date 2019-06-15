@@ -60,7 +60,11 @@ func handler() error {
 	}
 	svc := s3.New(cfg)
 	fmt.Printf("Scanning bucket %v for cluster specs\n", clusterbucket)
-	req := svc.ListObjectsRequest(&s3.ListObjectsInput{Bucket: &clusterbucket})
+	req := svc.ListObjectsRequest(&s3.ListObjectsInput{
+		Bucket: &clusterbucket,
+		// Delimiter: aws.String("/"),
+	},
+	)
 	resp, err := req.Send(context.TODO())
 	if err != nil {
 		fmt.Println(err)
