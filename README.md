@@ -14,53 +14,26 @@ EKSphemeral is a simple Amazon EKS manager for ephemeral dev/test clusters,
  allowing you to launch EKS clusters that auto-tear down after a time period,
  and you can also prolong their lifetime if you want to continue to use them.
 
-0. [Architecture](#architecture)
 1. [Install](#install)
 2. [Use](#use)
    - [Create clusters](#create-clusters)
    - [List clusters](#list-clusters)
    - [Prolong cluster lifetime](#prolong-cluster-lifetime)
 3. [Uninstall](#uninstall)
-4. [Development](#development)
-
-## Architecture
-
-EKSphemeral has a control plane implemented in an AWS Lambda/Amazon S3 combo, 
-and as its data plane it is using [eksctl](https://eksctl.io) running in AWS 
-Fargate. The architecture looks as follows:  
-
-![EKSphemeral architecture](img/architecture.png)
-
-1. With `eksp install` you provisions EKSphemeral's control plane (Lambda+S3).
-2. Whenever you want to provision a throwaway EKS cluster, use `eksp create`. It will do two things: 
-3. Provision the cluster using `eksctl` running in Fargate, and when that is completed,
-4. Create an cluster spec entry in S3, via the `/create` endpoint of EKSphemeral's HTTP API.
-5. Every five minutes, a CloudWatch event triggers the execution of another Lambda function called `DestroyClusterFunc`,
-   which notifies the owners of clusters that are about to expire (send an email up to 5 minutes before the cluster is destroyed),
-   and when the time comes, it tears the cluster down. 
-6. Once the EKS cluster is provisioned and the Kubernetes context is configured you can use your cluster.
-7. You can use `eksp list` (via the `/status` endpoint) at any time to list managed clusters.
-8. If you want to keep your cluster around longer, use `eksp prolong` (via the `/prolong` endpoint) to extend its lifetime.
-9. Last but not least, if you want to get rid of EKSphemeral, use the `eksp uninstall`, removing all cluster specs in the S3 bucket and deleting all Lambda functions.
+4. [Architecture](#architecture)
+5. [Development](#development)
 
 If you like, you can have a look at a [4 min video walkthrough](https://www.youtube.com/watch?v=2A8olhYL9iI), before you try it out yourself.
 Since the minimal time for an end-to-end provisioning and usage cycle is ca. 40min, the video walkthrough is showing a 1:10 time compression, roughly.
 
 If you want to try it out yourself, follow the steps below.
 
-
 ## Install
 
-In order to use EKSphemeral, clone this repo, and make sure you've got `jq`, the `aws` CLI 
-and the [Fargate CLI](https://somanymachines.com/fargate/) installed.
-
-First off, install the binary CLI, for example for macOS:
-
-```sh
-$ curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.2.0/eksp-macos -o eksp
-$ chmod +x eksp
-$ sudo mv ./eksp /usr/local/bin
-```
+In order to use EKSphemeral, clone or download this GitHub repo and make sure you've got
+`jq` and the `aws` CLI installed. The other dependencies, including 
+the [Fargate CLI](https://somanymachines.com/fargate/) will be installed
+automatically, if not present on the system.
 
 Make sure to set the respective environment variables before you proceed. 
 This is so that the install process knows which S3 bucket to use for the control 
@@ -85,45 +58,25 @@ both the source email, that is, the address you provide in `EKSPHEMERAL_EMAIL_FR
 target email address (in the `owner` field of the cluster spec, see below for details) in the 
 [EU (Ireland)](https://docs.aws.amazon.com/general/latest/gr/rande.html) `eu-west-1` region. 
 
-Now we're in the position to install the EKSphemeral control plane, that is, to create S3 buckets if they don't exist yet 
-and deploy the Lambda functions:
+We're then in the position to install the EKSphemeral CLI and control plane:
 
 ```sh
-$ eksp install
-Installing the EKSphemeral control plane, this might take a few minutes ...
-Using eks-svc as the control plane service code bucket
-Using eks-cluster-meta as the bucket to store cluster
-metadata
-mkdir -p bin
-curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.2.0/createcluster -o bin/createcluster
-curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.2.0/destroycluster -o bin/destroycluster
-curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.2.0/prolongcluster -o bin/prolongcluster
-curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.2.0/status -o bin/status
-chmod +x bin/*
-sam package --template-file template.yaml --output-template-file eksp-stack.yaml --s3-bucket eks-svc
-Uploading to 226fe5d95508b95aa57845beffffc654  18278955 / 18278955.0  (100.00%)
-Successfully packaged artifacts and wrote output template to file eksp-stack.yaml.
-sam deploy --template-file eksp-stack.yaml --stack-name eksp --capabilities CAPABILITY_IAM --parameter-overrides ClusterMetadataBucketName="eks-cluster-meta" NotificationFromEmailAddress="hausenbl+eksphemeral@amazon.com"
+$ ./install.sh
 
-Waiting for changeset to be created..
-Waiting for stack create/update to complete
-Successfully created/updated stack - eksp
-
-Control plane should be up now, let us verify that:
-
-All good, ready to launch ephemeral clusters now!
 ```
 
 Now, let's check if there are already clusters are managed by EKSphemeral:
 
 ```sh
 $ eksp list
-
+No clusters found
 ```
 
 Since we just installed EKSphemeral, there are no clusters, yet. Let's change that.
 
 ## Use
+
+You can create, inspect, and prolong the lifetime of a cluster.
 
 ### Create clusters
 
@@ -237,12 +190,51 @@ cluster specs from the `EKSPHEMERAL_CLUSTERMETA_BUCKET` S3 bucket:
 
 ```bash
 $ eksp uninstall
+Trying to uninstall EKSphemeral ...
+Taking down the EKSphemeral control plane, this might take a few minutes ...
+rm ./bin/*
+rm eksp-stack.yaml
+aws s3 rm s3://eks-cluster-meta --recursive
+aws cloudformation delete-stack --stack-name eksp
+
+Tear-down will complete within some 5 min. You can check the status manually, if you like, using 'make status' in the svc/ directory.
+Once you see a message saying something like 'Stack with id eksp does not exist' you know for sure it's gone :)
+
+Thanks for using EKSphemeral and hope to see ya soon ;)
 ```
 
 Note that the service code bucket and the cluster metadata bucket are still around after this. 
 You can either manually delete them or keep them around, to reuse them later. 
 
+## Architecture
+
+EKSphemeral has a control plane implemented in an AWS Lambda/Amazon S3 combo, 
+and as its data plane it is using [eksctl](https://eksctl.io) running in AWS 
+Fargate. The architecture looks as follows:  
+
+![EKSphemeral architecture](img/architecture.png)
+
+1. With `eksp install` you provisions EKSphemeral's control plane (Lambda+S3).
+2. Whenever you want to provision a throwaway EKS cluster, use `eksp create`. It will do two things: 
+3. Provision the cluster using `eksctl` running in Fargate, and when that is completed,
+4. Create an cluster spec entry in S3, via the `/create` endpoint of EKSphemeral's HTTP API.
+5. Every five minutes, a CloudWatch event triggers the execution of another Lambda function called `DestroyClusterFunc`,
+   which notifies the owners of clusters that are about to expire (send an email up to 5 minutes before the cluster is destroyed),
+   and when the time comes, it tears the cluster down. 
+6. Once the EKS cluster is provisioned and the Kubernetes context is configured you can use your cluster.
+7. You can use `eksp list` (via the `/status` endpoint) at any time to list managed clusters.
+8. If you want to keep your cluster around longer, use `eksp prolong` (via the `/prolong` endpoint) to extend its lifetime.
+9. Last but not least, if you want to get rid of EKSphemeral, use the `eksp uninstall`, removing all cluster specs in the S3 bucket and deleting all Lambda functions.
+
 ## Development
+
+To manuall install the binary CLI, for example on macOS, do:
+
+```sh
+$ curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.3.0/eksp-macos -o eksp
+$ chmod +x eksp
+$ sudo mv ./eksp /usr/local/bin
+```
 
 To learn how to customize and extend EKSphemeral or simply toy around with it, 
 see the dedicated [development docs](dev.md).
