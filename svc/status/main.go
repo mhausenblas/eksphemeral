@@ -10,6 +10,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/aws/aws-sdk-go-v2/service/eks"
+
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -43,6 +45,10 @@ type ClusterSpec struct {
 	// JSON representation of the cluster spec as an object in the metadata
 	// bucket
 	CreationTime string `json:"created"`
+	// ClusterDetails is only valid for lookup of individual clusters,
+	// that is, when user does, for example, a eksp l CLUSTERID. It
+	// holds info such as cluster status and config
+	ClusterDetails string `json:"details"`
 }
 
 func serverError(err error) (events.APIGatewayProxyResponse, error) {
@@ -80,6 +86,29 @@ func fetchClusterSpec(bucket, clusterid string) (ClusterSpec, error) {
 	return cs, nil
 }
 
+// getClusterDetails returns the cluster details
+// such as status, configuration, etc. as per:
+// https://godoc.org/github.com/aws/aws-sdk-go-v2/service/eks#Cluster
+func getClusterDetails(clustername string) (eks.Cluster, error) {
+	c := eks.Cluster{}
+	cfg, err := external.LoadDefaultAWSConfig()
+	if err != nil {
+		return c, err
+	}
+	svc := eks.New(cfg)
+	dcreq := svc.DescribeClusterRequest(&eks.DescribeClusterInput{Name: &clustername})
+	if err != nil {
+		return c, err
+	}
+	fmt.Printf("DEBUG:: looking up cluster details for %v\n", clustername)
+	dcrresp, err := dcreq.Send(context.TODO())
+	if err != nil {
+		return c, err
+	}
+	c = *dcrresp.Cluster
+	return c, nil
+}
+
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	clusterbucket := os.Getenv("CLUSTER_METADATA_BUCKET")
 	fmt.Printf("DEBUG:: status start\n")
@@ -103,6 +132,12 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		if err != nil {
 			return serverError(err)
 		}
+		clustername := cs.Name
+		cd, err := getClusterDetails(clustername)
+		if err != nil {
+			return serverError(err)
+		}
+		cs.ClusterDetails = cd.String()
 		fmt.Printf("DEBUG:: cluster info lookup done\n")
 		return events.APIGatewayProxyResponse{
 			StatusCode: http.StatusOK,
