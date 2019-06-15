@@ -8,10 +8,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
-	"strconv"
 	"text/tabwriter"
-
-	"github.com/aws/aws-sdk-go-v2/service/eks"
 )
 
 // ClusterSpec represents the parameters for eksctl,
@@ -42,7 +39,7 @@ type ClusterSpec struct {
 	// ClusterDetails is only valid for lookup of individual clusters,
 	// that is, when user does, for example, a eksp l CLUSTERID. It
 	// holds info such as cluster status and config
-	ClusterDetails string `json:"details"`
+	ClusterDetails map[string]string `json:"details"`
 }
 
 var Version string
@@ -220,10 +217,9 @@ func listClusters(cIDs string) {
 }
 
 func (cs ClusterSpec) String() string {
-	c := eks.Cluster{}
-	cd, _ := strconv.Unquote(cs.ClusterDetails)
-	_ = json.Unmarshal([]byte(cd), &c)
-	details := fmt.Sprintf("%v", c)
+	details := fmt.Sprintf("Status:\t\t%s\n\t\tEndpoint:\t%s\n",
+		cs.ClusterDetails["status"], cs.ClusterDetails["endpoint"],
+	)
 	return fmt.Sprintf(
 		"ID:\t\t%s\nName:\t\t%s\nKubernetes:\tv%s\nWorker nodes:\t%d\nTimeout:\t%d min\nTTL:\t\t%d min\nOwner:\t\t%s\nDetails:\n\t\t%s",
 		cs.ID, cs.Name, cs.KubeVersion, cs.NumWorkers, cs.Timeout, cs.TTL, cs.Owner, details,
