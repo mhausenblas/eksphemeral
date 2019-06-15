@@ -36,11 +36,13 @@ the [Fargate CLI](https://somanymachines.com/fargate/) will be installed
 automatically, if not present on the system.
 
 Make sure to set the respective environment variables before you proceed. 
-This is so that the install process knows which S3 bucket to use for the control 
-plane's Lambda functions (`EKSPHEMERAL_SVC_BUCKET`) and where to put the cluster 
+This is so that the install process knows where the dependencies are and 
+which S3 bucket to use for the control plane's Lambda functions 
+(`EKSPHEMERAL_SVC_BUCKET`) and where to put the cluster 
 metadata (`EKSPHEMERAL_CLUSTERMETA_BUCKET`). For example:
 
 ```sh
+$ export EKSPHEMERAL_HOME=~/eksp
 $ export EKSPHEMERAL_SVC_BUCKET=eks-svc
 $ export EKSPHEMERAL_CLUSTERMETA_BUCKET=eks-cluster-meta
 ```
@@ -58,7 +60,8 @@ both the source email, that is, the address you provide in `EKSPHEMERAL_EMAIL_FR
 target email address (in the `owner` field of the cluster spec, see below for details) in the 
 [EU (Ireland)](https://docs.aws.amazon.com/general/latest/gr/rande.html) `eu-west-1` region. 
 
-We're then in the position to install the EKSphemeral CLI and control plane:
+We're then in the position to install the EKSphemeral CLI and control plane 
+(here shown for an install below your home directory):
 
 ```sh
 $ curl https://get.eksphemeral.info/install.sh | sudo bash

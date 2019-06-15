@@ -67,6 +67,19 @@ fi
 ###############################################################################
 ### MAIN
 
+if [[ ! -z "$EKSPHEMERAL_HOME" ]]
+then
+  echo "I don't know where to install EKSphemeral dependencies, please set the EKSPHEMERAL_HOME environment variable"
+fi
+
+mkdir -p $EKSPHEMERAL_HOME
+
+cd $EKSPHEMERAL_HOME
+
+git clone https://github.com/mhausenblas/eksphemeral.git
+
+cd eksphemeral
+
 # Install CLI
 installEKSphemeralCLI
 
