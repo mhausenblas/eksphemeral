@@ -197,8 +197,7 @@ cluster specs from the `EKSPHEMERAL_CLUSTERMETA_BUCKET` S3 bucket:
 $ eksp uninstall
 Trying to uninstall EKSphemeral ...
 Taking down the EKSphemeral control plane, this might take a few minutes ...
-rm ./bin/*
-rm eksp-stack.yaml
+
 aws s3 rm s3://eks-cluster-meta --recursive
 aws cloudformation delete-stack --stack-name eksp
 
