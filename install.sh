@@ -72,8 +72,6 @@ then
   echo "I don't know where to install EKSphemeral dependencies, please set the EKSPHEMERAL_HOME environment variable"
 fi
 
-exit 1
-
 mkdir -p $EKSPHEMERAL_HOME
 
 cd $EKSPHEMERAL_HOME
