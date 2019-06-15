@@ -8,6 +8,12 @@ set -o pipefail
 ###############################################################################
 ### PRE-FLIGHT CHECK
 
+if [[ -z "$EKSPHEMERAL_HOME" ]]
+then
+  echo "I don't know where to install EKSphemeral dependencies, please set the EKSPHEMERAL_HOME environment variable"
+  exit 1
+fi
+
 if aws cloudformation describe-stacks --stack-name eksp > /dev/null 2>&1
 then
     EKSPHEMERAL_URL=$(aws cloudformation describe-stacks --stack-name eksp | jq '.Stacks[].Outputs[] | select(.OutputKey=="EKSphemeralAPIEndpoint").OutputValue' -r)
@@ -44,9 +50,9 @@ fi
 ###############################################################################
 ### INSTALL CONTROL PLANE
 
-cd svc
+cd $EKSPHEMERAL_HOME/svc
 make install
-cd ..
+cd -
 
 printf "\nControl plane should be up now, let us verify that:\n"
 

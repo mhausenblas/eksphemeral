@@ -71,6 +71,7 @@ fi
 if [[ -z "$EKSPHEMERAL_HOME" ]]
 then
   echo "I don't know where to install EKSphemeral dependencies, please set the EKSPHEMERAL_HOME environment variable"
+  exit 1
 fi
 
 mkdir -p $EKSPHEMERAL_HOME
