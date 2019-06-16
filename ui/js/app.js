@@ -4,7 +4,7 @@ var cpURL = 'EKSPHEMERAL_URL';
 
 
 $(document).ready(function($){
-  $('#create').click(function(event) {
+  $('#clusters').click(function(event) {
     var ep = '/status/*';
     $('#status').html('<img src="./img/standby.gif" alt="please wait" width="64px">');
     $.ajax({

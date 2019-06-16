@@ -54,6 +54,7 @@ li {
     padding: 20px;
     border-radius: 3px;
     color: #f0f0f0;
+    cursor: pointer;
 }
 
 .actionbtn { 
