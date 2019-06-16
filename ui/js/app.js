@@ -18,7 +18,14 @@ $(document).ready(function($){
         },
         success: function (d) {
           console.info(d);
-          // $('#clusterdetails').html(d);
+          var buffer = "";
+          var consoleURL = "https://console.aws.amazon.com/eks/home";
+          for (let i = 0; i < d.length; i++) {
+            var cID = d[i];
+            buffer += '<a href="' + consoleURL + ' target="_blank" rel="noopener">' + cID + '</a>';
+            buffer += '<span class="ttl">42 min</span> <span class="details">Details…</span>';
+          }
+          $('#clusterdetails').html(buffer);
           $('#status').html('');
         }
     })
