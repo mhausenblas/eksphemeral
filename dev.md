@@ -93,4 +93,15 @@ $ fargate task run eksctl \
           --security-group-id $EKSPHEMERAL_SG
 ```
 
+## The UI
+
+Make sure you work in the [ui](ui/) directory.
+
+```sh
+$ docker build -t quay.io/mhausenblas/eksp-ui:base .
+
+$ docker run --detach --publish 4200:4200 quay.io/mhausenblas/eksp-ui:base
+
+```
+
 Please create issues if anything doesn't work as described in here.
