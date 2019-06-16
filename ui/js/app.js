@@ -1,6 +1,6 @@
 'use strict';
 
-var cpURL = 'https://nswn7lkjbk.execute-api.us-east-2.amazonaws.com/Prod';
+var cpURL = 'EKSPHEMERAL_URL';
 
 
 $(document).ready(function($){
