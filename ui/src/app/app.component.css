@@ -15,6 +15,8 @@ a {
 li {
     margin: 30px 10px;
     padding: 30px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: #f0f0f0;
 }
 
 #top {
@@ -40,7 +42,7 @@ li {
 #clusters {
     font-family: Verdana, Geneva, Tahoma, sans-serif; 
     background-color: #000000;
-    margin: 20px 95px 20px 95px;
+    margin: 90px 120px 20px 120px;
     border-radius: 3px;
 }
 
