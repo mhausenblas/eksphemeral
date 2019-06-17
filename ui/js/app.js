@@ -15,7 +15,7 @@ $(document).ready(function($){
   $('body').on('click', 'span.showdetails', function () {
     event.stopPropagation();
     event.stopImmediatePropagation();
-    cID = $(this).parent().attr('id');
+    var cID = $(this).parent().attr('id');
     clusterdetail(cID);
   });
 });
