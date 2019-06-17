@@ -3,16 +3,15 @@
 // the control plane URL, replaced by actual value, that is, the value of 
 // of $EKSPHEMERAL_URL on container image build:
 var cpURL = 'EKSPHEMERAL_URL';
-// the frequency with which cluster list is refreshed given in seconds
-// so  1000*60*5 for example is 5 minutes:
-var refreshEvery = 1000*60*5;
 
 $(document).ready(function($){
-  // list clusters regularly:
-  setInterval(clusters, refreshEvery);
+  // list clusters when user clicks the refresh button:
+  $('#clusters > h2').click(function (event) {
+    clusters();
+  });
 
   // show cluster details when user clicks 'Details':
-  $('.showdetails').click(function (event) {
+  $('span.showdetails').click(function (event) {
     event.stopPropagation();
     event.stopImmediatePropagation();
     cID = $(this).parent().attr('id');
@@ -68,11 +67,45 @@ function clusterdetail(cID) {
       if (d != null) {
         console.info(d);
         var buffer = '';
-        buffer += '<div class="cdfield">TTL: ' + d.TTL + '</div>';
-        buffer += '<div class="cdfield">Number of worker nodes: ' + d.numworkers + '</div>';
-        $('#' + cID).$('.cdetails').html(buffer);
+        buffer += '<div class="cdfield"><span class="cdtitle">Name:</span> ' + d.name + '</div>';
+        buffer += '<div class="cdfield"><span class="cdtitle">Kubernetes version:</span> ' + d.kubeversion + '</div>';
+        buffer += '<div class="cdfield"><span class="cdtitle">Number of worker nodes:</span> ' + d.numworkers + '</div>';
+        buffer += '<div class="cdfield"><span class="cdtitle">Created at:</span> ' + convertTimestamp(d.created) + '</div>';
+        buffer += '<div class="cdfield"><span class="cdtitle">TTL:</span> ' + d.ttl + ' min left</div>';
+        buffer += '<div class="cdfield"><span class="cdtitle">Owner:</span> <a href="mailto:' + d.owner + '">' + d.owner + '</a> notified on creation and 5 min before destruction</div>';
+        $('#' + cID + ' .cdetails').html(buffer);
         $('#status').html('');
       }
     }
   })
+}
+
+
+// as per https://gist.github.com/kmaida/6045266
+
+function convertTimestamp(timestamp) {
+  // converts the passed timestamp to milliseconds 
+  var d = new Date(timestamp * 1000),
+    yyyy = d.getFullYear(),
+    // Months are zero based, hence adding leading 0:
+    mm = ('0' + (d.getMonth() + 1)).slice(-2),
+    // Add leading 0:
+    dd = ('0' + d.getDate()).slice(-2),
+    hh = d.getHours(),
+    h = hh,
+    // Add leading 0:
+    min = ('0' + d.getMinutes()).slice(-2),
+    ampm = 'AM',
+    time;
+  if (hh > 12) {
+    h = hh - 12;
+    ampm = 'PM';
+  } else if (hh === 12) {
+    h = 12;
+    ampm = 'PM';
+  } else if (hh == 0) {
+    h = 12;
+  }
+  time = yyyy + '-' + mm + '-' + dd + 'T' + h + ':' + min;
+  return time;
 }

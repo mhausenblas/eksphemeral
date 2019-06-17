@@ -56,6 +56,11 @@ li {
     color: #f0f0f0;
 }
 
+h2:hover {
+    color: #FF9900;
+    cursor: pointer;
+}
+
 .actionbtn { 
     -webkit-border-radius: 9;
     -moz-border-radius: 9;
@@ -75,10 +80,6 @@ li {
     cursor: pointer;
 }
 
-.cdfield {
-    margin: 2px 10px;
-}
-
 .showdetails {
     margin: 2px 40px;
     text-transform: uppercase;
@@ -88,5 +89,20 @@ li {
 .showdetails:hover {
     color: #FF9900;
     cursor: pointer;
+}
+
+.cdetails {
+    padding: 20px;
+
+}
+
+.cdfield {
+    margin: 2px 10px;
+    padding: 5px;
+    color: #cfcbcb;
+}
+
+.cdtitle {
+    color: #ffffff;
 }
 
