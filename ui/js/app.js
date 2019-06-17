@@ -10,8 +10,9 @@ $(document).ready(function($){
     clusters();
   });
 
-  // show cluster details when user clicks 'Details':
-  $('span.showdetails').click(function (event) {
+  // show cluster details when user clicks 'Details'
+  // note: since it's an dynamically added element, needs the .on() form:
+  $('body').on('click', 'span.showdetails', function () {
     event.stopPropagation();
     event.stopImmediatePropagation();
     cID = $(this).parent().attr('id');
