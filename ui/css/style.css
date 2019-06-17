@@ -51,7 +51,7 @@ li {
 #clusters {
     background-color: #000000;
     margin: 0px 120px 20px 120px;
-    padding: 20px;
+    padding: 5px 0px 50px 50px;
     border-radius: 3px;
     color: #f0f0f0;
 }
@@ -81,19 +81,35 @@ h2:hover {
 }
 
 .showdetails {
-    margin: 2px 40px;
+    margin: 0px 10px;
     text-transform: uppercase;
     font-size: 75%;
+
+    -webkit-border-radius: 4;
+    -moz-border-radius: 4;
+    border-radius: 4px;
+    font-family: Arial;
+    color: #f0f0f0;
+    background: #FF9900;
+    padding: 5px 5px 5px 5px;
+    border: solid #000000 1px;
+    text-decoration: none;
 }
 
 .showdetails:hover {
-    color: #FF9900;
+    background: #7ec72a;
+    text-decoration: none;
     cursor: pointer;
 }
 
-.cdetails {
-    padding: 20px;
+.cluster {
+    padding: 10px 0px 10px 5px; 
+}
 
+.cdetails {
+    padding: 10px 10px 10px 0px;
+    border-bottom: 1px dashed #ff9900;
+    margin: 15px 20px 0 0;
 }
 
 .cdfield {

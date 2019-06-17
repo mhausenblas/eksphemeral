@@ -46,10 +46,11 @@ function updateClusters(){
         success: function (d) {
           if (d != null) {
             console.info(d);
+            var consoleLink = 'https://console.aws.amazon.com/eks/home?#/clusters/';
             var buffer = '';
             buffer += d.name;
             $('#' + cID + ' .cdlabel a').html(buffer);
-            $('#status').html('');
+            $('#' + cID + ' .cdlabel a').attr('href', consoleLink + d.name);
           }
         }
       })
@@ -73,7 +74,7 @@ function clusters(){
       if (d != null) {
         console.info(d);
         var buffer = '';
-        var consoleURL = "https://console.aws.amazon.com/eks/home";
+        var consoleURL = "https://console.aws.amazon.com/eks/";
         for (let i = 0; i < d.length; i++) {
           var cID = d[i];
           buffer += '<div class="cluster" id="' + cID + '">';
@@ -91,6 +92,13 @@ function clusters(){
 
 function clusterdetail(cID) {
   var ep = '/status/'+cID;
+  var currentdetails = $('#' + cID + ' .cdetails').text();
+
+  if (currentdetails != '') {
+    $('#' + cID + ' .cdetails').toggle();
+    return
+  }
+
   $('#status').html('<img src="./img/standby.gif" alt="please wait" width="64px">');
   $.ajax({
     type: "GET",
