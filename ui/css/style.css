@@ -54,7 +54,6 @@ li {
     padding: 20px;
     border-radius: 3px;
     color: #f0f0f0;
-    cursor: pointer;
 }
 
 .actionbtn { 
@@ -76,17 +75,17 @@ li {
     cursor: pointer;
 }
 
-.ttl {
+.cdfield {
     margin: 2px 10px;
 }
 
-.details {
+.showdetails {
     margin: 2px 40px;
     text-transform: uppercase;
     font-size: 75%;
 }
 
-.details:hover {
+.showdetails:hover {
     color: #FF9900;
     cursor: pointer;
 }
