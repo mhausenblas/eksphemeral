@@ -38,9 +38,7 @@ The other dependencies, including the [Fargate CLI](https://somanymachines.com/f
 will be installed automatically, if not present on the system.
 
 Make sure to set the respective environment variables before you proceed. 
-This is so that the [install process](https://raw.githubusercontent.com/mhausenblas/eksphemeral/master/img/screen-shot-2019-06-15-install.png) 
-knows where the dependencies are and which S3 bucket to use for the control plane 
-(`EKSPHEMERAL_SVC_BUCKET`) and where to put the cluster metadata (`EKSPHEMERAL_CLUSTERMETA_BUCKET`).
+This is so that the install process knows where the dependencies are and which S3 bucket to use for the control plane (`EKSPHEMERAL_SVC_BUCKET`) and where to put the cluster metadata (`EKSPHEMERAL_CLUSTERMETA_BUCKET`).
 
 For example:
 
