@@ -3,15 +3,23 @@
 // the control plane URL, replaced by actual value, that is, the value of 
 // of $EKSPHEMERAL_URL on container image build:
 var cpURL = 'EKSPHEMERAL_URL';
-// how fast to refresh cluster list
-var refreshClusters = 10 * 1000;
+
+// how fast to refresh cluster list (5 * 60 * 1000 = every 5 min)
+var refreshClusterList= 5*60*1000;
+
+// how fast to refresh cluster details (10 * 1000 = every 10 sec)
+var refreshClusterDetails = 10*1000;
 
 $(document).ready(function($){
+  clusters();
 
-  // incrementally update cluster headers
-  setInterval(updateClusters, refreshClusters);
+  // list clusters periodically:
+  setInterval(clusters, refreshClusterList);
 
-  // list clusters when user clicks the refresh button:
+  // incrementally update cluster headers:
+  setInterval(updateClusters, refreshClusterDetails);
+
+  // manually list clusters when user clicks the refresh button:
   $('#clusters > h2').click(function (event) {
     clusters();
   });
@@ -19,8 +27,8 @@ $(document).ready(function($){
   // show cluster details when user clicks 'Details'
   // note: since it's an dynamically added element, needs the .on() form:
   $('body').on('click', 'span.showdetails', function () {
-    event.stopPropagation();
-    event.stopImmediatePropagation();
+    // event.stopPropagation();
+    // event.stopImmediatePropagation();
     var cID = $(this).parent().attr('id');
     clusterdetail(cID);
   });
