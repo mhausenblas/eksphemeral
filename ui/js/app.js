@@ -27,9 +27,10 @@ $(document).ready(function($){
 });
 
 function updateClusters(){
-  $('div.cluster.cdlabel').each(function (index, value) {
+  console.info('Scanning cluster list');
+  $('div.cluster span.cdlabel').each(function (index, value) {
     var cID = $(this).parent().attr('id');
-    var lval = $('#' + cID + ' .cdlabel a').contents()
+    var lval = $('#' + cID + ' .cdlabel a').text();
     var ep = '/status/' + cID;
     console.info('Checking cluster with ID ' + cID + ' with the label ' + lval);
     if (lval == cID){
@@ -46,8 +47,8 @@ function updateClusters(){
           if (d != null) {
             console.info(d);
             var buffer = '';
-            buffer += '<div class="cdfield"><span class="cdtitle">Owner:</span> <a href="mailto:' + d.owner + '">' + d.owner + '</a> notified on creation and 5 min before destruction</div>';
-            $('#' + cID + ' .cdetails').html(buffer);
+            buffer += d.name;
+            $('#' + cID + ' .cdlabel a').html(buffer);
             $('#status').html('');
           }
         }
