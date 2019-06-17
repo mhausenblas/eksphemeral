@@ -3,8 +3,14 @@
 // the control plane URL, replaced by actual value, that is, the value of 
 // of $EKSPHEMERAL_URL on container image build:
 var cpURL = 'EKSPHEMERAL_URL';
+// how fast to refresh cluster list
+var refreshClusters = 10 * 1000;
 
 $(document).ready(function($){
+
+  // incrementally update cluster headers
+  setInterval(updateClusters, refreshClusters);
+
   // list clusters when user clicks the refresh button:
   $('#clusters > h2').click(function (event) {
     clusters();
@@ -20,6 +26,36 @@ $(document).ready(function($){
   });
 });
 
+function updateClusters(){
+  $('div.cluster.cdlabel').each(function (index, value) {
+    var cID = $(this).parent().attr('id');
+    var lval = $('#' + cID + ' .cdlabel a').contents()
+    var ep = '/status/' + cID;
+    console.info('Checking cluster with ID ' + cID + ' with the label ' + lval);
+    if (lval == cID){
+      $.ajax({
+        type: "GET",
+        url: cpURL + ep,
+        dataType: 'json',
+        async: true,
+        error: function (d) {
+          console.info(d);
+          $('#status').html('<div>control plane seems down</div>');
+        },
+        success: function (d) {
+          if (d != null) {
+            console.info(d);
+            var buffer = '';
+            buffer += '<div class="cdfield"><span class="cdtitle">Owner:</span> <a href="mailto:' + d.owner + '">' + d.owner + '</a> notified on creation and 5 min before destruction</div>';
+            $('#' + cID + ' .cdetails').html(buffer);
+            $('#status').html('');
+          }
+        }
+      })
+    }
+  });
+}
+
 function clusters(){
   var ep = '/status/*';
   $('#status').html('<img src="./img/standby.gif" alt="please wait" width="64px">');
@@ -27,7 +63,7 @@ function clusters(){
     type: "GET",
     url: cpURL + ep,
     dataType: 'json',
-    async: false,
+    async: true,
     error: function (d) {
       console.info(d);
       $('#status').html('<div>control plane seems down</div>');
@@ -39,8 +75,8 @@ function clusters(){
         var consoleURL = "https://console.aws.amazon.com/eks/home";
         for (let i = 0; i < d.length; i++) {
           var cID = d[i];
-          buffer += '<div id="' + cID + '">';
-          buffer += ' <a href="' + consoleURL + '" target="_blank" rel="noopener">' + cID + '</a>';
+          buffer += '<div class="cluster" id="' + cID + '">';
+          buffer += ' <span class="cdlabel"><a href="' + consoleURL + '" target="_blank" rel="noopener">' + cID + '</a></span>';
           buffer += ' <span class="showdetails">Details…</span>';
           buffer += '<div class="cdetails"></div>';
           buffer += '</div>';
@@ -59,7 +95,7 @@ function clusterdetail(cID) {
     type: "GET",
     url: cpURL + ep,
     dataType: 'json',
-    async: false,
+    async: true,
     error: function (d) {
       console.info(d);
       $('#status').html('<div>control plane seems down</div>');
@@ -81,9 +117,7 @@ function clusterdetail(cID) {
   })
 }
 
-
 // as per https://gist.github.com/kmaida/6045266
-
 function convertTimestamp(timestamp) {
   // converts the passed timestamp to milliseconds 
   var d = new Date(timestamp * 1000),
