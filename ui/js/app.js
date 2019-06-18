@@ -130,7 +130,7 @@ function clusterdetail(cID) {
         buffer += '<div class="cdfield"><span class="cdtitle">Owner:</span> <a href="mailto:' + d.owner + '">' + d.owner + '</a> notified on creation and 5 min before destruction</div>';
         var dbuffer = '';
         dbuffer += '<div class="moarfield"><span class="cdtitle">Status:</span> ' + d.details['status'] + '</div>';
-        dbuffer += '<div class="moarfield"><span class="cdtitle">Endpoint:</span> <a href="' + d.details['endpoint'] + '" target="_blank" rel="noopener">' + d.details['endpoint'] + '</a></div>';
+        dbuffer += '<div class="moarfield"><span class="cdtitle">Endpoint:</span> <code>' + d.details['endpoint'] + '</code></div>';
         dbuffer += '<div class="moarfield"><span class="cdtitle">Platform version:</span> ' + d.details['platformv'] + '</div>';
         dbuffer += '<div class="moarfield"><span class="cdtitle">VPC config:</span> ' + d.details['vpcconf'] + '</div>';
         dbuffer += '<div class="moarfield"><span class="cdtitle">IAM role:</span> <code>' + d.details['iamrole'] + '</code></div>';
