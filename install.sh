@@ -29,7 +29,7 @@ function installFargate() {
   esac
   echo "Attempting to download $srcURL"
   curl -L $srcURL -o fargate$fargateversion
-  tar xopf fargate$fargateversion
+  unzip fargate$fargateversion
   mv ./fargate /usr/local/bin 
   rm fargate$fargateversion
 }
