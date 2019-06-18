@@ -1,13 +1,21 @@
 FROM amazonlinux:2018.03
-MAINTAINER hausenbl@amazon.com
+LABEL maintainer="Michael Hausenblas <hausenbl@amazon.com>"
+
+ARG AWS_ACCESS_KEY_ID
+ARG AWS_SECRET_ACCESS_KEY
+ARG AWS_DEFAULT_REGION
+ARG EKSPHEMERAL_SVC_BUCKET
+ARG EKSPHEMERAL_CLUSTERMETA_BUCKET
+ARG EKSPHEMERAL_EMAIL_FROM
+
+COPY install.sh .
 
 # install jq, the AWS CLI, and EKSphemeral
-RUN yum update -y  && \
-    yum install unzip jq git -y  && \
+RUN yum install unzip jq git -y && yum clean all && \
     curl -sL https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
-    python get-pip.py && \
-    pip install awscli --upgrade && \
-    curl -sL http://get.eksphemeral.info/install.sh | bash
+    python get-pip.py && pip install awscli --upgrade && \
+    export EKSPHEMERAL_HOME=/eksp && \
+    chmod +x install.sh && ./install.sh
 
 COPY css/* /app/css/
 COPY img/* /app/img/

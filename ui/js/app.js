@@ -1,8 +1,8 @@
 'use strict';
 
 // the control plane URL, replaced by actual value, that is, the value of 
-// of $EKSPHEMERAL_URL on container image build:
-var cpURL = 'EKSPHEMERAL_URL';
+// of $https://nswn7lkjbk.execute-api.us-east-2.amazonaws.com/Prod on container image build:
+var cpURL = 'https://nswn7lkjbk.execute-api.us-east-2.amazonaws.com/Prod';
 
 // how fast to refresh cluster list (5 * 60 * 1000 = every 5 min)
 var refreshClusterList= 5*60*1000;

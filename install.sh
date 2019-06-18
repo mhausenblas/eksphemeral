@@ -85,6 +85,3 @@ installEKSphemeralCLI
 
 # Install EKSphemeral control plane
 eksp install
-
-
-
