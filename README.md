@@ -165,8 +165,7 @@ Details:
 
 ### Prolong cluster lifetime
 
-When you get a notification that one of your clusters is about to shut down or really at any time 
-before it shuts down, you can prolong the cluster lifetime using the `eksp-prolong.sh` script.
+When you get a notification that one of your clusters is about to shut down or really at any time before it shuts down, you can prolong the cluster lifetime using the `eksp prolong` command.
 
 Let's say we want to keep the cluster with the ID `e90379cf-ee0a-49c7-8f82-1660760d6bb5` around 
 for 13 min longer. Here's what you would do:
@@ -182,8 +181,7 @@ NAME       ID                                     KUBERNETES   NUM WORKERS   TIM
 mh9-eksp   e90379cf-ee0a-49c7-8f82-1660760d6bb5   v1.12        2             13 min    13 min   hausenbl+notif@amazon.com
 ```
 
-Note that the prolong command updates the `timeout` field of your cluster spec, that is, the cluster TTL is 
-counted from the moment you issue the prolong command, taking the remaining cluster runtime into account.
+Note that the prolong command updates the `timeout` field of your cluster spec, that is, the cluster TTL is counted from the moment you issue the prolong command, taking the remaining cluster runtime into account.
 
 ## Uninstall
 
