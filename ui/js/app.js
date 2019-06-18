@@ -40,6 +40,7 @@ $(document).ready(function($){
   // when user clicks the Go! button in the dialog command row:
   $('#submitcc').click(function (event) {
     createCluster();
+    $('#createdialog').show();
   });
   // when user clicks the Cancel button in the dialog command row:
   $('#cancelcc').click(function (event) {
