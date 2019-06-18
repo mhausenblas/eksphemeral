@@ -32,7 +32,24 @@ $(document).ready(function($){
     var cID = $(this).parent().attr('id');
     clusterdetail(cID);
   });
+
+  // when user clicks the create button in the right upper corner:
+  $('#create').click(function (event) {
+    $('#createdialog').show();
+  });
+  // when user clicks the Go! button in the dialog command row:
+  $('#submitcc').click(function (event) {
+    createCluster();
+  });
+  // when user clicks the Cancel button in the dialog command row:
+  $('#cancelcc').click(function (event) {
+    $('#createdialog').hide();
+  });
 });
+
+function createCluster(){
+  console.info('here I should shell out to eksp-create.sh');
+}
 
 function updateClusters(){
   console.info('Scanning cluster list');

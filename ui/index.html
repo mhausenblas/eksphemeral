@@ -31,6 +31,38 @@
         <h2>Clusters</h2>
         <div id="clusterdetails"></div>
     </div>
+    <div id="createdialog">
+    <form>
+        <div>
+            <fieldset>
+                <label for="name">Cluster name:</label>
+                <input type="text" id="icname" name="icname" size="30" required>
+            <f/ieldset>
+        </div>
+        <div>
+            <fieldset>
+                <p>
+                    <label for="kversion">Kubernetes version:</label>
+                    <select id="ickversion">
+                        <option value="1.11">1.11</option>
+                        <option value="1.12" selected="selected">1.12</option>
+                        <option value="1.13">1.13</option>
+                    </select>
+                </p>
+            </fieldset>
+        </div>
+        <div>
+            <fieldset>
+                <label for="msg">Owner:</label>
+                <input type="email" id="icowner" pattern=".+@.+" size="60">
+            </fieldset>
+        </div>
+        <div class="cmddialog">
+            <button class="actionbtnsecondary" id="cancelcc">Cancel</button>
+            <button class="actionbtn" id="submitcc">Go!</button>
+        </div>
+    </form>
+    </div>
     <script src="./js/jquery.min.js"></script>
     <script src="./js/app.js"></script>
 </body>

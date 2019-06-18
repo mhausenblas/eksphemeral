@@ -10,6 +10,11 @@ h2 {
     font-size: 2em;
 }
 
+h2:hover {
+    color: #FF9900;
+    cursor: pointer;
+}
+
 a {
     color: #FF9900;
 }
@@ -24,11 +29,22 @@ li {
     color: #f0f0f0;
 }
 
+fieldset {
+    margin: 10px;
+    border-radius: 2px;
+    border: 1px solid #aeaeae;
+    padding: 14px;
+}
+
+input {
+    padding: 5px;
+}
+
 #top {
     position: sticky;
     left: 0;
     top: 0;
-    border: "1px solid #FF9900";
+    border: 1px solid #FF9900;
     background-color: #000000;
     padding: 18px;
     margin: 0;
@@ -56,9 +72,19 @@ li {
     color: #f0f0f0;
 }
 
-h2:hover {
-    color: #FF9900;
-    cursor: pointer;
+#createdialog {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border: 1px solid #FF9900;
+    border-radius: 3px;
+    background-color: #eaeaea;
+    color: #000000;
+    padding: 18px;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
 }
 
 .actionbtn { 
@@ -66,8 +92,8 @@ h2:hover {
     -moz-border-radius: 9;
     border-radius: 9px;
     font-family: Arial;
-    color: #f0f0f0;
     font-size: 20px;
+    color: #f0f0f0;
     background: #FF9900;
     padding: 10px 20px 10px 20px;
     border: solid #000000 1px;
@@ -76,6 +102,26 @@ h2:hover {
 
 .actionbtn:hover {
     background: #7ec72a;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.actionbtnsecondary { 
+    -webkit-border-radius: 9;
+    -moz-border-radius: 9;
+    border-radius: 9px;
+    font-family: Arial;
+    font-size: 20px;
+    color: #ff9900;
+    background: #e0e0e0;
+    padding: 10px 20px 10px 20px;
+    border: solid #000000 1px;
+    text-decoration: none;
+}
+
+.actionbtnsecondary:hover {
+    background: #7ec72a;
+    color: #f0f0f0;
     text-decoration: none;
     cursor: pointer;
 }
@@ -127,5 +173,10 @@ h2:hover {
 
 .cdtitle {
     color: #ffffff;
+}
+
+.cmddialog {
+    padding: 10px;
+    text-align: right;
 }
 
