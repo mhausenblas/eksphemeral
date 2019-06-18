@@ -28,10 +28,10 @@ function installFargate() {
     MacOS*)    srcURL=https://github.com/jpignata/fargate/releases/download/v$fargateversion/fargate-$fargateversion-darwin-amd64.zip ;;
   esac
   echo "Attempting to download $srcURL"
-  curl -L $srcURL -o fargate$fargateversion
-  unzip fargate$fargateversion
-  mv ./fargate /usr/local/bin 
-  rm fargate$fargateversion
+  curl -L $srcURL -o fargate$fargateversion.zip
+  unzip fargate$fargateversion.zip
+  mv ./fargate /usr/local/bin
+  rm fargate$fargateversion.zip
 }
 
 function installEKSphemeralCLI() {
