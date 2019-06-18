@@ -125,14 +125,25 @@ function clusterdetail(cID) {
         buffer += '<div class="cdfield"><span class="cdtitle">Kubernetes version:</span> ' + d.kubeversion + '</div>';
         buffer += '<div class="cdfield"><span class="cdtitle">Number of worker nodes:</span> ' + d.numworkers + '</div>';
         buffer += '<div class="cdfield"><span class="cdtitle">Created at:</span> ' + convertTimestamp(d.created) + '</div>';
+        buffer += '<div class="cdfield"><span class="cdtitle">Timeout:</span> ' + d.timeout + '</div>';
         buffer += '<div class="cdfield"><span class="cdtitle">TTL:</span> ' + d.ttl + ' min left</div>';
         buffer += '<div class="cdfield"><span class="cdtitle">Owner:</span> <a href="mailto:' + d.owner + '">' + d.owner + '</a> notified on creation and 5 min before destruction</div>';
+        var dbuffer = '';
+        dbuffer += '<div class="moarfield"><span class="cdtitle">Status:</span> ' + d.details['status'] + '</div>';
+        dbuffer += '<div class="moarfield"><span class="cdtitle">Endpoint:</span> <a href="' + d.details['endpoint'] + '" target="_blank" rel="noopener">' + d.details['endpoint'] + '</a></div>';
+        dbuffer += '<div class="moarfield"><span class="cdtitle">Platform version:</span> ' + d.details['platformv'] + '</div>';
+        dbuffer += '<div class="moarfield"><span class="cdtitle">VPC config:</span> ' + d.details['vpcconf'] + '</div>';
+        dbuffer += '<div class="moarfield"><span class="cdtitle">IAM role:</span> <code>' + d.details['iamrole'] + '</code></div>';
+        buffer += '<div class="cdfield"><span class="cdtitle">Cluster summary:</span> ' + dbuffer + '</div>';
         $('#' + cID + ' .cdetails').html(buffer);
         $('#status').html('');
       }
     }
   })
 }
+
+
+
 
 // as per https://gist.github.com/kmaida/6045266
 function convertTimestamp(timestamp) {

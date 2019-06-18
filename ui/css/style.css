@@ -119,6 +119,12 @@ h2:hover {
     color: #cfcbcb;
 }
 
+.moarfield {
+    margin: 10px 5px;
+    padding: 5px;
+    color: #cfcbcb;
+}
+
 .cdtitle {
     color: #ffffff;
 }
