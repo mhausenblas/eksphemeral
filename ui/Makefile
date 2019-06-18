@@ -16,6 +16,7 @@ run:
 	docker run	--name ekspui \
 				--rm --detach \
 				--publish 8080:8080 \
+				--env EKSPHEMERAL_HOME=/eksp \
 				quay.io/mhausenblas/eksp-ui:$(ui_version)
 verify:
 	@docker images quay.io/mhausenblas/eksp-ui:$(ui_version)
