@@ -24,8 +24,8 @@ esac
 
 function installFargate() {
   case "${machine}" in
-    Linux*)     srcURL=https://github.com/jpignata/fargate/releases/download/v$fargateversion/fargate-$fargateversion-linux-amd64.zip ;;
-    MacOS*)    srcURL=https://github.com/jpignata/fargate/releases/download/v$fargateversion/fargate-$fargateversion-darwin-amd64.zip ;;
+    Linux*)    srcURL="https://github.com/jpignata/fargate/releases/download/v$fargateversion/fargate-$fargateversion-linux-amd64.zip" ;;
+    MacOS*)    srcURL="https://github.com/jpignata/fargate/releases/download/v$fargateversion/fargate-$fargateversion-darwin-amd64.zip" ;;
   esac
   echo "Attempting to download $srcURL"
   curl -L $srcURL -o fargate$fargateversion.zip
