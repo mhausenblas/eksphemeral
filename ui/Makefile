@@ -17,6 +17,8 @@ run:
 				--rm --detach \
 				--publish 8080:8080 \
 				quay.io/mhausenblas/eksp-ui:$(ui_version)
+verify:
+	@docker images quay.io/mhausenblas/eksp-ui:$(ui_version)
 
 stop:
 	docker kill ekspui
