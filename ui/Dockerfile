@@ -1,6 +1,14 @@
 FROM amazonlinux:2018.03
 MAINTAINER hausenbl@amazon.com
 
+# install jq, the AWS CLI, and EKSphemeral
+RUN yum update -y  && \
+    yum install unzip jq git -y  && \
+    curl -sL https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+    python get-pip.py && \
+    pip install awscli --upgrade && \
+    curl -sL http://get.eksphemeral.info/install.sh | bash
+
 COPY css/* /app/css/
 COPY img/* /app/img/
 COPY js/* /app/js/
