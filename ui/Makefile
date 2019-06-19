@@ -17,6 +17,7 @@ run:
 				--rm --detach \
 				--publish 8080:8080 \
 				--env EKSPHEMERAL_HOME=/eksp \
+				--env EKSPHEMERAL_URL=$(EKSPHEMERAL_URL) \
 				quay.io/mhausenblas/eksp-ui:$(ui_version)
 verify:
 	@docker images quay.io/mhausenblas/eksp-ui:$(ui_version)
