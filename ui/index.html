@@ -34,20 +34,20 @@
     <div id="createdialog">
         <div>
             <fieldset>
-                <label for="name">Cluster name (human readable label, required):</label>
+                <label for="name"><strong>Name</strong> of the cluster:</label>
                 <input type="text" id="icname" name="icname" size="30" required>
-            <f/ieldset>
+            </fieldset>
         </div>
         <div>
             <fieldset>
-                <label for="name">Number of worker nodes (minimum of one):</label>
-                <input type="number" id="icworkernum" name="icworkernum" min="1">
-            <f/ieldset>
+                <label for="name"><strong>Number of worker nodes</strong>:</label>
+                <input type="number" id="icworkernum" name="icworkernum" min="1" value="1" style="width: 3em;">
+            </fieldset>
         </div>
         <div>
             <fieldset>
                 <p>
-                    <label for="kversion">Kubernetes version (default is most recent version):</label>
+                    <label for="kversion"><strong>Kubernetes version</strong> (default is the most recent one):</label>
                     <select id="ickversion">
                         <option value="1.11">1.11</option>
                         <option value="1.12">1.12</option>
@@ -58,13 +58,13 @@
         </div>
         <div>
             <fieldset>
-                <label for="name">Timeout (in minutes, after which the cluster is torn down):</label>
-                <input type="number" id="ictimeout" name="ictimeout" min="1">
-            <fieldset>
+                <label for="name"><strong>Timeout</strong> (in minutes) after which the cluster is torn down:</label>
+                <input type="number" id="ictimeout" name="ictimeout" min="10" value="30" style="width: 5em;">
+            </fieldset>
         </div>
         <div>
             <fieldset>
-                <label for="msg">Owner (email address, must be <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html" target="_blank" rel="noopener">verified</a>):</label>
+                <label for="msg"><strong>Owner</strong> email address (must be <a href="https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html" target="_blank" rel="noopener">verified</a>):</label>
                 <input type="email" id="icowner" pattern=".+@.+" size="60">
             </fieldset>
         </div>
