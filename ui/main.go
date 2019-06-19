@@ -98,7 +98,7 @@ func CreateCluster(w http.ResponseWriter, r *http.Request) {
 
 	//create cluster spec in control plane:
 	c := &http.Client{
-		Timeout: time.Second * 10,
+		Timeout: time.Second * 30,
 	}
 	req, err := json.Marshal(cs)
 	if err != nil {
@@ -147,9 +147,11 @@ func ProlongCluster(w http.ResponseWriter, r *http.Request) {
 	pinfo(fmt.Sprintf("From the web UI I got the following values for proloning the cluster lifetime: %+v", cp))
 
 	c := &http.Client{
-		Timeout: time.Second * 10,
+		Timeout: time.Second * 30,
 	}
-	pres, err := c.Post(ekspcp+"/prolong/"+cp.ID+"/"+strconv.Itoa(cp.ProlongTime), "application/json", nil)
+	_, _, _, _, ekspcp := getDefaults()
+	pinfo(fmt.Sprintf("Using %v as the control plane endpoint", ekspcp))
+	pres, err := c.Post(ekspcp+"/prolong/"+cp.ID+"/"+strconv.Itoa(cp.ProlongTime), "application/json", r.Body)
 	if err != nil {
 		perr("Can't POST to control plane for prolonging cluster", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
