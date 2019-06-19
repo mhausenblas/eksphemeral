@@ -1,8 +1,8 @@
 'use strict';
 
 // the control plane URL, replaced by actual value, that is, the value of 
-// of $EKSPHEMERAL_URL on container image build:
-var cpURL = 'EKSPHEMERAL_URL';
+// of $https://nswn7lkjbk.execute-api.us-east-2.amazonaws.com/Prod on container image build:
+var cpURL = 'https://nswn7lkjbk.execute-api.us-east-2.amazonaws.com/Prod';
 
 // how fast to refresh cluster list (5 * 60 * 1000 = every 5 min)
 var refreshClusterList= 5*60*1000;
@@ -104,7 +104,7 @@ function prolongCluster(cID, prolongTime) {
       data: JSON.stringify(clusterprolong),
       async: true,
       error: function (d) {
-        console.info(d);
+        console.info(d.responseText);
         $('#status').html('<div>the HTTP <code>POST</code> to the <code>/prolong</code> endpoint failed</div>');
       },
       success: function (d) {
