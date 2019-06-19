@@ -10,7 +10,7 @@ RUN yum -y install shadow-utils && \
     curl -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.12.7/2019-03-27/bin/linux/amd64/aws-iam-authenticator && \
     chmod +x ./aws-iam-authenticator && \
     mv ./aws-iam-authenticator /usr/local/bin && \
-    curl --silent --location "https://github.com/weaveworks/eksctl/releases/download/latest_release/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp  && \
+    curl --silent --location "https://github.com/weaveworks/eksctl/releases/download/0.1.36/eksctl_Linux_amd64.tar.gz" | tar xz -C /tmp  && \
     mv -v /tmp/eksctl /usr/local/bin
 
 WORKDIR /
