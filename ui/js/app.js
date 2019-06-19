@@ -27,8 +27,6 @@ $(document).ready(function($){
   // show cluster details when user clicks 'Details'
   // note: since it's an dynamically added element, needs the .on() form:
   $('body').on('click', 'span.showdetails', function () {
-    // event.stopPropagation();
-    // event.stopImmediatePropagation();
     var cID = $(this).parent().attr('id');
     clusterdetail(cID);
   });
@@ -39,8 +37,8 @@ $(document).ready(function($){
   });
   // when user clicks the Go! button in the dialog command row:
   $('#submitcc').click(function (event) {
+    $('#createdialog').hide();
     createCluster();
-    $('#createdialog').show();
   });
   // when user clicks the Cancel button in the dialog command row:
   $('#cancelcc').click(function (event) {
@@ -50,9 +48,9 @@ $(document).ready(function($){
 
 
 function createCluster() {
-    // console.info('Calling out to local proxy for cluster creation');
+    console.info('Calling out to local proxy for cluster creation');
     var cname = $('#icname').val();
-    var cversion = $('#ickversion').val();
+    var cversion = $('#ickversion option:selected').text();
 
     $.ajax({
       type: 'POST',
@@ -186,28 +184,28 @@ function clusterdetail(cID) {
 
 // as per https://gist.github.com/kmaida/6045266
 function convertTimestamp(timestamp) {
-  // converts the passed timestamp to milliseconds 
-  var d = new Date(timestamp * 1000),
-    yyyy = d.getFullYear(),
-    // Months are zero based, hence adding leading 0:
-    mm = ('0' + (d.getMonth() + 1)).slice(-2),
-    // Add leading 0:
-    dd = ('0' + d.getDate()).slice(-2),
-    hh = d.getHours(),
-    h = hh,
-    // Add leading 0:
-    min = ('0' + d.getMinutes()).slice(-2),
-    ampm = 'AM',
-    time;
-  if (hh > 12) {
-    h = hh - 12;
-    ampm = 'PM';
-  } else if (hh === 12) {
-    h = 12;
-    ampm = 'PM';
-  } else if (hh == 0) {
-    h = 12;
-  }
-  time = yyyy + '-' + mm + '-' + dd + 'T' + h + ':' + min;
-  return time;
+  var d = new Date(timestamp * 1000),	// Convert the passed timestamp to milliseconds
+		yyyy = d.getFullYear(),
+		mm = ('0' + (d.getMonth() + 1)).slice(-2),	// Months are zero based. Add leading 0.
+		dd = ('0' + d.getDate()).slice(-2),			// Add leading 0.
+		hh = d.getHours(),
+		h = hh,
+		min = ('0' + d.getMinutes()).slice(-2),		// Add leading 0.
+		ampm = 'AM',
+		time;
+			
+	if (hh > 12) {
+		h = hh - 12;
+		ampm = 'PM';
+	} else if (hh === 12) {
+		h = 12;
+		ampm = 'PM';
+	} else if (hh == 0) {
+		h = 12;
+	}
+	
+	// ie: 2013-02-18, 8:35 AM	
+	time = yyyy + '-' + mm + '-' + dd + ', ' + h + ':' + min + ' ' + ampm;
+		
+	return time;
 }

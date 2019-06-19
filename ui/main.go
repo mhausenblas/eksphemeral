@@ -90,16 +90,16 @@ func CreateCluster(w http.ResponseWriter, r *http.Request) {
 	awsAccessKeyID, awsSecretAccessKey, awsRegion, defaultSG, ekspcp := getDefaults()
 
 	pinfo(fmt.Sprintf("Using %v as the control plane endpoint", ekspcp))
-	shellout("/usr/local/bin/fargate", "task", "run", "eksctl-via-ui",
-		"--image", "quay.io/mhausenblas/eksctl:base",
-		" --region", awsRegion,
-		" --env", "AWS_ACCESS_KEY_ID="+awsAccessKeyID,
-		" --env", "AWS_SECRET_ACCESS_KEY="+awsSecretAccessKey,
-		" --env", "AWS_DEFAULT_REGION="+awsRegion,
-		" --env", "CLUSTER_NAME="+csname,
-		" --env", fmt.Sprintf("NUM_WORKERS=%d", csnumworkers),
-		" --env", "KUBERNETES_VERSION="+csk8sv,
-		" --security-group-id", defaultSG)
+	shellout("sh", "-c", "fargate task run eksctl"+
+		" --image quay.io/mhausenblas/eksctl:base"+
+		" --region "+awsRegion+
+		" --env AWS_ACCESS_KEY_ID="+awsAccessKeyID+
+		" --env AWS_SECRET_ACCESS_KEY="+awsSecretAccessKey+
+		" --env AWS_DEFAULT_REGION="+awsRegion+
+		" --env CLUSTER_NAME="+csname+
+		" --env "+fmt.Sprintf("NUM_WORKERS=%d", csnumworkers)+
+		" --env KUBERNETES_VERSION="+csk8sv+
+		" --security-group-id "+defaultSG)
 	// // create cluster spec in control plane
 	// c := &http.Client{
 	// 	Timeout: time.Second * 10,
