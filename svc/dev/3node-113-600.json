@@ -1,0 +1,10 @@
+{
+    "id": "",
+    "name": "3node-113-600",
+    "numworkers": 3,
+    "kubeversion": "1.13",
+    "timeout": 600,
+    "ttl": 600,
+    "owner": "hausenbl+notif@amazon.com",
+    "created": ""
+}

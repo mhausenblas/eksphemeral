@@ -1,7 +1,10 @@
 {
+    "id": "",
     "name": "2node-111-30",
     "numworkers": 2,
-    "kubeversion": "1.11",
+    "kubeversion": "1.12",
     "timeout": 30,
-    "owner": "hausenbl+notif@amazon.com"
+    "ttl": 30,
+    "owner": "hausenbl+notif@amazon.com",
+    "created": ""
 }
