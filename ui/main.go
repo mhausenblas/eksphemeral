@@ -69,9 +69,13 @@ func CreateCluster(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(`Allow: ` + "POST"))
 		return
 	}
+	// local, temporary struct for collecting the data from the UI:
 	type CS struct {
-		Name    string
-		Version string
+		Name      string
+		WorkerNum int
+		Version   string
+		Timeout   int
+		Owner     string
 	}
 	decoder := json.NewDecoder(r.Body)
 	var cs CS
@@ -81,12 +85,12 @@ func CreateCluster(w http.ResponseWriter, r *http.Request) {
 		jsonResponse(w, http.StatusInternalServerError, "Can't parse cluster spec from UI")
 		return
 	}
-	pinfo(fmt.Sprintf("From UI I got %v", cs))
+	pinfo(fmt.Sprintf("From the web UI I got the following values: %+v", cs))
 	csname := cs.Name
-	csnumworkers := 1
+	csnumworkers := cs.WorkerNum
 	csk8sv := cs.Version
-	cstimeout := 10
-	csowner := "hausenbl+notif@amazon.com"
+	cstimeout := cs.Timeout
+	csowner := cs.Owner
 
 	// provision cluster using Fargate CLI:
 	awsAccessKeyID, awsSecretAccessKey, awsRegion, defaultSG, ekspcp := getDefaults()
