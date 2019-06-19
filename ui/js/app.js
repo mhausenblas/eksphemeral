@@ -26,7 +26,7 @@ $(document).ready(function($){
 
   // show cluster details when user clicks 'Details'
   // note: since it's an dynamically added element, needs the .on() form:
-  $('body').on('click', 'span.showdetails', function () {
+  $('body').on('click', 'span.detailsbtn', function () {
     var cID = $(this).parent().attr('id');
     clusterdetail(cID);
   });
@@ -43,6 +43,14 @@ $(document).ready(function($){
   // when user clicks the Cancel button in the dialog command row:
   $('#cancelcc').click(function (event) {
     $('#createdialog').hide();
+  });
+
+  // prolong cluster lifetime for 30min when user clicks 'Prolong'
+  // note: since it's an dynamically added element, needs the .on() form:
+  $('body').on('click', 'span.prolongbtn', function () {
+    var cID = $(this).parent().attr('id');
+    var prolongTime = 30;
+    prolongCluster(cID, prolongTime);
   });
 });
 
@@ -76,6 +84,33 @@ function createCluster() {
         if (d != null) {
           console.info(d);
           $('#status').html('<div>Provisioning cluster with ID '+ d.responseText + ' now! This can take up to 15 minutes, will try to notify you via mail.</div>');
+        }
+      }
+    });
+}
+
+function prolongCluster(cID, prolongTime) {
+    console.info('Calling out to local proxy for prolonging cluster lifetime');
+    $('#status').html('<img src="./img/standby.gif" alt="please wait" width="64px">');
+
+    var clusterprolong = { 
+      'id': cID, 
+      'ptime': prolongTime,
+    };
+    $.ajax({
+      type: 'POST',
+      url: 'http://localhost:8080/prolong',
+      dataType: 'json',
+      data: JSON.stringify(clusterprolong),
+      async: true,
+      error: function (d) {
+        console.info(d);
+        $('#status').html('<div>the HTTP <code>POST</code> to the <code>/prolong</code> endpoint failed</div>');
+      },
+      success: function (d) {
+        if (d != null) {
+          console.info(d);
+          $('#status').html('<div>'+ d.responseText + '</div>');
         }
       }
     });
@@ -137,7 +172,7 @@ function clusters(){
           var cID = d[i];
           buffer += '<div class="cluster" id="' + cID + '">';
           buffer += ' <span class="cdlabel"><a href="' + consoleURL + '" target="_blank" rel="noopener">' + cID + '</a></span>';
-          buffer += ' <span class="showdetails">Details…</span>';
+          buffer += ' <span class="detailsbtn">Details…</span> <span class="prolongbtn">Prolong</span>';
           buffer += '<div class="cdetails"></div>';
           buffer += '</div>';
         }

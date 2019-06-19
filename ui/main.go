@@ -113,7 +113,6 @@ func CreateCluster(w http.ResponseWriter, r *http.Request) {
 		jsonResponse(w, http.StatusInternalServerError, "Can't POST to control plane for cluster create")
 	}
 	defer pres.Body.Close()
-
 	body, err := ioutil.ReadAll(pres.Body)
 	if err != nil {
 		perr("Can't read control plane response for cluster create", err)
@@ -133,8 +132,8 @@ func ProlongCluster(w http.ResponseWriter, r *http.Request) {
 	}
 	///prolong/$CLUSTER_ID/$PROLONG_TIME
 	type ClusterProlong struct {
-		ID          string
-		ProlongTime int
+		ID          string `json:"id"`
+		ProlongTime int    `json:"ptime"`
 	}
 	decoder := json.NewDecoder(r.Body)
 	cp := ClusterProlong{}
@@ -157,7 +156,6 @@ func ProlongCluster(w http.ResponseWriter, r *http.Request) {
 		jsonResponse(w, http.StatusInternalServerError, "Can't POST to control plane for prolonging cluster")
 	}
 	defer pres.Body.Close()
-
 	body, err := ioutil.ReadAll(pres.Body)
 	if err != nil {
 		perr("Can't read control plane response for prolonging cluster", err)
