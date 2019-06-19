@@ -34,5 +34,8 @@ $ make run
 
 Head over to http://localhost:8080 and you should see something like this:
 
-![EKSphemeral UI](../img/screen-shot-2019-06-18-ui.png)
+![EKSphemeral UI start](../img/screen-shot-2019-06-18-ui.png)
 
+![EKSphemeral UI cluster create](../img/screen-shot-2019-06-19-ui-cluster-create.png)
+
+![EKSphemeral UI prolonging lifetime](../img/screen-shot-2019-06-19-ui-cluster-prolong.png)
