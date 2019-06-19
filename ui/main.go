@@ -119,6 +119,15 @@ func CreateCluster(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		jsonResponse(w, http.StatusInternalServerError, "Can't read control plane response for cluster create")
 	}
+	// make sure to compensate for provision time, so prolong immediately for 15min:
+	empty := ""
+	_, err = c.Post(ekspcp+"/prolong/"+cs.ID+"/15", "application/json", bytes.NewBuffer([]byte(empty)))
+	if err != nil {
+		perr("Can't POST to control plane for prolonging cluster", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		jsonResponse(w, http.StatusInternalServerError, "Can't POST to control plane for prolonging cluster")
+	}
+	defer pres.Body.Close()
 	jsonResponse(w, http.StatusOK, string(body))
 }
 
