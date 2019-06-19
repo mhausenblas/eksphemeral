@@ -73,6 +73,7 @@ func CreateCluster(w http.ResponseWriter, r *http.Request) {
 	cs := ClusterSpec{}
 	err := decoder.Decode(&cs)
 	if err != nil {
+		perr("Can't parse cluster spec from UI", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		jsonResponse(w, http.StatusInternalServerError, "Can't parse cluster spec from UI")
 		return
@@ -99,11 +100,13 @@ func CreateCluster(w http.ResponseWriter, r *http.Request) {
 	}
 	req, err := json.Marshal(cs)
 	if err != nil {
+		perr("Can't marshal cluster spec data", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		jsonResponse(w, http.StatusInternalServerError, "Can't marshal cluster spec data")
 	}
 	pres, err := c.Post(ekspcp+"/create/", "application/json", bytes.NewBuffer(req))
 	if err != nil {
+		perr("Can't POST to control plane for cluster create", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		jsonResponse(w, http.StatusInternalServerError, "Can't POST to control plane for cluster create")
 	}
@@ -111,6 +114,7 @@ func CreateCluster(w http.ResponseWriter, r *http.Request) {
 
 	body, err := ioutil.ReadAll(pres.Body)
 	if err != nil {
+		perr("Can't read control plane response for cluster create", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		jsonResponse(w, http.StatusInternalServerError, "Can't read control plane response for cluster create")
 	}

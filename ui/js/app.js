@@ -56,9 +56,9 @@ function createCluster() {
     var cowner = $('#icowner').val();
     var clusterspec = { 
       'name': cname, 
-      'numworkers': cworkernum,
+      'numworkers': parseInt(cworkernum, 10),
       'kubeversion': cversion, 
-      'timeout': ctimeout,
+      'timeout': parseInt(ctimeout, 10),
       'owner': cowner
     };
     $.ajax({
