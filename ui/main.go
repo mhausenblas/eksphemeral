@@ -7,10 +7,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"os/exec"
+	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
@@ -83,12 +85,11 @@ func CreateCluster(w http.ResponseWriter, r *http.Request) {
 	csname := cs.Name
 	csnumworkers := 1
 	csk8sv := cs.Version
-	// cstimeout := 10
-	// csowner := "hausenbl+notif@amazon.com"
+	cstimeout := 10
+	csowner := "hausenbl+notif@amazon.com"
+
 	// provision cluster using Fargate CLI:
-
 	awsAccessKeyID, awsSecretAccessKey, awsRegion, defaultSG, ekspcp := getDefaults()
-
 	pinfo(fmt.Sprintf("Using %v as the control plane endpoint", ekspcp))
 	shellout("sh", "-c", "fargate task run eksctl"+
 		" --image quay.io/mhausenblas/eksctl:base"+
@@ -100,35 +101,35 @@ func CreateCluster(w http.ResponseWriter, r *http.Request) {
 		" --env "+fmt.Sprintf("NUM_WORKERS=%d", csnumworkers)+
 		" --env KUBERNETES_VERSION="+csk8sv+
 		" --security-group-id "+defaultSG)
-	// // create cluster spec in control plane
-	// c := &http.Client{
-	// 	Timeout: time.Second * 10,
-	// }
-	// clusterspec := ClusterSpec{
-	// 	Name:        csname,
-	// 	NumWorkers:  csnumworkers,
-	// 	KubeVersion: csk8sv,
-	// 	Timeout:     cstimeout,
-	// 	Owner:       csowner,
-	// }
-	// req, err := json.Marshal(clusterspec)
-	// if err != nil {
-	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-	// 	jsonResponse(w, http.StatusInternalServerError, "Can't marshal cluster spec data")
-	// }
-	// pres, err := c.Post(ekspcp, "application/json", bytes.NewBuffer(req))
-	// if err != nil {
-	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-	// 	jsonResponse(w, http.StatusInternalServerError, "Can't POST to control plane for cluster create")
-	// }
-	// defer pres.Body.Close()
 
-	// body, err := ioutil.ReadAll(pres.Body)
-	// if err != nil {
-	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-	// 	jsonResponse(w, http.StatusInternalServerError, "Can't read control plane response for cluster create")
-	// }
-	body := "provisioning  ..."
+	//create cluster spec in control plane:
+	c := &http.Client{
+		Timeout: time.Second * 10,
+	}
+	clusterspec := ClusterSpec{
+		Name:        csname,
+		NumWorkers:  csnumworkers,
+		KubeVersion: csk8sv,
+		Timeout:     cstimeout,
+		Owner:       csowner,
+	}
+	req, err := json.Marshal(clusterspec)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		jsonResponse(w, http.StatusInternalServerError, "Can't marshal cluster spec data")
+	}
+	pres, err := c.Post(ekspcp, "application/json", bytes.NewBuffer(req))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		jsonResponse(w, http.StatusInternalServerError, "Can't POST to control plane for cluster create")
+	}
+	defer pres.Body.Close()
+
+	body, err := ioutil.ReadAll(pres.Body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		jsonResponse(w, http.StatusInternalServerError, "Can't read control plane response for cluster create")
+	}
 	jsonResponse(w, http.StatusOK, string(body))
 }
 
