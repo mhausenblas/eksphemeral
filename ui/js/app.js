@@ -50,13 +50,23 @@ $(document).ready(function($){
 function createCluster() {
     console.info('Calling out to local proxy for cluster creation');
     var cname = $('#icname').val();
+    var cworkernum = $('#icworkernum').val();
     var cversion = $('#ickversion option:selected').text();
+    var ctimeout = $('#ictimeout').val();
+    var cowner = $('#icowner').val();
+    var clusterspec = { 
+      'name': cname, 
+      'workernum': cworkernum,
+      'version': cversion, 
+      'timeout': ctimeout,
+      'owner': cowner
+    };
 
     $.ajax({
       type: 'POST',
       url: 'http://localhost:8080/create',
       dataType: 'json',
-      data: JSON.stringify({ 'name': cname, 'version': cversion }),
+      data: JSON.stringify(clusterspec),
       async: true,
       error: function (d) {
         console.info(d);
