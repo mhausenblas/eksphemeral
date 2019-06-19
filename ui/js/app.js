@@ -46,9 +46,10 @@ $(document).ready(function($){
   });
 });
 
-
 function createCluster() {
     console.info('Calling out to local proxy for cluster creation');
+    $('#status').html('<img src="./img/standby.gif" alt="please wait" width="64px">');
+
     var cname = $('#icname').val();
     var cworkernum = $('#icworkernum').val();
     var cversion = $('#ickversion option:selected').text();
@@ -74,7 +75,7 @@ function createCluster() {
       success: function (d) {
         if (d != null) {
           console.info(d);
-          $('#status').html(d);
+          $('#status').html('<div>Provisioning cluster with ID '+ d.responseText + ' now! This can take up to 15 minutes, will try to notify you via mail.</div>');
         }
       }
     });
@@ -82,6 +83,8 @@ function createCluster() {
 
 function updateClusters(){
   console.info('Scanning cluster list');
+  $('#status').html('<img src="./img/standby.gif" alt="please wait" width="64px">');
+
   $('div.cluster span.cdlabel').each(function (index, value) {
     var cID = $(this).parent().attr('id');
     var lval = $('#' + cID + ' .cdlabel a').text();
@@ -114,6 +117,7 @@ function updateClusters(){
 
 function clusters(){
   var ep = '/status/*';
+
   $('#status').html('<img src="./img/standby.gif" alt="please wait" width="64px">');
   $.ajax({
     type: 'GET',
@@ -152,7 +156,6 @@ function clusterdetail(cID) {
     $('#' + cID + ' .cdetails').toggle();
     return
   }
-
   $('#status').html('<img src="./img/standby.gif" alt="please wait" width="64px">');
   $.ajax({
     type: 'GET',
