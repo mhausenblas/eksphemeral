@@ -164,6 +164,7 @@ func ProlongCluster(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		jsonResponse(w, http.StatusInternalServerError, "Can't read control plane response for prolonging cluster")
 	}
+	pinfo(fmt.Sprintf("Result proloning the cluster lifetime: %v", string(body)))
 	jsonResponse(w, http.StatusOK, string(body))
 }
 
