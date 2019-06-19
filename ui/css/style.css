@@ -62,6 +62,8 @@ input {
     width: 100%;
     text-align: center;
     padding: 10px;
+    font-size: 80%;
+    color: #a0a0a0;
 }
 
 #clusters {
