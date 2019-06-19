@@ -1,8 +1,8 @@
 'use strict';
 
 // the control plane URL, replaced by actual value, that is, the value of 
-// of $https://nswn7lkjbk.execute-api.us-east-2.amazonaws.com/Prod on container image build:
-var cpURL = 'https://nswn7lkjbk.execute-api.us-east-2.amazonaws.com/Prod';
+// of $EKSPHEMERAL_URL on container image build:
+var cpURL = 'EKSPHEMERAL_URL';
 
 // how fast to refresh cluster list (5 * 60 * 1000 = every 5 min)
 var refreshClusterList= 5*60*1000;
@@ -78,7 +78,7 @@ function createCluster() {
       async: true,
       error: function (d) {
         console.info(d);
-        $('#status').html('<div>the HTTP <code>POST</code> to the <code>/create</code> endpoint failed</div>');
+        $('#status').html('<div>'+ d.responseText + '</div>');
       },
       success: function (d) {
         if (d != null) {
@@ -105,7 +105,7 @@ function prolongCluster(cID, prolongTime) {
       async: true,
       error: function (d) {
         console.info(d.responseText);
-        $('#status').html('<div>the HTTP <code>POST</code> to the <code>/prolong</code> endpoint failed</div>');
+        $('#status').html('<div>'+ d.responseText + '</div>');
       },
       success: function (d) {
         if (d != null) {
@@ -131,8 +131,8 @@ function updateClusters(){
         dataType: 'json',
         async: true,
         error: function (d) {
-          console.info(d);
-          $('#status').html('<div>resolving name for cluster failed</div>');
+          console.info(d.responseText);
+          $('#status').html('<div>'+ d.responseText + '</div>');
         },
         success: function (d) {
           if (d != null) {
@@ -158,8 +158,8 @@ function clusters(){
     dataType: 'json',
     async: true,
     error: function (d) {
-      console.info(d);
-      $('#status').html('<div>listing cluster IDs failed</div>');
+      console.info(d.responseText);
+      $('#status').html('<div>'+ d.responseText + '</div>');
     },
     success: function (d) {
       if (d != null) {
