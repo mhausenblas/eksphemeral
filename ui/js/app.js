@@ -48,8 +48,29 @@ $(document).ready(function($){
   });
 });
 
-function createCluster(){
-  console.info('here I should shell out to eksp-create.sh');
+
+function createCluster() {
+    // console.info('Calling out to local proxy for cluster creation');
+    var cname = $('#icname').val();
+    var cversion = $('#ickversion').val();
+
+    $.ajax({
+      type: 'POST',
+      url: 'http://localhost:8080/create',
+      dataType: 'json',
+      data: JSON.stringify({ 'name': cname, 'version': cversion }),
+      async: true,
+      error: function (d) {
+        console.info(d);
+        $('#status').html('<div>control plane seems down</div>');
+      },
+      success: function (d) {
+        if (d != null) {
+          console.info(d);
+          $('#status').html(d);
+        }
+      }
+    });
 }
 
 function updateClusters(){
@@ -61,7 +82,7 @@ function updateClusters(){
     console.info('Checking cluster with ID ' + cID + ' with the label ' + lval);
     if (lval == cID){
       $.ajax({
-        type: "GET",
+        type: 'GET',
         url: cpURL + ep,
         dataType: 'json',
         async: true,
@@ -88,7 +109,7 @@ function clusters(){
   var ep = '/status/*';
   $('#status').html('<img src="./img/standby.gif" alt="please wait" width="64px">');
   $.ajax({
-    type: "GET",
+    type: 'GET',
     url: cpURL + ep,
     dataType: 'json',
     async: true,
@@ -127,7 +148,7 @@ function clusterdetail(cID) {
 
   $('#status').html('<img src="./img/standby.gif" alt="please wait" width="64px">');
   $.ajax({
-    type: "GET",
+    type: 'GET',
     url: cpURL + ep,
     dataType: 'json',
     async: true,

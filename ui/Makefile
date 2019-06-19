@@ -10,13 +10,16 @@ build:
 	sed -i '.tmp' "s|EKSPHEMERAL_URL|$(EKSPHEMERAL_URL)|" js/app.js
 	docker build --tag quay.io/mhausenblas/eksp-ui:$(ui_version) .
 	mv js/app.js.tmp js/app.js
-	# docker push quay.io/mhausenblas/eksp-ui:$(ui_version)
 
 run:
 	docker run	--name ekspui \
-				--rm --detach \
+				--rm \
+				--detach \
 				--publish 8080:8080 \
 				--env EKSPHEMERAL_HOME=/eksp \
+				--env AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) \
+				--env AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY) \
+				--env AWS_DEFAULT_REGION=$(AWS_DEFAULT_REGION) \
 				--env EKSPHEMERAL_URL=$(EKSPHEMERAL_URL) \
 				quay.io/mhausenblas/eksp-ui:$(ui_version)
 verify:

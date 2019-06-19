@@ -11,7 +11,6 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
-	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
@@ -59,14 +58,6 @@ func main() {
 	}
 }
 
-func init() {
-	ekspcp, ok := os.LookupEnv("EKSPHEMERAL_URL")
-	if !ok {
-		fmt.Println("Can't start up, please set the EKSPHEMERAL_URL environment variable, pointing to the EKSphemeral control plane endpoint!")
-		os.Exit(1)
-	}
-}
-
 // CreateCluster sanitizes user input, provisions the EKS cluster using the
 // Fargate CLI, and invokes the create/ endpoint in the EKSphemeral control
 // plane, returning the result to the caller
@@ -76,32 +67,105 @@ func CreateCluster(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(`Allow: ` + "POST"))
 		return
 	}
+	type CS struct {
+		Name    string
+		Version string
+	}
+	decoder := json.NewDecoder(r.Body)
+	var cs CS
+	err := decoder.Decode(&cs)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		jsonResponse(w, http.StatusInternalServerError, "Can't parse cluster spec from UI")
+		return
+	}
+	pinfo(fmt.Sprintf("From UI I got %v", cs))
+	csname := cs.Name
+	csnumworkers := 1
+	csk8sv := cs.Version
+	// cstimeout := 10
+	// csowner := "hausenbl+notif@amazon.com"
 	// provision cluster using Fargate CLI:
-	shellout("fargate", "task", "run", "eksctl",
-		"--image quay.io/mhausenblas/eksctl:base",
-		"--region "+AWSRegion,
-		"--env AWS_ACCESS_KEY_ID="+AWSAccessKeyID,
-		"--env AWS_SECRET_ACCESS_KEY="+AWSSecretAccessKey,
-		"--env AWS_DEFAULT_REGION="+AWSRegion,
-		"--env CLUSTER_NAME="+csname,
-		"--env NUM_WORKERS="+csnumworkers,
-		"--env KUBERNETES_VERSION="+csk8sv,
-		"--security-group-id "+sgID,
-	)
 
-	// create cluster spec in control plane
-	c := &http.Client{
-		Timeout: time.Second * 10,
+	awsAccessKeyID, awsSecretAccessKey, awsRegion, defaultSG, ekspcp := getDefaults()
+
+	pinfo(fmt.Sprintf("Using %v as the control plane endpoint", ekspcp))
+	shellout("/usr/local/bin/fargate", "task", "run", "eksctl-via-ui",
+		"--image", "quay.io/mhausenblas/eksctl:base",
+		" --region", awsRegion,
+		" --env", "AWS_ACCESS_KEY_ID="+awsAccessKeyID,
+		" --env", "AWS_SECRET_ACCESS_KEY="+awsSecretAccessKey,
+		" --env", "AWS_DEFAULT_REGION="+awsRegion,
+		" --env", "CLUSTER_NAME="+csname,
+		" --env", fmt.Sprintf("NUM_WORKERS=%d", csnumworkers),
+		" --env", "KUBERNETES_VERSION="+csk8sv,
+		" --security-group-id", defaultSG)
+	// // create cluster spec in control plane
+	// c := &http.Client{
+	// 	Timeout: time.Second * 10,
+	// }
+	// clusterspec := ClusterSpec{
+	// 	Name:        csname,
+	// 	NumWorkers:  csnumworkers,
+	// 	KubeVersion: csk8sv,
+	// 	Timeout:     cstimeout,
+	// 	Owner:       csowner,
+	// }
+	// req, err := json.Marshal(clusterspec)
+	// if err != nil {
+	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
+	// 	jsonResponse(w, http.StatusInternalServerError, "Can't marshal cluster spec data")
+	// }
+	// pres, err := c.Post(ekspcp, "application/json", bytes.NewBuffer(req))
+	// if err != nil {
+	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
+	// 	jsonResponse(w, http.StatusInternalServerError, "Can't POST to control plane for cluster create")
+	// }
+	// defer pres.Body.Close()
+
+	// body, err := ioutil.ReadAll(pres.Body)
+	// if err != nil {
+	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
+	// 	jsonResponse(w, http.StatusInternalServerError, "Can't read control plane response for cluster create")
+	// }
+	body := "provisioning  ..."
+	jsonResponse(w, http.StatusOK, string(body))
+}
+
+func jsonResponse(w http.ResponseWriter, code int, message string) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+	fmt.Fprint(w, message)
+}
+
+func getDefaults() (awsAccessKeyID, awsSecretAccessKey, awsRegion, defaultSG, ekspcp string) {
+	awsAccessKeyID, ok := os.LookupEnv("AWS_ACCESS_KEY_ID")
+	if !ok {
+		perr("Please set the AWS_ACCESS_KEY_ID environment variable!", nil)
+		os.Exit(1)
 	}
-	clusterspec := ClusterSpec{
-		Name:        csname,
-		NumWorkers:  csnumworkers,
-		KubeVersion: csk8sv,
-		Timeout:     cstimeout,
-		Owner:       csowner,
+	awsSecretAccessKey, ok = os.LookupEnv("AWS_SECRET_ACCESS_KEY")
+	if !ok {
+		perr("Please set the AWS_SECRET_ACCESS_KEY environment variable!", nil)
+		os.Exit(1)
 	}
-	req, err := json.Marshal(clusterspec)
-	c.Post(ekspcp, "application/json", bytes.NewBuffer(req))
+	awsRegion, ok = os.LookupEnv("AWS_DEFAULT_REGION")
+	if !ok {
+		perr("Please set the AWS_DEFAULT_REGION environment variable!", nil)
+		os.Exit(1)
+	}
+	ekspcp, ok = os.LookupEnv("EKSPHEMERAL_URL")
+	if !ok {
+		perr("Please set the EKSPHEMERAL_URL environment variable, pointing to the EKSphemeral control plane endpoint!", nil)
+		os.Exit(1)
+	}
+	defaultSG, err := getDefaultSecurityGroup()
+	if err != nil {
+		perr("Can't start up since I'm unable to determine the default security group: %v", err)
+		os.Exit(1)
+	}
+	// pinfo(fmt.Sprintf("Using %v as the default security group", defaultSG))
+	return
 }
 
 func getDefaultSecurityGroup() (string, error) {
@@ -110,20 +174,33 @@ func getDefaultSecurityGroup() (string, error) {
 		return "", err
 	}
 	svc := ec2.New(cfg)
-
 	vpcreq := svc.DescribeVpcsRequest(&ec2.DescribeVpcsInput{})
-	_, err = sgreq.Send(context.TODO())
+	vpcres, err := vpcreq.Send(context.TODO())
 	if err != nil {
 		return "", err
+	}
+	defaultVPC := ""
+	for _, vpc := range vpcres.Vpcs {
+		if *vpc.IsDefault {
+			defaultVPC = *vpc.VpcId
+			break
+		}
 	}
 
 	sgreq := svc.DescribeSecurityGroupsRequest(&ec2.DescribeSecurityGroupsInput{})
-	_, err = sgreq.Send(context.TODO())
+	sgres, err := sgreq.Send(context.TODO())
 	if err != nil {
 		return "", err
 	}
-	return "", nil
-
+	defaultSG := ""
+	for _, sg := range sgres.SecurityGroups {
+		// fmt.Printf("%v\n", *sg.GroupId)
+		if *sg.VpcId == defaultVPC {
+			defaultSG = *sg.GroupId
+			break
+		}
+	}
+	return defaultSG, nil
 }
 
 // shellout shells out to execute a command with a variable number
