@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"strconv"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws/external"
@@ -54,6 +55,7 @@ var ekspcp string
 func main() {
 	http.Handle("/", http.FileServer(http.Dir(".")))
 	http.HandleFunc("/create", CreateCluster)
+	http.HandleFunc("/prolong", ProlongCluster)
 	log.Println("EKSPhemeral UI up and running")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		panic(err)
@@ -61,7 +63,7 @@ func main() {
 }
 
 // CreateCluster sanitizes user input, provisions the EKS cluster using the
-// Fargate CLI, and invokes the create/ endpoint in the EKSphemeral control
+// Fargate CLI, and invokes the /create endpoint in the EKSphemeral control
 // plane, returning the result to the caller
 func CreateCluster(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -78,7 +80,7 @@ func CreateCluster(w http.ResponseWriter, r *http.Request) {
 		jsonResponse(w, http.StatusInternalServerError, "Can't parse cluster spec from UI")
 		return
 	}
-	pinfo(fmt.Sprintf("From the web UI I got the following values: %+v", cs))
+	pinfo(fmt.Sprintf("From the web UI I got the following values for cluster create: %+v", cs))
 
 	// provision cluster using Fargate CLI:
 	awsAccessKeyID, awsSecretAccessKey, awsRegion, defaultSG, ekspcp := getDefaults()
@@ -117,6 +119,50 @@ func CreateCluster(w http.ResponseWriter, r *http.Request) {
 		perr("Can't read control plane response for cluster create", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		jsonResponse(w, http.StatusInternalServerError, "Can't read control plane response for cluster create")
+	}
+	jsonResponse(w, http.StatusOK, string(body))
+}
+
+// ProlongCluster prolongs the lifetime of a cluster via the /prolong endpoint
+// in the EKSphemeral control plane, returning the result to the caller
+func ProlongCluster(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		w.Write([]byte(`Allow: ` + "POST"))
+		return
+	}
+	///prolong/$CLUSTER_ID/$PROLONG_TIME
+	type ClusterProlong struct {
+		ID          string
+		ProlongTime int
+	}
+	decoder := json.NewDecoder(r.Body)
+	cp := ClusterProlong{}
+	err := decoder.Decode(&cp)
+	if err != nil {
+		perr("Can't parse cluster prolong values from UI", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		jsonResponse(w, http.StatusInternalServerError, "Can't parse cluster prolong values from UI")
+		return
+	}
+	pinfo(fmt.Sprintf("From the web UI I got the following values for proloning the cluster lifetime: %+v", cp))
+
+	c := &http.Client{
+		Timeout: time.Second * 10,
+	}
+	pres, err := c.Post(ekspcp+"/prolong/"+cp.ID+"/"+strconv.Itoa(cp.ProlongTime), "application/json", nil)
+	if err != nil {
+		perr("Can't POST to control plane for prolonging cluster", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		jsonResponse(w, http.StatusInternalServerError, "Can't POST to control plane for prolonging cluster")
+	}
+	defer pres.Body.Close()
+
+	body, err := ioutil.ReadAll(pres.Body)
+	if err != nil {
+		perr("Can't read control plane response for prolonging cluster", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		jsonResponse(w, http.StatusInternalServerError, "Can't read control plane response for prolonging cluster")
 	}
 	jsonResponse(w, http.StatusOK, string(body))
 }
