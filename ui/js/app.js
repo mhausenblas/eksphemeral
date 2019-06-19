@@ -70,7 +70,7 @@ function createCluster() {
       async: true,
       error: function (d) {
         console.info(d);
-        $('#status').html('<div>control plane issue: POST to /create endpoint failed</div>');
+        $('#status').html('<div>the HTTP <code>POST</code> to the <code>/create</code> endpoint failed</div>');
       },
       success: function (d) {
         if (d != null) {
@@ -98,7 +98,7 @@ function updateClusters(){
         async: true,
         error: function (d) {
           console.info(d);
-          $('#status').html('<div>control plane issue: resolving name for cluster failed</div>');
+          $('#status').html('<div>resolving name for cluster failed</div>');
         },
         success: function (d) {
           if (d != null) {
@@ -126,7 +126,7 @@ function clusters(){
     async: true,
     error: function (d) {
       console.info(d);
-      $('#status').html('<div>control plane issue: listing cluster IDs failed</div>');
+      $('#status').html('<div>listing cluster IDs failed</div>');
     },
     success: function (d) {
       if (d != null) {
@@ -164,7 +164,7 @@ function clusterdetail(cID) {
     async: true,
     error: function (d) {
       console.info(d);
-      $('#status').html('<div>control plane issue: looking up details for cluster ' + cID + 'failed</div>');
+      $('#status').html('<div>looking up details for cluster ' + cID + ' failed</div>');
     },
     success: function (d) {
       if (d != null) {
