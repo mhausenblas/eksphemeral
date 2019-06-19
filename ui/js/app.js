@@ -82,7 +82,7 @@ function createCluster() {
       },
       success: function (d) {
         if (d != null) {
-          console.info(d);
+          console.info(d.responseText);
           $('#status').html('<div>Provisioning cluster with ID '+ d.responseText + ' now! This can take up to 15 minutes, will try to notify you via mail.</div>');
         }
       }
@@ -109,7 +109,7 @@ function prolongCluster(cID, prolongTime) {
       },
       success: function (d) {
         if (d != null) {
-          console.info(d);
+          console.info(d.responseText);
           $('#status').html('<div>'+ d.responseText + '</div>');
         }
       }
