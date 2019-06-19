@@ -56,12 +56,11 @@ function createCluster() {
     var cowner = $('#icowner').val();
     var clusterspec = { 
       'name': cname, 
-      'workernum': cworkernum,
-      'version': cversion, 
+      'numworkers': cworkernum,
+      'kubeversion': cversion, 
       'timeout': ctimeout,
       'owner': cowner
     };
-
     $.ajax({
       type: 'POST',
       url: 'http://localhost:8080/create',

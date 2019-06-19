@@ -69,16 +69,8 @@ func CreateCluster(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(`Allow: ` + "POST"))
 		return
 	}
-	// local, temporary struct for collecting the data from the UI:
-	type CS struct {
-		Name      string
-		WorkerNum int
-		Version   string
-		Timeout   int
-		Owner     string
-	}
 	decoder := json.NewDecoder(r.Body)
-	var cs CS
+	cs := ClusterSpec{}
 	err := decoder.Decode(&cs)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -86,11 +78,6 @@ func CreateCluster(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	pinfo(fmt.Sprintf("From the web UI I got the following values: %+v", cs))
-	csname := cs.Name
-	csnumworkers := cs.WorkerNum
-	csk8sv := cs.Version
-	cstimeout := cs.Timeout
-	csowner := cs.Owner
 
 	// provision cluster using Fargate CLI:
 	awsAccessKeyID, awsSecretAccessKey, awsRegion, defaultSG, ekspcp := getDefaults()
@@ -101,23 +88,16 @@ func CreateCluster(w http.ResponseWriter, r *http.Request) {
 		" --env AWS_ACCESS_KEY_ID="+awsAccessKeyID+
 		" --env AWS_SECRET_ACCESS_KEY="+awsSecretAccessKey+
 		" --env AWS_DEFAULT_REGION="+awsRegion+
-		" --env CLUSTER_NAME="+csname+
-		" --env "+fmt.Sprintf("NUM_WORKERS=%d", csnumworkers)+
-		" --env KUBERNETES_VERSION="+csk8sv+
+		" --env CLUSTER_NAME="+cs.Name+
+		" --env "+fmt.Sprintf("NUM_WORKERS=%d", cs.NumWorkers)+
+		" --env KUBERNETES_VERSION="+cs.KubeVersion+
 		" --security-group-id "+defaultSG)
 
 	//create cluster spec in control plane:
 	c := &http.Client{
 		Timeout: time.Second * 10,
 	}
-	clusterspec := ClusterSpec{
-		Name:        csname,
-		NumWorkers:  csnumworkers,
-		KubeVersion: csk8sv,
-		Timeout:     cstimeout,
-		Owner:       csowner,
-	}
-	req, err := json.Marshal(clusterspec)
+	req, err := json.Marshal(cs)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		jsonResponse(w, http.StatusInternalServerError, "Can't marshal cluster spec data")
