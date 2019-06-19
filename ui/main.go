@@ -118,7 +118,7 @@ func CreateCluster(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		jsonResponse(w, http.StatusInternalServerError, "Can't marshal cluster spec data")
 	}
-	pres, err := c.Post(ekspcp, "application/json", bytes.NewBuffer(req))
+	pres, err := c.Post(ekspcp+"/create/", "application/json", bytes.NewBuffer(req))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		jsonResponse(w, http.StatusInternalServerError, "Can't POST to control plane for cluster create")

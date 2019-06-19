@@ -60,7 +60,7 @@ function createCluster() {
       async: true,
       error: function (d) {
         console.info(d);
-        $('#status').html('<div>control plane seems down</div>');
+        $('#status').html('<div>control plane issue: <code>' + d + '</code></div>');
       },
       success: function (d) {
         if (d != null) {
@@ -86,7 +86,7 @@ function updateClusters(){
         async: true,
         error: function (d) {
           console.info(d);
-          $('#status').html('<div>control plane seems down</div>');
+          $('#status').html('<div>control plane issue: <code>' + d + '</code></div>');
         },
         success: function (d) {
           if (d != null) {
@@ -113,7 +113,7 @@ function clusters(){
     async: true,
     error: function (d) {
       console.info(d);
-      $('#status').html('<div>control plane seems down</div>');
+      $('#status').html('<div>control plane issue: <code>' + d + '</code></div>');
     },
     success: function (d) {
       if (d != null) {
@@ -152,7 +152,7 @@ function clusterdetail(cID) {
     async: true,
     error: function (d) {
       console.info(d);
-      $('#status').html('<div>control plane seems down</div>');
+      $('#status').html('<div>control plane issue: <code>' + d + '</code></div>');
     },
     success: function (d) {
       if (d != null) {
@@ -178,9 +178,6 @@ function clusterdetail(cID) {
     }
   })
 }
-
-
-
 
 // as per https://gist.github.com/kmaida/6045266
 function convertTimestamp(timestamp) {
