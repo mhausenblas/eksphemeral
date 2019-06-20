@@ -1,4 +1,4 @@
-ui_version := 0.1
+ui_version := 0.2
 AWS_ACCESS_KEY_ID := $(shell aws configure get aws_access_key_id)
 AWS_SECRET_ACCESS_KEY := $(shell aws configure get aws_secret_access_key)
 AWS_DEFAULT_REGION := $(shell aws configure get region)
@@ -7,9 +7,9 @@ AWS_DEFAULT_REGION := $(shell aws configure get region)
 
 build:
 	GOOS=linux GOARCH=amd64 go build -o ./proxy main.go
-	sed -i '.tmp' "s|EKSPHEMERAL_URL|$(EKSPHEMERAL_URL)|" js/app.js
+	# sed -i '.tmp' "s|EKSPHEMERAL_URL|$(EKSPHEMERAL_URL)|" js/app.js
 	docker build --tag quay.io/mhausenblas/eksp-ui:$(ui_version) .
-	mv js/app.js.tmp js/app.js
+	# mv js/app.js.tmp js/app.js
 
 run:
 	docker run	--name ekspui \

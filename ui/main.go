@@ -51,9 +51,12 @@ type ClusterSpec struct {
 }
 
 var ekspcp string
+var cscache map[string]ClusterSpec
 
 func main() {
+	cscache = make(map[string]ClusterSpec)
 	http.Handle("/", http.FileServer(http.Dir(".")))
+	http.HandleFunc("/status", ListCluster)
 	http.HandleFunc("/create", CreateCluster)
 	http.HandleFunc("/prolong", ProlongCluster)
 	http.HandleFunc("/configof", GetClusterConfig)
@@ -61,6 +64,38 @@ func main() {
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		panic(err)
 	}
+}
+
+// ListCluster invokes the /status endpoint in the EKSphemeral control
+// plane, returning the result to the caller
+func ListCluster(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		w.Write([]byte(`Allow: ` + "GET"))
+		return
+	}
+	q := r.URL.Query()
+	targetcluster := q.Get("cluster")
+	_, _, _, _, ekspcp := getDefaults()
+	pinfo(fmt.Sprintf("Using %v as the control plane endpoint", ekspcp))
+	c := &http.Client{
+		Timeout: time.Second * 30,
+	}
+	pres, err := c.Get(ekspcp + "/status/" + targetcluster)
+	if err != nil {
+		perr("Can't GET control plane for cluster status", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		jsonResponse(w, http.StatusInternalServerError, "Can't GET control plane for cluster status")
+	}
+	defer pres.Body.Close()
+	body, err := ioutil.ReadAll(pres.Body)
+	if err != nil {
+		perr("Can't read control plane response for cluster status", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		jsonResponse(w, http.StatusInternalServerError, "Can't read control plane response for cluster status")
+	}
+	pinfo(fmt.Sprintf("Status for cluster: %v", string(body)))
+	jsonResponse(w, http.StatusOK, string(body))
 }
 
 // CreateCluster sanitizes user input, provisions the EKS cluster using the
@@ -187,6 +222,11 @@ func jsonResponse(w http.ResponseWriter, code int, message string) {
 
 // getKubeConfig returns the cluster config for kubectl
 func GetClusterConfig(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		w.Write([]byte(`Allow: ` + "GET"))
+		return
+	}
 	q := r.URL.Query()
 	clustername := q.Get("cluster")
 	region, _ := os.LookupEnv("AWS_DEFAULT_REGION")

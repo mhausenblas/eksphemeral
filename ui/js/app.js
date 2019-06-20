@@ -1,8 +1,7 @@
 'use strict';
 
-// the control plane URL, replaced by actual value, that is, the value of 
-// of $EKSPHEMERAL_URL on container image build:
-var cpURL = 'EKSPHEMERAL_URL';
+// the control plane proxy URL:
+var cpURL = 'http://localhost:8080';
 
 // how fast to refresh cluster list (5 * 60 * 1000 = every 5 min)
 var refreshClusterList= 5*60*1000;
@@ -52,6 +51,12 @@ $(document).ready(function($){
     var prolongTime = 30;
     prolongCluster(cID, prolongTime);
   });
+
+  $('body').on('click', 'span.showconfbtn', function () {
+    var cID = $(this).parent().attr('id');
+    var prolongTime = 30;
+    prolongCluster(cID, prolongTime);
+  });
 });
 
 function createCluster() {
@@ -72,7 +77,7 @@ function createCluster() {
     };
     $.ajax({
       type: 'POST',
-      url: 'http://localhost:8080/create',
+      url: cpURL+'/create',
       dataType: 'json',
       data: JSON.stringify(clusterspec),
       async: true,
@@ -99,7 +104,7 @@ function prolongCluster(cID, prolongTime) {
     };
     $.ajax({
       type: 'POST',
-      url: 'http://localhost:8080/prolong',
+      url: cpURL+'/prolong',
       dataType: 'json',
       data: JSON.stringify(clusterprolong),
       async: true,
@@ -122,7 +127,7 @@ function updateClusters(){
   $('div.cluster span.cdlabel').each(function (index, value) {
     var cID = $(this).parent().attr('id');
     var lval = $('#' + cID + ' .cdlabel a').text();
-    var ep = '/status/' + cID;
+    var ep = '/status?cluster=' + cID;
     console.info('Checking cluster with ID ' + cID + ' with the label ' + lval);
     if (lval == cID){
       $.ajax({
@@ -150,7 +155,7 @@ function updateClusters(){
 }
 
 function clusters(){
-  var ep = '/status/*';
+  var ep = '/status?cluster=*';
 
   $.ajax({
     type: 'GET',
@@ -170,7 +175,7 @@ function clusters(){
           var cID = d[i];
           buffer += '<div class="cluster" id="' + cID + '">';
           buffer += ' <span class="cdlabel"><a href="' + consoleURL + '" target="_blank" rel="noopener">' + cID + '</a></span>';
-          buffer += ' <span class="detailsbtn">Details…</span> <span class="prolongbtn">Prolong</span>';
+          buffer += ' <span class="showconfbtn">Show Config</span> <span class="prolongbtn">Prolong</span> <span class="detailsbtn">Details…</span>';
           buffer += '<div class="cdetails"></div>';
           buffer += '</div>';
         }
@@ -182,7 +187,7 @@ function clusters(){
 }
 
 function clusterdetail(cID) {
-  var ep = '/status/'+cID;
+  var ep = '/status?cluster='+cID;
   var currentdetails = $('#' + cID + ' .cdetails').text();
 
   if (currentdetails != '') {
