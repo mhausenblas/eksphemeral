@@ -15,6 +15,12 @@ h2:hover {
     cursor: pointer;
 }
 
+h3 {
+    font-weight: 400;
+    margin: 10px;
+    padding: 14px;
+}
+
 a {
     color: #FF9900;
 }
@@ -34,6 +40,7 @@ fieldset {
     border-radius: 2px;
     border: 1px solid #aeaeae;
     padding: 14px;
+    background-color: #fffbf8;
 }
 
 input {
@@ -159,6 +166,13 @@ input {
     padding: 10px 10px 10px 0px;
     border-bottom: 1px dashed #ff9900;
     margin: 15px 20px 0 0;
+}
+
+.cdlabel {
+    border-left: 1px solid #847777;
+    border-bottom: 1px solid #847777;
+    border-top: 1px solid #847777;
+    padding: 8px 0 13px 16px
 }
 
 .cdfield {
