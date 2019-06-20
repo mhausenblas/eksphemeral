@@ -56,6 +56,7 @@ func main() {
 	http.Handle("/", http.FileServer(http.Dir(".")))
 	http.HandleFunc("/create", CreateCluster)
 	http.HandleFunc("/prolong", ProlongCluster)
+	http.HandleFunc("/configof", GetClusterConfig)
 	log.Println("EKSPhemeral UI up and running")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		panic(err)
@@ -177,12 +178,25 @@ func ProlongCluster(w http.ResponseWriter, r *http.Request) {
 	jsonResponse(w, http.StatusOK, string(body))
 }
 
+// jsonResponse wraps a message with a JSON header and write it out
 func jsonResponse(w http.ResponseWriter, code int, message string) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	fmt.Fprint(w, message)
 }
 
+// getKubeConfig returns the cluster config for kubectl
+func GetClusterConfig(w http.ResponseWriter, r *http.Request) {
+	q := r.URL.Query()
+	clustername := q.Get("cluster")
+	region, _ := os.LookupEnv("AWS_DEFAULT_REGION")
+	pinfo(fmt.Sprintf("Looking up config for cluster %v in region %v", clustername, region))
+	config := bshellout("sh", "-c", "aws eks update-kubeconfig --region "+
+		region+" --name "+clustername+" --dry-run")
+	jsonResponse(w, http.StatusOK, string(config))
+}
+
+// getDefaults returns creds and default configs
 func getDefaults() (awsAccessKeyID, awsSecretAccessKey, awsRegion, defaultSG, ekspcp string) {
 	awsAccessKeyID, ok := os.LookupEnv("AWS_ACCESS_KEY_ID")
 	if !ok {
@@ -213,6 +227,7 @@ func getDefaults() (awsAccessKeyID, awsSecretAccessKey, awsRegion, defaultSG, ek
 	return
 }
 
+// getDefaultSecurityGroup returns the default security group
 func getDefaultSecurityGroup() (string, error) {
 	cfg, err := external.LoadDefaultAWSConfig()
 	if err != nil {
