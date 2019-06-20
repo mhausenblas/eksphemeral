@@ -238,7 +238,7 @@ function clusterconf(cID) {
     async: true,
     error: function (d) {
       console.info(d);
-      $('#status').html('<div>looking up config for cluster ' + cID + ' failed</div>');
+      $('#status').html('<div>' + d.responseText  + '</div>');
     },
     success: function (d) {
       if (d != null) {
