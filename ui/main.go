@@ -292,11 +292,18 @@ func GetClusterConfig(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	q := r.URL.Query()
-	clustername := q.Get("cluster")
+	cID := q.Get("cluster")
 	region, _ := os.LookupEnv("AWS_DEFAULT_REGION")
-	pinfo(fmt.Sprintf("Looking up config for cluster %v in region %v", clustername, region))
+	cs, err := lookup(cID)
+	if err != nil {
+		perr("Can't find cluster spec in cache", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		jsonResponse(w, http.StatusInternalServerError, "Can't find cluster spec in cache")
+		return
+	}
+	pinfo(fmt.Sprintf("Looking up config for cluster %v in region %v", cs.Name, region))
 	config := bshellout("sh", "-c", "aws eks update-kubeconfig --region "+
-		region+" --name "+clustername+" --dry-run")
+		region+" --name "+cs.Name+" --dry-run")
 	jsonResponse(w, http.StatusOK, string(config))
 }
 
