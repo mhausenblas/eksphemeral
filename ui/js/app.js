@@ -54,8 +54,7 @@ $(document).ready(function($){
 
   $('body').on('click', 'span.showconfbtn', function () {
     var cID = $(this).parent().attr('id');
-    var prolongTime = 30;
-    prolongCluster(cID, prolongTime);
+    clusterconf(cID);
   });
 });
 
@@ -228,6 +227,32 @@ function clusterdetail(cID) {
     }
   })
 }
+
+function clusterconf(cID) {
+  var ep = '/configof?cluster='+cID;
+  $('#status').html('<img src="./img/standby.gif" alt="please wait" width="64px">');
+  $.ajax({
+    type: 'GET',
+    url: cpURL + ep,
+    dataType: 'json',
+    async: true,
+    error: function (d) {
+      console.info(d);
+      $('#status').html('<div>looking up config for cluster ' + cID + ' failed</div>');
+    },
+    success: function (d) {
+      if (d != null) {
+        console.info(d);
+        var buffer = '';
+        buffer += '<div><code>' + d.responseText  + '</code></div>';
+        $('#' + cID + ' .cdetails').html(buffer);
+        $('#status').html('');
+      }
+    }
+  })
+}
+
+
 
 // as per https://gist.github.com/kmaida/6045266
 function convertTimestamp(timestamp) {
