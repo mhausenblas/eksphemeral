@@ -115,12 +115,14 @@ func ListCluster(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	pinfo(fmt.Sprintf("Status for cluster: %v", string(body)))
-	err = updateCache(string(body))
-	if err != nil {
-		perr("Can't update local cluster spec cache", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		jsonResponse(w, http.StatusInternalServerError, "Can't update local cluster spec cache")
-		return
+	if targetcluster != "*" {
+		err = updateCache(string(body))
+		if err != nil {
+			perr("Can't update local cluster spec cache", err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			jsonResponse(w, http.StatusInternalServerError, "Can't update local cluster spec cache")
+			return
+		}
 	}
 	jsonResponse(w, http.StatusOK, string(body))
 }
