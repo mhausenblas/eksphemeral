@@ -13,6 +13,7 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws/external"
@@ -76,6 +77,23 @@ func ListCluster(w http.ResponseWriter, r *http.Request) {
 	}
 	q := r.URL.Query()
 	targetcluster := q.Get("cluster")
+
+	if targetcluster != "*" { // cluster details
+		cs, err := lookup(targetcluster) // try local cache
+		if err == nil {
+			csjson, err := json.Marshal(cs)
+			if err != nil {
+				perr("Can't marshal cluster spec data", err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				jsonResponse(w, http.StatusInternalServerError, "Can't marshal cluster spec data")
+				return
+			}
+			pinfo("Serving from cache")
+			jsonResponse(w, http.StatusOK, string(csjson))
+			return
+		}
+	}
+	// either list all clusters or not cached yet
 	_, _, _, _, ekspcp := getDefaults()
 	pinfo(fmt.Sprintf("Using %v as the control plane endpoint", ekspcp))
 	c := &http.Client{
@@ -86,6 +104,7 @@ func ListCluster(w http.ResponseWriter, r *http.Request) {
 		perr("Can't GET control plane for cluster status", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		jsonResponse(w, http.StatusInternalServerError, "Can't GET control plane for cluster status")
+		return
 	}
 	defer pres.Body.Close()
 	body, err := ioutil.ReadAll(pres.Body)
@@ -93,8 +112,16 @@ func ListCluster(w http.ResponseWriter, r *http.Request) {
 		perr("Can't read control plane response for cluster status", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		jsonResponse(w, http.StatusInternalServerError, "Can't read control plane response for cluster status")
+		return
 	}
 	pinfo(fmt.Sprintf("Status for cluster: %v", string(body)))
+	err = updateCache(string(body))
+	if err != nil {
+		perr("Can't update local cluster spec cache", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		jsonResponse(w, http.StatusInternalServerError, "Can't update local cluster spec cache")
+		return
+	}
 	jsonResponse(w, http.StatusOK, string(body))
 }
 
@@ -141,12 +168,14 @@ func CreateCluster(w http.ResponseWriter, r *http.Request) {
 		perr("Can't marshal cluster spec data", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		jsonResponse(w, http.StatusInternalServerError, "Can't marshal cluster spec data")
+		return
 	}
 	pres, err := c.Post(ekspcp+"/create/", "application/json", bytes.NewBuffer(req))
 	if err != nil {
 		perr("Can't POST to control plane for cluster create", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		jsonResponse(w, http.StatusInternalServerError, "Can't POST to control plane for cluster create")
+		return
 	}
 	defer pres.Body.Close()
 	body, err := ioutil.ReadAll(pres.Body)
@@ -154,6 +183,7 @@ func CreateCluster(w http.ResponseWriter, r *http.Request) {
 		perr("Can't read control plane response for cluster create", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		jsonResponse(w, http.StatusInternalServerError, "Can't read control plane response for cluster create")
+		return
 	}
 	// make sure to compensate for provision time, so prolong immediately for 15min:
 	empty := ""
@@ -162,6 +192,7 @@ func CreateCluster(w http.ResponseWriter, r *http.Request) {
 		perr("Can't POST to control plane for prolonging cluster", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		jsonResponse(w, http.StatusInternalServerError, "Can't POST to control plane for prolonging cluster")
+		return
 	}
 	defer pres.Body.Close()
 	jsonResponse(w, http.StatusOK, string(body))
@@ -201,6 +232,7 @@ func ProlongCluster(w http.ResponseWriter, r *http.Request) {
 		perr("Can't POST to control plane for prolonging cluster", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		jsonResponse(w, http.StatusInternalServerError, "Can't POST to control plane for prolonging cluster")
+		return
 	}
 	defer pres.Body.Close()
 	body, err := ioutil.ReadAll(pres.Body)
@@ -208,9 +240,39 @@ func ProlongCluster(w http.ResponseWriter, r *http.Request) {
 		perr("Can't read control plane response for prolonging cluster", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		jsonResponse(w, http.StatusInternalServerError, "Can't read control plane response for prolonging cluster")
+		return
 	}
 	pinfo(fmt.Sprintf("Result proloning the cluster lifetime: %v", string(body)))
+	// invalidate cache entry if present:
+	invalidateCacheEntry(cp.ID)
+	pinfo("Invalidated cache entry")
+
 	jsonResponse(w, http.StatusOK, string(body))
+}
+
+func updateCache(csstring string) error {
+	decoder := json.NewDecoder(strings.NewReader(csstring))
+	cs := ClusterSpec{}
+	err := decoder.Decode(&cs)
+	if err != nil {
+		return err
+	}
+	cscache[cs.ID] = cs
+	return nil
+}
+
+func invalidateCacheEntry(cID string) {
+	if _, ok := cscache[cID]; ok {
+		delete(cscache, cID)
+	}
+}
+
+func lookup(cID string) (ClusterSpec, error) {
+	cs, ok := cscache[cID]
+	if ok {
+		return cs, nil
+	}
+	return cs, fmt.Errorf("not cached")
 }
 
 // jsonResponse wraps a message with a JSON header and write it out
