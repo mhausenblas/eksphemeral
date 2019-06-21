@@ -6,8 +6,8 @@ var cpURL = 'http://localhost:8080';
 // how fast to refresh cluster list (5 * 60 * 1000 = every 5 min)
 var refreshClusterList= 5*60*1000;
 
-// how fast to refresh cluster details (10 * 1000 = every 10 sec)
-var refreshClusterDetails = 10*1000;
+// how fast to refresh cluster details (1* 1000 = every second)
+var refreshClusterDetails = 1*1000;
 
 $(document).ready(function($){
   clusters();
