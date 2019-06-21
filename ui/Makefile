@@ -6,7 +6,7 @@ AWS_DEFAULT_REGION := $(shell aws configure get region)
 .PHONY: build run stop
 
 build:
-	GOOS=linux GOARCH=amd64 go build -o ./proxy main.go
+	GOOS=linux GOARCH=amd64 go build -o ./proxy .
 	# sed -i '.tmp' "s|EKSPHEMERAL_URL|$(EKSPHEMERAL_URL)|" js/app.js
 	docker build --tag quay.io/mhausenblas/eksp-ui:$(ui_version) .
 	# mv js/app.js.tmp js/app.js

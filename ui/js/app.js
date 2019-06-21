@@ -77,17 +77,16 @@ function createCluster() {
     $.ajax({
       type: 'POST',
       url: cpURL+'/create',
-      // dataType: 'json',
       data: JSON.stringify(clusterspec),
       async: true,
       error: function (d) {
         console.info(d);
-        $('#status').html('<div>'+ d.responseText + '</div>');
+        $('#status').html('<div>'+ d + '</div>');
       },
       success: function (d) {
         if (d != null) {
-          console.info(d.responseText);
-          $('#status').html('<div>Provisioning cluster with ID '+ d.responseText + ' now! This can take up to 15 minutes, will try to notify you via mail.</div>');
+          console.info(d);
+          $('#status').html('<div>Provisioning cluster with ID '+ d + ' now! This can take up to 15 minutes, will try to notify you via mail.</div>');
         }
       }
     });
@@ -108,13 +107,13 @@ function prolongCluster(cID, prolongTime) {
       data: JSON.stringify(clusterprolong),
       async: true,
       error: function (d) {
-        console.info(d.responseText);
-        $('#status').html('<div>'+ d.responseText + '</div>');
+        console.info(d);
+        $('#status').html('<div>'+ d + '</div>');
       },
       success: function (d) {
         if (d != null) {
-          console.info(d.responseText);
-          $('#status').html('<div>'+ d.responseText + '</div>');
+          console.info(d);
+          $('#status').html('<div>'+ d + '</div>');
         }
       }
     });
@@ -234,7 +233,6 @@ function clusterconf(cID) {
   $.ajax({
     type: 'GET',
     url: cpURL + ep,
-    // dataType: 'json',
     async: true,
     error: function (d) {
       console.info(d);
@@ -244,7 +242,9 @@ function clusterconf(cID) {
       if (d != null) {
         console.info(d);
         var buffer = '';
-        buffer += '<div><code>' + d.responseText  + '</code></div>';
+        buffer += '<div>Use the following command to configure <code>kubectl</code> to point to your EKSphemeral cluster:';
+        buffer += '<div><code>' + d + '</code></div>';
+        buffer += '</div>';
         $('#' + cID + ' .cdetails').html(buffer);
         $('#status').html('');
       }
