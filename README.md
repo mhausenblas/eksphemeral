@@ -86,7 +86,7 @@ Since we just installed EKSphemeral, there are no clusters, yet. Let's change th
 
 ## Use
 
-You can create, inspect, and prolong the lifetime of a cluster with the CLI as shown in the following. If you prefer a visual interface (requires Docker) check out the [local EKSphemeral UI](ui/) proxy.
+You can create, inspect, and prolong the lifetime of a cluster with the CLI as shown in the following. If you prefer a visual interface (requires Docker) check out the [local EKSphemeral UI](https://github.com/mhausenblas/eksphemeral/tree/master/ui) proxy.
 
 ### Create clusters
 
