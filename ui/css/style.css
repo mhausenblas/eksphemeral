@@ -96,15 +96,6 @@ input {
     width: 800px;
 }
 
-div.clicmd {
-    font-size: 140%;
-    padding: 20px;
-    margin: 20px 0 20px 0;
-    border: 1px solid #f0f0f0;
-    border-radius: 2px;
-    color: greenyellow;
-}
-
 .actionbtn { 
     -webkit-border-radius: 9;
     -moz-border-radius: 9;
@@ -205,3 +196,26 @@ div.clicmd {
     text-align: right;
 }
 
+.configinstructions {
+    width: 80%;
+    margin: 10px;
+}
+
+.configinstructions > div {
+    margin: 20px 200px 0 0;
+    text-indent: -20px;
+    padding-left: 20px;
+}
+
+div.clicmd {
+    font-size: 140%;
+    padding: 20px 0 30px 40px;
+    margin: 20px 0 20px 0;
+    border: 1px solid #f0f0f0;
+    border-radius: 2px;
+    color: greenyellow;
+}
+
+code.inlinecode {
+    font-size: 130%;
+}

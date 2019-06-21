@@ -215,10 +215,10 @@ function clusterdetail(cID) {
         buffer += '<div class="cdfield"><span class="cdtitle">Owner:</span> <a href="mailto:' + d.owner + '">' + d.owner + '</a> notified on creation and 5 min before destruction</div>';
         var dbuffer = '';
         dbuffer += '<div class="moarfield"><span class="cdtitle">Status:</span> ' + d.details['status'] + '</div>';
-        dbuffer += '<div class="moarfield"><span class="cdtitle">Endpoint:</span> <code>' + d.details['endpoint'] + '</code></div>';
+        dbuffer += '<div class="moarfield"><span class="cdtitle">Endpoint:</span> <code class="inlinecode">' + d.details['endpoint'] + '</code></div>';
         dbuffer += '<div class="moarfield"><span class="cdtitle">Platform version:</span> ' + d.details['platformv'] + '</div>';
         dbuffer += '<div class="moarfield"><span class="cdtitle">VPC config:</span> ' + d.details['vpcconf'] + '</div>';
-        dbuffer += '<div class="moarfield"><span class="cdtitle">IAM role:</span> <code>' + d.details['iamrole'] + '</code></div>';
+        dbuffer += '<div class="moarfield"><span class="cdtitle">IAM role:</span> <code class="inlinecode">' + d.details['iamrole'] + '</code></div>';
         buffer += '<div class="cdfield"><span class="cdtitle">Cluster summary:</span> ' + dbuffer + '</div>';
         $('#' + cID + ' .cdetails').html(buffer);
         $('#status').html('');
@@ -242,17 +242,17 @@ function clusterconf(cID) {
       if (d != null) {
         console.info(d);
         var buffer = '';
-        buffer += '<div>';
+        buffer += '<div class="configinstructions">';
         buffer += '<div>';
         buffer += '1. In the environment you want to use the cluster, ';
         buffer += 'make sure you have the AWS CLI at least in version 1.16.156 installed. ';
         buffer += 'Should you have an older version of the AWS CLI installed ';
         buffer += 'consider upgrading it or check out <a href="https://docs.aws.amazon.com/eks/latest/userguide/create-kubeconfig.html" target="_blank" rel="noopener">alternatives</a> ';
-        buffer += 'to create the <code>kubeconf</code>.';
+        buffer += 'to create the <code class="inlinecode">kubeconf</code>.';
         buffer += '</div>';
         buffer += '<div>';
         buffer += '2. If you have a recent enough version of the AWS CLI installed, ';
-        buffer += 'use the following command to configure <code>kubectl</code> to point to your EKSphemeral cluster:';
+        buffer += 'use the following command to configure <code class="inlinecode">kubectl</code> to point to your EKSphemeral cluster:';
         buffer += '<div class="clicmd"><code>' + d + '</code></div>';
         buffer += '</div>';
         buffer += '</div>';
