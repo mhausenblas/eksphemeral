@@ -39,8 +39,7 @@ then
 fi
 
 # make sure to stop the already running one and otherwise launch the UI proxy:
-
-if [[ $(docker ps | grep ekspui >/dev/null 2>&1) -eq 0 ]]
+if [[ $(docker ps -f "name=ekspui" --format '{{.Names}}') == ekspui ]]
 then
   make stop > /dev/null
 fi
