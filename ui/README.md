@@ -126,8 +126,8 @@ docker run      --name ekspui \
                                 --detach \
                                 --publish 8080:8080 \
                                 --env EKSPHEMERAL_HOME=/eksp \
-                                --env AWS_ACCESS_KEY_ID=AKIAJLMNFZLH7A3X4CXA \
-                                --env AWS_SECRET_ACCESS_KEY=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 \
+                                --env AWS_ACCESS_KEY_ID=XXXX \
+                                --env AWS_SECRET_ACCESS_KEY=XXXX \
                                 --env AWS_DEFAULT_REGION=us-east-2 \
                                 --env EKSPHEMERAL_URL=https://nswn7lkjbk.execute-api.us-east-2.amazonaws.com/Prod \
                                 quay.io/mhausenblas/eksp-ui:0.2
