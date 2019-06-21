@@ -114,6 +114,8 @@ function prolongCluster(cID, prolongTime) {
         if (d != null) {
           console.info(d);
           $('#status').html('<div>'+ d + '</div>');
+          $('#clusterdetails').html('');
+          clusters();
         }
       }
     });
