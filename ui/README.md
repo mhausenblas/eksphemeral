@@ -32,10 +32,20 @@ $ make run
 ...
 ```
 
-Head over to http://localhost:8080 and you should see something like this:
+Head over to http://localhost:8080 and you should see something like the following.
+
+First, on start up:
 
 ![EKSphemeral UI start](../img/screen-shot-2019-06-18-ui.png)
 
-![EKSphemeral UI cluster create](../img/screen-shot-2019-06-19-ui-cluster-create.png)
+When you create a new cluster:
+
+![EKSphemeral UI cluster create](../img/screen-shot-2019-06-21-ui-cluster-create.png)
+
+When you want to configure your local environment to use the cluster:
+
+![EKSphemeral UI cluster config](../img/screen-shot-2019-06-21-ui-cluster-config.png)
+
+When you want to prolong the life time of a cluster:
 
 ![EKSphemeral UI prolonging lifetime](../img/screen-shot-2019-06-19-ui-cluster-prolong.png)
