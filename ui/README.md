@@ -122,14 +122,14 @@ Now you can launch it:
 ```sh
 $ make run
 docker run      --name ekspui \
-                                --rm \
-                                --detach \
-                                --publish 8080:8080 \
-                                --env EKSPHEMERAL_HOME=/eksp \
-                                --env AWS_ACCESS_KEY_ID=XXXX \
-                                --env AWS_SECRET_ACCESS_KEY=XXXX \
-                                --env AWS_DEFAULT_REGION=us-east-2 \
-                                --env EKSPHEMERAL_URL=https://nswn7lkjbk.execute-api.us-east-2.amazonaws.com/Prod \
+                --rm \
+                --detach \
+                --publish 8080:8080 \
+                --env EKSPHEMERAL_HOME=/eksp \
+                --env AWS_ACCESS_KEY_ID=XXXX \
+                --env AWS_SECRET_ACCESS_KEY=XXXX \
+                --env AWS_DEFAULT_REGION=us-east-2 \
+                --env EKSPHEMERAL_URL=https://nswn7lkjbk.execute-api.us-east-2.amazonaws.com/Prod \
                                 quay.io/mhausenblas/eksp-ui:0.2
 79a352a4b0259e0b9731d5f3cfb942f185013ac51d14c4d4710eb7cfe1c534b2
 ```
