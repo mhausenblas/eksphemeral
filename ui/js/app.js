@@ -242,8 +242,19 @@ function clusterconf(cID) {
       if (d != null) {
         console.info(d);
         var buffer = '';
-        buffer += '<div>Use the following command to configure <code>kubectl</code> to point to your EKSphemeral cluster:';
+        buffer += '<div>';
+        buffer += '<div>';
+        buffer += '1. In the environment you want to use the cluster, ';
+        buffer += 'make sure you have the AWS CLI at least in version 1.16.156 installed. ';
+        buffer += 'Should you have an older version of the AWS CLI installed ';
+        buffer += 'consider upgrading it or check out <a href="https://docs.aws.amazon.com/eks/latest/userguide/create-kubeconfig.html" target="_blank" rel="noopener">alternatives</a> ';
+        buffer += 'to create the <code>kubeconf</code>.';
+        buffer += '</div>';
+        buffer += '<div>';
+        buffer += '2. If you have a recent enough version of the AWS CLI installed, ';
+        buffer += 'use the following command to configure <code>kubectl</code> to point to your EKSphemeral cluster:';
         buffer += '<div class="clicmd"><code>' + d + '</code></div>';
+        buffer += '</div>';
         buffer += '</div>';
         $('#' + cID + ' .cdetails').html(buffer);
         $('#status').html('');
