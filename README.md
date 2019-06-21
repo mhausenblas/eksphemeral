@@ -235,13 +235,5 @@ Fargate. The architecture looks as follows:
 
 ## Development
 
-To manually install the binary CLI, for example on macOS, do:
-
-```sh
-$ curl -sL https://github.com/mhausenblas/eksphemeral/releases/download/v0.3.0/eksp-macos -o eksp
-$ chmod +x eksp
-$ sudo mv ./eksp /usr/local/bin
-```
-
 To learn how to customize and extend EKSphemeral or simply toy around with it, 
 see the dedicated [development docs](dev.md).

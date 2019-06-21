@@ -93,15 +93,18 @@ $ fargate task run eksctl \
           --security-group-id $EKSPHEMERAL_SG
 ```
 
-## The UI
+## The CLI
 
-Make sure you work in the [ui](ui/) directory.
+To manually install the binary CLI, for example on macOS, do:
 
 ```sh
-$ docker build -t quay.io/mhausenblas/eksp-ui:base .
-
-$ docker run --detach --publish 4200:4200 quay.io/mhausenblas/eksp-ui:base
-
+$ curl -sL https://github.com/mhausenblas/eksphemeral/releases/latest/download/eksp-macos -o eksp
+$ chmod +x eksp
+$ sudo mv ./eksp /usr/local/bin
 ```
+
+## The UI
+
+Check out instructions in the [ui](ui/) directory.
 
 Please create issues if anything doesn't work as described in here.
