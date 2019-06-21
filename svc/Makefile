@@ -2,7 +2,7 @@ EKSPHEMERAL_STACK_NAME?=eksp
 EKSPHEMERAL_SVC_BUCKET?=eks-svc
 EKSPHEMERAL_CLUSTERMETA_BUCKET?=eks-cluster-meta
 
-eksphemeral_version:= v0.3.0
+eksphemeral_version:= v0.4.0
 
 .PHONY: deps clean build up downloadbin deploy destroy status
 

@@ -14,9 +14,15 @@ EKSphemeral is a simple Amazon EKS manager for ephemeral dev/test clusters,
  allowing you to launch EKS clusters that auto-tear down after a time period,
  and you can also prolong their lifetime if you want to continue to use them.
 
-![UI showing cluster create](img/screen-shot-2019-06-19-ui-cluster-create.png)
+You can either use the EKSphemeral UI:
 
-[![EKSphemeral in action](https://i.gyazo.com/923543f2f6c427cc33a40a4ba16834da.gif)](img/screen-shot-2019-06-15-ls.png)
+![UI showing cluster create](img/screen-shot-2019-06-21-ui-cluster-create.png)
+
+Or the EKSphemeral CLI (both for macOS and Linux):
+
+![UI showing cluster create](img/screen-shot-2019-06-21-cli.png)
+
+---
 
 1. [Install](#install)
 2. [Use](#use)
