@@ -213,7 +213,7 @@ func GetClusterConfig(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	pinfo(fmt.Sprintf("Looking up config for cluster %v in region %v", cs.Name, region))
-	config := bshellout("sh", "-c", "aws eks update-kubeconfig --region "+
-		region+" --name "+cs.Name+" --dry-run")
-	plainResponse(w, http.StatusOK, string(config))
+	cmd := "aws eks update-kubeconfig --region " + region + " --name " + cs.Name //+ " --dry-run"
+	// config := bshellout("sh", "-c", cmd)
+	plainResponse(w, http.StatusOK, string(cmd))
 }

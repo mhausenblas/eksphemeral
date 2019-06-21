@@ -96,6 +96,11 @@ input {
     width: 800px;
 }
 
+code.clicmd {
+    font-size: 120%;
+    padding: 20px;
+}
+
 .actionbtn { 
     -webkit-border-radius: 9;
     -moz-border-radius: 9;

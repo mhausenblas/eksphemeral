@@ -243,7 +243,7 @@ function clusterconf(cID) {
         console.info(d);
         var buffer = '';
         buffer += '<div>Use the following command to configure <code>kubectl</code> to point to your EKSphemeral cluster:';
-        buffer += '<div><code>' + d + '</code></div>';
+        buffer += '<div><code class="clicmd">' + d + '</code></div>';
         buffer += '</div>';
         $('#' + cID + ' .cdetails').html(buffer);
         $('#status').html('');
