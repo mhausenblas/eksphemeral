@@ -4,14 +4,12 @@
 > Also, note that this is not an official AWS offering but 
 > something I cooked up, so use at your own risk.
 
-Managing EKS clusters for dev/test environments manually is boring. 
-You have to wait until they're up and available and have to remember 
-to tear them down again to minimize costs.
+Managing EKS clusters for development and test environments manually is boring. 
+You have to wait until they're provisioned and then have to remember 
+to tear them down again to minimize costs. How about automating these steps? 
 
-How about automate these steps? Meet EKSphemeral :)
-
-EKSphemeral is a simple Amazon EKS manager for ephemeral dev/test clusters,
- allowing you to launch EKS clusters that auto-tear down after a time period,
+Meet EKSphemeral, the simple Amazon EKS manager for ephemeral clusters,
+ allowing you to launch EKS clusters that auto-tear down after some time,
  and you can also prolong their lifetime if you want to continue to use them.
 
 You can either use the EKSphemeral UI:
