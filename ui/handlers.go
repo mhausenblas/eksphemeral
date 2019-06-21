@@ -192,7 +192,7 @@ func ProlongCluster(w http.ResponseWriter, r *http.Request) {
 	invalidateCacheEntry(cp.ID)
 	pinfo("Invalidated cache entry")
 
-	jsonResponse(w, http.StatusOK, string(body))
+	plainResponse(w, http.StatusOK, string(body))
 }
 
 // GetClusterConfig returns the cluster config for kubectl
