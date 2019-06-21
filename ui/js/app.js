@@ -77,7 +77,7 @@ function createCluster() {
     $.ajax({
       type: 'POST',
       url: cpURL+'/create',
-      dataType: 'json',
+      // dataType: 'json',
       data: JSON.stringify(clusterspec),
       async: true,
       error: function (d) {
@@ -104,7 +104,7 @@ function prolongCluster(cID, prolongTime) {
     $.ajax({
       type: 'POST',
       url: cpURL+'/prolong',
-      dataType: 'json',
+      // dataType: 'json',
       data: JSON.stringify(clusterprolong),
       async: true,
       error: function (d) {
@@ -234,7 +234,7 @@ function clusterconf(cID) {
   $.ajax({
     type: 'GET',
     url: cpURL + ep,
-    dataType: 'json',
+    // dataType: 'json',
     async: true,
     error: function (d) {
       console.info(d);

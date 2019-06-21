@@ -208,7 +208,6 @@ func ProlongCluster(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(`Allow: ` + "POST"))
 		return
 	}
-	///prolong/$CLUSTER_ID/$PROLONG_TIME
 	type ClusterProlong struct {
 		ID          string `json:"id"`
 		ProlongTime int    `json:"ptime"`
