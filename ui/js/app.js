@@ -186,12 +186,13 @@ function clusters(){
 
 function clusterdetail(cID) {
   var ep = '/status?cluster='+cID;
-  var currentdetails = $('#' + cID + ' .cdetails').text();
+  var currentcontent = $('#' + cID + ' .cdetails').text();
 
-  if (currentdetails != '') {
+  if (currentcontent != '') {
     $('#' + cID + ' .cdetails').toggle();
     return
   }
+  
   $('#status').html('<img src="./img/standby.gif" alt="please wait" width="64px">');
   $.ajax({
     type: 'GET',
@@ -229,6 +230,13 @@ function clusterdetail(cID) {
 
 function clusterconf(cID) {
   var ep = '/configof?cluster='+cID;
+  var currentcontent = $('#' + cID + ' .cdetails').text();
+
+  if (currentcontent != '') {
+    $('#' + cID + ' .cdetails').toggle();
+    return
+  }
+
   $('#status').html('<img src="./img/standby.gif" alt="please wait" width="64px">');
   $.ajax({
     type: 'GET',
@@ -245,7 +253,7 @@ function clusterconf(cID) {
         buffer += '<div class="configinstructions">';
         buffer += '<div>';
         buffer += '1. In the environment you want to use the cluster, ';
-        buffer += 'make sure you have the AWS CLI at least in version 1.16.156 installed. ';
+        buffer += 'make sure you have the AWS CLI at least in version <code class="inlinecode">1.16.156</code> installed. ';
         buffer += 'Should you have an older version of the AWS CLI installed ';
         buffer += 'consider upgrading it or check out <a href="https://docs.aws.amazon.com/eks/latest/userguide/create-kubeconfig.html" target="_blank" rel="noopener">alternatives</a> ';
         buffer += 'to create the <code class="inlinecode">kubeconf</code>.';
