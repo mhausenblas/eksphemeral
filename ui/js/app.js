@@ -145,6 +145,7 @@ function updateClusters(){
             buffer += d.name;
             $('#' + cID + ' .cdlabel a').html(buffer);
             $('#' + cID + ' .cdlabel a').attr('href', consoleLink + d.name);
+            $('#' + cID + ' .cdlabel a').attr('title', 'this link takes you to the AWS console where you can view the details of the EKS cluster');
           }
         }
       })
@@ -168,11 +169,11 @@ function clusters(){
       if (d != null) {
         console.info(d);
         var buffer = '';
-        var consoleURL = "https://console.aws.amazon.com/eks/";
+        // var consoleURL = "https://console.aws.amazon.com/eks/";
         for (let i = 0; i < d.length; i++) {
           var cID = d[i];
           buffer += '<div class="cluster" id="' + cID + '">';
-          buffer += ' <span class="cdlabel"><a href="' + consoleURL + '" target="_blank" rel="noopener">' + cID + '</a></span>';
+          buffer += ' <span class="cdlabel"><a href="" target="_blank" rel="noopener">' + cID + '</a></span>';
           buffer += ' <span class="showconfbtn">Show Config</span> <span class="prolongbtn">Prolong</span> <span class="detailsbtn">Details…</span>';
           buffer += '<div class="cdetails"></div>';
           buffer += '</div>';
