@@ -186,13 +186,13 @@ function clusters(){
 
 function clusterdetail(cID) {
   var ep = '/status?cluster='+cID;
-  var currentcontent = $('#' + cID + ' .cdetails').text();
+  // var currentcontent = $('#' + cID + ' .cdetails').text();
 
-  if (currentcontent != '') {
-    $('#' + cID + ' .cdetails').toggle();
-    return
-  }
-  
+  // if (currentcontent != '') {
+  //   $('#' + cID + ' .cdetails').toggle();
+  //   return
+  // }
+
   $('#status').html('<img src="./img/standby.gif" alt="please wait" width="64px">');
   $.ajax({
     type: 'GET',
@@ -230,12 +230,12 @@ function clusterdetail(cID) {
 
 function clusterconf(cID) {
   var ep = '/configof?cluster='+cID;
-  var currentcontent = $('#' + cID + ' .cdetails').text();
+  // var currentcontent = $('#' + cID + ' .cdetails').text();
 
-  if (currentcontent != '') {
-    $('#' + cID + ' .cdetails').toggle();
-    return
-  }
+  // if (currentcontent != '') {
+  //   $('#' + cID + ' .cdetails').toggle();
+  //   return
+  // }
 
   $('#status').html('<img src="./img/standby.gif" alt="please wait" width="64px">');
   $.ajax({
