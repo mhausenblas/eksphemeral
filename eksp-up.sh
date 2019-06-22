@@ -26,25 +26,23 @@ printf "Installing the EKSphemeral control plane, this might take a few minutes\
 ###############################################################################
 ### S3 BUCKET OPERATIONS
 
-if [[ $(aws s3 ls "s3://$EKSPHEMERAL_SVC_BUCKET") -eq 0 ]]; then
-    echo "Using $EKSPHEMERAL_SVC_BUCKET as the control plane service code bucket"
-else
+if [[ $(aws s3 ls "s3://$EKSPHEMERAL_SVC_BUCKET" > /dev/null 2>&1) -ne 0 ]]; then
     aws s3api create-bucket \
-      --bucket $EKSPHEMERAL_SVC_BUCKET \
-      --create-bucket-configuration LocationConstraint=$(aws configure get region) \
-      --region $(aws configure get region)
-    echo "Created $EKSPHEMERAL_SVC_BUCKET and using it as the control plane service code bucket"
+        --bucket $EKSPHEMERAL_SVC_BUCKET \
+        --create-bucket-configuration LocationConstraint=$(aws configure get region) \
+        --region $(aws configure get region)
+    echo "Created S3 bucket $EKSPHEMERAL_SVC_BUCKET"
 fi
+echo "Using S3 bucket $EKSPHEMERAL_SVC_BUCKET for the control plane service code"
 
-if [[ $(aws s3 ls "s3://$EKSPHEMERAL_CLUSTERMETA_BUCKET") -eq 0  ]]; then
-    echo "Using $EKSPHEMERAL_CLUSTERMETA_BUCKET as the bucket to store cluster metadata"
-else
+if [[ $(aws s3 ls "s3://$EKSPHEMERAL_CLUSTERMETA_BUCKET" > /dev/null 2>&1) -ne 0 ]]; then
     aws s3api create-bucket \
       --bucket $EKSPHEMERAL_CLUSTERMETA_BUCKET \
       --create-bucket-configuration LocationConstraint=$(aws configure get region) \
       --region $(aws configure get region)
-    echo "Created $EKSPHEMERAL_CLUSTERMETA_BUCKET and using it as the bucket to store cluster metadata"
+    echo "Created S3 bucket $EKSPHEMERAL_CLUSTERMETA_BUCKET"
 fi
+echo "Using S3 bucket $EKSPHEMERAL_CLUSTERMETA_BUCKET to store cluster specifications"
 
 ###############################################################################
 ### INSTALL CONTROL PLANE
