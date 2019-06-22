@@ -26,7 +26,7 @@ printf "Installing the EKSphemeral control plane, this might take a few minutes\
 ###############################################################################
 ### S3 BUCKET OPERATIONS
 
-if [[ $(aws s3 ls | grep -q $EKSPHEMERAL_SVC_BUCKET > /dev/null 2>&1) -ne 0 ]]; then
+if [[ $(aws s3 ls | grep $EKSPHEMERAL_SVC_BUCKET) -ne 0 ]]; then
     aws s3api create-bucket \
         --bucket $EKSPHEMERAL_SVC_BUCKET \
         --create-bucket-configuration LocationConstraint=$(aws configure get region) \
@@ -35,7 +35,7 @@ if [[ $(aws s3 ls | grep -q $EKSPHEMERAL_SVC_BUCKET > /dev/null 2>&1) -ne 0 ]]; 
 fi
 echo "Using S3 bucket $EKSPHEMERAL_SVC_BUCKET for the control plane service code"
 
-if [[ $(aws s3 ls | grep -q $EKSPHEMERAL_CLUSTERMETA_BUCKET > /dev/null 2>&1) -ne 0 ]]; then
+if [[ $(aws s3 ls | grep $EKSPHEMERAL_CLUSTERMETA_BUCKET) -ne 0 ]]; then
     aws s3api create-bucket \
       --bucket $EKSPHEMERAL_CLUSTERMETA_BUCKET \
       --create-bucket-configuration LocationConstraint=$(aws configure get region) \
