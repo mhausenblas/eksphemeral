@@ -26,7 +26,7 @@ printf "Installing the EKSphemeral control plane, this might take a few minutes\
 ###############################################################################
 ### S3 BUCKET OPERATIONS
 
-if [[ -z $(aws s3api head-bucket --bucket $EKSPHEMERAL_SVC_BUCKET) ]]; then
+if [[ $(aws s3 ls "s3://$EKSPHEMERAL_SVC_BUCKET") -eq 0 ]]; then
     echo "Using $EKSPHEMERAL_SVC_BUCKET as the control plane service code bucket"
 else
     aws s3api create-bucket \
@@ -36,7 +36,7 @@ else
     echo "Created $EKSPHEMERAL_SVC_BUCKET and using it as the control plane service code bucket"
 fi
 
-if [[ -z $(aws s3api head-bucket --bucket $EKSPHEMERAL_CLUSTERMETA_BUCKET) ]]; then
+if [[ $(aws s3 ls "s3://$EKSPHEMERAL_CLUSTERMETA_BUCKET") -eq 0  ]]; then
     echo "Using $EKSPHEMERAL_CLUSTERMETA_BUCKET as the bucket to store cluster metadata"
 else
     aws s3api create-bucket \
