@@ -84,7 +84,7 @@ Since we just installed EKSphemeral, there are no clusters, yet. Let's change th
 
 ## Use
 
-You can create, inspect, and prolong the lifetime of a cluster with the CLI as shown in the following. If you prefer a visual interface (requires Docker) check out the [local EKSphemeral UI](https://github.com/mhausenblas/eksphemeral/tree/master/ui) proxy.
+You can create, inspect, and prolong the lifetime of a cluster with the CLI as shown in the following. If you prefer a visual interface (requires Docker) check out the [local EKSphemeral UI](ui/) proxy.
 
 ### Create clusters
 
@@ -108,7 +108,7 @@ $ cat svc/dev/mh9-test-other.json
 $ eksp create svc/dev/mh9-test-other.json
 Trying to create a new ephemeral cluster ...
 ... using cluster spec svc/dev/mh9-test.json
-Seems you've set 'us-east-2' as the target region, using this for all following operations
+Seems you have set 'us-east-2' as the target region, using this for all following operations
 I will now provision the EKS cluster mh9-eksp using AWS Fargate:
 
 [i] Running task eksctl
