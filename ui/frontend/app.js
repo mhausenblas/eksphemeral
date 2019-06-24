@@ -81,7 +81,7 @@ function createCluster() {
       async: true,
       error: function (d) {
         console.info(d);
-        $('#status').html('<div>'+ d + '</div>');
+        $('#status').html('<div>'+ d.responseText + '</div>');
       },
       success: function (d) {
         if (d != null) {

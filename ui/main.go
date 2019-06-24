@@ -43,7 +43,7 @@ var cscache map[string]ClusterSpec
 
 func main() {
 	cscache = make(map[string]ClusterSpec)
-	http.Handle("/", http.FileServer(http.Dir(".")))
+	http.Handle("/", http.FileServer(http.Dir("./frontend")))
 	http.HandleFunc("/status", ListCluster)
 	http.HandleFunc("/create", CreateCluster)
 	http.HandleFunc("/prolong", ProlongCluster)

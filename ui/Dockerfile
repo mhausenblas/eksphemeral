@@ -14,10 +14,7 @@ RUN yum install unzip jq git -y && yum clean all && \
     export EKSPHEMERAL_HOME=/eksp && \
     chmod +x install.sh && ./install.sh
 
-COPY css/* /app/css/
-COPY img/* /app/img/
-COPY js/* /app/js/
-COPY *.html /app/
+COPY frontend/* /app/frontend/
 WORKDIR /app
 RUN chown -R 1001:1 /app
 USER 1001
