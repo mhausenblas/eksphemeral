@@ -41,6 +41,12 @@ The EKSphemeral control plane has the following API:
   - `owner` ... the email address of the owner
 - Auto-destruction of a cluster after the set timeout (triggered by CloudWatch events, no HTTP endpoint)
 
+Once deployed, you can find out where the API runs via:
+
+```sh
+$ EKSPHEMERAL_URL=$(aws cloudformation describe-stacks --stack-name eksp | jq '.Stacks[].Outputs[] | select(.OutputKey=="EKSphemeralAPIEndpoint").OutputValue' -r)
+```
+
 ## The data plane in AWS Fargate
 
 You can manually kick off the EKS cluster provisioning as described in the following.
