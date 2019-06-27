@@ -48,7 +48,7 @@ func main() {
 	http.HandleFunc("/create", CreateCluster)
 	http.HandleFunc("/prolong", ProlongCluster)
 	http.HandleFunc("/configof", GetClusterConfig)
-	log.Println("EKSPhemeral UI up and running on http://localhost:8080/")
+	log.Println("EKSphemeral UI up and running on http://localhost:8080/")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		panic(err)
 	}

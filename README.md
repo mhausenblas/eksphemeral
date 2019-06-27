@@ -31,10 +31,7 @@ Or the EKSphemeral CLI (both for macOS and Linux):
 4. [Architecture](#architecture)
 5. [Development](#development)
 
-If you like, you can have a look at a [4 min video walkthrough](https://www.youtube.com/watch?v=2A8olhYL9iI), before you try it out yourself.
-Since the minimal time for an end-to-end provisioning and usage cycle is ca. 40min, the video walkthrough is showing a 1:10 time compression, roughly.
-
-If you want to try it out yourself, follow the steps below.
+If you like, you can have a look at a [video walkthrough](https://www.youtube.com/watch?v=duuy3CKR87Y), before you try it out yourself.
 
 ## Install
 
