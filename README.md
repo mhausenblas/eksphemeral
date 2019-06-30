@@ -1,16 +1,16 @@
 # EKSphemeral: The EKS Ephemeral Cluster Manager
 
 > This is a service for development and test environments.
-> Also, note that this is not an official AWS offering but 
-> something I cooked up, so use at your own risk.
+> Note that this is not an official AWS offering, use at your own risk.
 
-Managing EKS clusters for development and test environments manually is boring. 
-You have to wait until they're provisioned and then have to remember 
-to tear them down again to minimize costs. How about automating these steps? 
+Managing Amazon EKS clusters for development and test environments manually is
+boring. You have to wait until they're provisioned and then have to remember 
+to tear them down again, in order to minimize costs. How about automating these
+steps? 
 
-Meet EKSphemeral, the simple Amazon EKS manager for ephemeral clusters,
- allowing you to launch EKS clusters that auto-tear down after some time,
- and you can also prolong their lifetime if you want to continue to use them.
+Meet EKSphemeral, the simple manager for ephemeral EKS clusters, allowing you to
+launch EKS clusters that auto-tear down after some time, and you can also prolong
+their lifetime if you want to continue to use them.
 
 You can either use the EKSphemeral UI:
 
@@ -31,7 +31,9 @@ Or the EKSphemeral CLI (both for macOS and Linux):
 4. [Architecture](#architecture)
 5. [Development](#development)
 
-If you like, you can have a look at a [video walkthrough](https://www.youtube.com/watch?v=duuy3CKR87Y), before you try it out yourself.
+If you like, you can have a look at a 
+[video walkthrough](https://www.youtube.com/watch?v=duuy3CKR87Y), before you 
+try it out yourself.
 
 ## Install
 
@@ -40,9 +42,9 @@ The other dependencies, including the [Fargate CLI](https://somanymachines.com/f
 will be installed automatically, if not present on the system.
 
 Make sure to set the respective environment variables before you proceed. 
-This is so that the install process knows where the dependencies are and which S3 bucket to use for the control plane (`EKSPHEMERAL_SVC_BUCKET`) and where to put the cluster metadata (`EKSPHEMERAL_CLUSTERMETA_BUCKET`).
-
-For example:
+This is so that the install process knows where the dependencies are and which 
+S3 bucket to use for the control plane (`EKSPHEMERAL_SVC_BUCKET`) and where to
+put the cluster metadata (`EKSPHEMERAL_CLUSTERMETA_BUCKET`), for example:
 
 ```sh
 $ export EKSPHEMERAL_HOME=~/eksp
@@ -50,8 +52,8 @@ $ export EKSPHEMERAL_SVC_BUCKET=eks-svc
 $ export EKSPHEMERAL_CLUSTERMETA_BUCKET=eks-cluster-meta
 ```
 
-Optionally, in order to receive email notifications about cluster creation and destruction,
-you need to set the following environment variable, for example:
+Optionally, in order to receive email notifications about cluster creation and 
+destruction, you need to set the following environment variable, for example:
 
 ```sh
 $ export EKSPHEMERAL_EMAIL_FROM=hausenbl+eksphemeral@amazon.com
@@ -81,7 +83,9 @@ Since we just installed EKSphemeral, there are no clusters, yet. Let's change th
 
 ## Use
 
-You can create, inspect, and prolong the lifetime of a cluster with the CLI as shown in the following. If you prefer a visual interface (requires Docker) check out the [local EKSphemeral UI](ui/) proxy.
+You can create, inspect, and prolong the lifetime of a cluster with the CLI as 
+shown in the following. If you prefer a visual interface (requires Docker) 
+check out the [local EKSphemeral UI](ui/) proxy.
 
 ### Create clusters
 
@@ -129,12 +133,12 @@ kubectl get nodes
 Note that if no cluster spec is provided, [default](svc/default-cc.json) will be
 used along with first security group of the default VPC.
 
-Once the cluster is ready (and you've verified your email addresses) you should
+Once the cluster is ready and you've verified your email addresses you should
 get a notification that looks something like the following:
 
 ![EKSphemeral mail notification on cluster create](img/mail-notif-example.png)
 
-The same is true 5 minutes before the cluster shuts down.
+The same is true at least five minutes before the cluster shuts down.
 
 ### List clusters
 
@@ -146,7 +150,8 @@ NAME       ID                                     KUBERNETES   NUM WORKERS   TIM
 mh9-eksp   e90379cf-ee0a-49c7-8f82-1660760d6bb5   v1.12        2             45 min    42 min   hausenbl+notif@amazon.com
 ```
 
-Here, we get an array of cluster IDs back. We can use such a cluster ID as follows to look up the spec of a particular cluster:
+Here, we get an array of cluster IDs back. We can use such a cluster ID as 
+follows to look up the spec of a particular cluster:
 
 ```sh
 $ eksp list e90379cf-ee0a-49c7-8f82-1660760d6bb5
@@ -167,7 +172,9 @@ Details:
 
 ### Prolong cluster lifetime
 
-When you get a notification that one of your clusters is about to shut down or really at any time before it shuts down, you can prolong the cluster lifetime using the `eksp prolong` command.
+When you get a notification that one of your clusters is about to shut down or 
+really at any time before it shuts down, you can prolong the cluster lifetime 
+using the `eksp prolong` command.
 
 Let's say we want to keep the cluster with the ID `e90379cf-ee0a-49c7-8f82-1660760d6bb5` around 
 for 13 min longer. Here's what you would do:
@@ -183,7 +190,9 @@ NAME       ID                                     KUBERNETES   NUM WORKERS   TIM
 mh9-eksp   e90379cf-ee0a-49c7-8f82-1660760d6bb5   v1.12        2             13 min    13 min   hausenbl+notif@amazon.com
 ```
 
-Note that the prolong command updates the `timeout` field of your cluster spec, that is, the cluster TTL is counted from the moment you issue the prolong command, taking the remaining cluster runtime into account.
+Note that the prolong command updates the `timeout` field of your cluster spec,
+that is, the cluster TTL is counted from the moment you issue the prolong command, 
+taking the remaining cluster runtime into account.
 
 ## Uninstall
 
