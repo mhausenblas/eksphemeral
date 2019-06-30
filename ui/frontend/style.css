@@ -16,9 +16,10 @@ h2:hover {
 }
 
 h3 {
-    font-weight: 400;
-    margin: 10px;
-    padding: 14px;
+    font-weight: 700;
+    margin: 0 0 35px 0px;
+    padding: 4px;
+    border-bottom: 2px solid #ff9900;
 }
 
 a {
