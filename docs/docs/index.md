@@ -9,8 +9,9 @@ to tear them down again, in order to minimize costs. How about automating these
 steps? 
 
 Meet EKSphemeral, the simple manager for ephemeral EKS clusters, allowing you to
-launch EKS clusters that auto-tear down after some time, and you can also prolong
-their lifetime if you want to continue to use them.
+launch EKS clusters that auto-tear down after some time, and you can also prolong their lifetime if you want to continue to use them.
+
+If you like, you can have a look at a [video walkthrough](https://www.youtube.com/watch?v=duuy3CKR87Y), before you try it out yourself.
 
 You can either use the [EKSphemeral UI](ui/):
 
