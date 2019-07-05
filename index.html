@@ -42,6 +42,12 @@
     
       <link rel="stylesheet" href="assets/stylesheets/application.0284f74d.css">
       
+        <link rel="stylesheet" href="assets/stylesheets/application-palette.01803549.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#fb8c00">
       
     
     
@@ -63,7 +69,9 @@
     
   </head>
   
-    <body dir="ltr">
+    
+    
+    <body dir="ltr" data-md-color-primary="orange" data-md-color-accent="orange">
   
     <svg class="md-svg">
       <defs>
@@ -86,7 +94,7 @@
       <div class="md-flex__cell md-flex__cell--shrink">
         <a href="." title="EKSphemeral" class="md-header-nav__button md-logo">
           
-            <i class="md-icon"></i>
+            <img src="assets/images/logo.png" width="24" height="24">
           
         </a>
       </div>
@@ -156,7 +164,7 @@
   <label class="md-nav__title md-nav__title--site" for="__drawer">
     <a href="." title="EKSphemeral" class="md-nav__button md-logo">
       
-        <i class="md-icon"></i>
+        <img src="assets/images/logo.png" width="48" height="48">
       
     </a>
     EKSphemeral
@@ -320,7 +328,7 @@
               
                 
                 
-                <h1 id="the-eks-ephemeral-cluster-manager">The EKS Ephemeral Cluster Manager<a class="headerlink" href="#the-eks-ephemeral-cluster-manager" title="Permanent link"> #</a></h1>
+                <h1 id="the-eks-ephemeral-cluster-manager">The EKS Ephemeral Cluster Manager<a class="headerlink" href="#the-eks-ephemeral-cluster-manager" title="Permanent link">&para;</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This is a service for development and test environments. It is not an official AWS offering, use at your own risk.</p>
@@ -336,7 +344,7 @@ launch EKS clusters that auto-tear down after some time, and you can also prolon
 <p><img alt="UI showing cluster create" src="img/ui.png" /></p>
 <p>Or the <a href="cli/">EKSphemeral CLI</a>:</p>
 <p><img alt="UI showing cluster create" src="img/cli.png" /></p>
-<h2 id="install">Install<a class="headerlink" href="#install" title="Permanent link"> #</a></h2>
+<h2 id="install">Install<a class="headerlink" href="#install" title="Permanent link">&para;</a></h2>
 <p>In order to use EKSphemeral you need to have <code>jq</code> (<a href="https://stedolan.github.io/jq/download/">install</a>) and the <code>aws</code> CLI (<a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html">install</a>) installed.
 All other dependencies, such as the <a href="https://somanymachines.com/fargate/">Fargate CLI</a> will be installed automatically, if not present on the system.</p>
 <div class="admonition warning">
@@ -346,15 +354,19 @@ All other dependencies, such as the <a href="https://somanymachines.com/fargate/
 <p>The following environment variables need to be set so that the install process knows where the dependencies are and which 
 S3 bucket to use for the control plane (<code>EKSPHEMERAL_SVC_BUCKET</code>) and where to
 put the cluster metadata (<code>EKSPHEMERAL_CLUSTERMETA_BUCKET</code>), for example:</p>
-<pre><code class="sh">$ export EKSPHEMERAL_HOME=~/eksp
-$ export EKSPHEMERAL_SVC_BUCKET=eks-svc
-$ export EKSPHEMERAL_CLUSTERMETA_BUCKET=eks-cluster-meta
-</code></pre>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ <span class="nb">export</span> <span class="nv">EKSPHEMERAL_HOME</span><span class="o">=</span>~/eksp
+$ <span class="nb">export</span> <span class="nv">EKSPHEMERAL_SVC_BUCKET</span><span class="o">=</span>eks-svc
+$ <span class="nb">export</span> <span class="nv">EKSPHEMERAL_CLUSTERMETA_BUCKET</span><span class="o">=</span>eks-cluster-meta
+</pre></div>
+</td></tr></table>
 
 <p>Optionally, in order to receive email notifications about cluster creation and 
 destruction, you need to set the <code>EKSPHEMERAL_EMAIL_FROM</code> environment variable, for example:</p>
-<pre><code class="sh">$ export EKSPHEMERAL_EMAIL_FROM=hausenbl+eksphemeral@amazon.com
-</code></pre>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ <span class="nb">export</span> <span class="nv">EKSPHEMERAL_EMAIL_FROM</span><span class="o">=</span>hausenbl+eksphemeral@amazon.com
+</pre></div>
+</td></tr></table>
 
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -362,11 +374,12 @@ destruction, you need to set the <code>EKSPHEMERAL_EMAIL_FROM</code> environment
 </div>
 <p>We're now in the position to install EKSphemeral with a single command, 
 here shown for an install below your home directory:</p>
-<pre><code class="sh">$ curl -sL http://get.eksphemeral.info/install.sh | sudo --preserve-env bash
-</code></pre>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ curl -sL http://get.eksphemeral.info/install.sh <span class="p">|</span> sudo --preserve-env bash
+</pre></div>
+</td></tr></table>
 
 <p>This process can take several minutes. After this, EKSphemeral is installed in your AWS environment as well as the CLI is locally available. Learn more about what exactly is created and running as part of the install process by perusing the EKSphemeral <a href="/arch">architecture</a>. </p>
-<h2 id="use">Use<a class="headerlink" href="#use" title="Permanent link"> #</a></h2>
+<h2 id="use">Use<a class="headerlink" href="#use" title="Permanent link">&para;</a></h2>
 <p>You can create, inspect, and prolong the lifetime of a cluster with the <a href="cli/">CLI</a> or, if you prefer a visual interface check out the <a href="ui/">local EKSphemeral UI</a> proxy, which requires Docker.</p>
                 
                   

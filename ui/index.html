@@ -42,6 +42,12 @@
     
       <link rel="stylesheet" href="../assets/stylesheets/application.0284f74d.css">
       
+        <link rel="stylesheet" href="../assets/stylesheets/application-palette.01803549.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#fb8c00">
       
     
     
@@ -63,7 +69,9 @@
     
   </head>
   
-    <body dir="ltr">
+    
+    
+    <body dir="ltr" data-md-color-primary="orange" data-md-color-accent="orange">
   
     <svg class="md-svg">
       <defs>
@@ -86,7 +94,7 @@
       <div class="md-flex__cell md-flex__cell--shrink">
         <a href=".." title="EKSphemeral" class="md-header-nav__button md-logo">
           
-            <i class="md-icon"></i>
+            <img src="../assets/images/logo.png" width="24" height="24">
           
         </a>
       </div>
@@ -156,7 +164,7 @@
   <label class="md-nav__title md-nav__title--site" for="__drawer">
     <a href=".." title="EKSphemeral" class="md-nav__button md-logo">
       
-        <i class="md-icon"></i>
+        <img src="../assets/images/logo.png" width="48" height="48">
       
     </a>
     EKSphemeral
@@ -261,22 +269,28 @@
               
                 
                 
-                <h1 id="the-eksphemeral-web-ui">The EKSphemeral web UI<a class="headerlink" href="#the-eksphemeral-web-ui" title="Permanent link"> #</a></h1>
+                <h1 id="the-eksphemeral-web-ui">The EKSphemeral web UI<a class="headerlink" href="#the-eksphemeral-web-ui" title="Permanent link">&para;</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>In order to use the EKSphemeral web UI locally, you need to have Docker installed and running.</p>
 </div>
 <p>To launch the UI, do the following:</p>
-<pre><code class="sh">$ ./launch-ui.sh
-2019/06/21 10:15:41 EKSPhemeral UI up and running on http://localhost:8080/
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ ./launch-ui.sh
+<span class="m">2019</span>/06/21 <span class="m">10</span>:15:41 EKSPhemeral UI up and running on http://localhost:8080/
 ^C
-</code></pre>
+</pre></div>
+</td></tr></table>
 
 <p>Optionally, you can tear down the UI proxy manually like so (will be done automatically on launch):</p>
-<pre><code class="sh">$ ./stop-ui.sh
-docker kill ekspui
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ ./stop-ui.sh
+docker <span class="nb">kill</span> ekspui
 ekspui
-</code></pre>
+</pre></div>
+</td></tr></table>
 
 <p>Now, head over to http://localhost:8080 and you should see something like the following.</p>
 <p>First, on start up:</p>

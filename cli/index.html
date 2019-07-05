@@ -42,6 +42,12 @@
     
       <link rel="stylesheet" href="../assets/stylesheets/application.0284f74d.css">
       
+        <link rel="stylesheet" href="../assets/stylesheets/application-palette.01803549.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#fb8c00">
       
     
     
@@ -63,7 +69,9 @@
     
   </head>
   
-    <body dir="ltr">
+    
+    
+    <body dir="ltr" data-md-color-primary="orange" data-md-color-accent="orange">
   
     <svg class="md-svg">
       <defs>
@@ -86,7 +94,7 @@
       <div class="md-flex__cell md-flex__cell--shrink">
         <a href=".." title="EKSphemeral" class="md-header-nav__button md-logo">
           
-            <i class="md-icon"></i>
+            <img src="../assets/images/logo.png" width="24" height="24">
           
         </a>
       </div>
@@ -156,7 +164,7 @@
   <label class="md-nav__title md-nav__title--site" for="__drawer">
     <a href=".." title="EKSphemeral" class="md-nav__button md-logo">
       
-        <i class="md-icon"></i>
+        <img src="../assets/images/logo.png" width="48" height="48">
       
     </a>
     EKSphemeral
@@ -348,137 +356,210 @@
               
                 
                 
-                <h1 id="the-eksphemeral-cli">The EKSphemeral CLI<a class="headerlink" href="#the-eksphemeral-cli" title="Permanent link"> #</a></h1>
+                <h1 id="the-eksphemeral-cli">The EKSphemeral CLI<a class="headerlink" href="#the-eksphemeral-cli" title="Permanent link">&para;</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Currently, the CLI binaries are available for both macOS and Linux platforms.</p>
 </div>
 <p>You can create, inspect, and prolong the lifetime of a cluster with the CLI as 
 shown in the following.</p>
-<h2 id="manual-install">Manual install<a class="headerlink" href="#manual-install" title="Permanent link"> #</a></h2>
+<h2 id="manual-install">Manual install<a class="headerlink" href="#manual-install" title="Permanent link">&para;</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You usually don't need to install the CLI manually, it should have been set up with the overall install. However, in cases where you want to access EKSphemeral from a machine other than the one you set it up originally or the CLI has been removed by someone or something, follow the steps here.</p>
 </div>
 <p>To manually install the binary CLI, for example on macOS, do:</p>
-<pre><code class="sh">$ curl -sL https://github.com/mhausenblas/eksphemeral/releases/latest/download/eksp-macos -o eksp
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ curl -sL https://github.com/mhausenblas/eksphemeral/releases/latest/download/eksp-macos -o eksp
 $ chmod +x eksp
 $ sudo mv ./eksp /usr/local/bin
-</code></pre>
+</pre></div>
+</td></tr></table>
 
 <p>Now, let's check if there are already clusters are managed by EKSphemeral:</p>
-<pre><code class="sh">$ eksp list
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ eksp list
 No clusters found
-</code></pre>
+</pre></div>
+</td></tr></table>
 
 <p>Since we just installed EKSphemeral, there are no clusters, yet. Let's change that.</p>
-<h2 id="create-clusters">Create clusters<a class="headerlink" href="#create-clusters" title="Permanent link"> #</a></h2>
+<h2 id="create-clusters">Create clusters<a class="headerlink" href="#create-clusters" title="Permanent link">&para;</a></h2>
 <p>Let's create a cluster named <code>mh9-eksp</code>, with three worker nodes, 
 using Kubernetes version 1.12, with a 150 min timeout. </p>
 <p>First, create a file <code>cluster-spec.json</code> with the following content:</p>
-<pre><code class="json">{
-    &quot;id&quot;: &quot;&quot;,
-    &quot;name&quot;: &quot;mh9-eksp&quot;,
-    &quot;numworkers&quot;: 3,
-    &quot;kubeversion&quot;: &quot;1.21&quot;,
-    &quot;timeout&quot;: 150,
-    &quot;ttl&quot;: 150,
-    &quot;owner&quot;: &quot;hausenbl+notif@amazon.com&quot;,
-    &quot;created&quot;: &quot;&quot;
-}
-</code></pre>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;mh9-eksp&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;numworkers&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="nt">&quot;kubeversion&quot;</span><span class="p">:</span> <span class="s2">&quot;1.21&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;timeout&quot;</span><span class="p">:</span> <span class="mi">150</span><span class="p">,</span>
+    <span class="nt">&quot;ttl&quot;</span><span class="p">:</span> <span class="mi">150</span><span class="p">,</span>
+    <span class="nt">&quot;owner&quot;</span><span class="p">:</span> <span class="s2">&quot;hausenbl+notif@amazon.com&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;created&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
 
 <p>Now you can use the <code>create</code> command like so:</p>
-<pre><code class="sh">$ eksp create luster-spec.json
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ eksp create cluster-spec.json
 Trying to create a new ephemeral cluster ...
 ... using cluster spec cluster-spec.json
-Seems you have set 'us-east-2' as the target region, using this for all following operations
+Seems you have <span class="nb">set</span> <span class="s1">&#39;us-east-2&#39;</span> as the target region, using this <span class="k">for</span> all following operations
 I will now provision the EKS cluster mh9-eksp using AWS Fargate:
 
-[i] Running task eksctl
-Waiting for EKS cluster provisioning to complete. Allow some 15 min to complete, checking status every minute:
+<span class="o">[</span>i<span class="o">]</span> Running task eksctl
+Waiting <span class="k">for</span> EKS cluster provisioning to complete. Allow some <span class="m">15</span> min to complete, checking status every minute:
 .........
-Successfully created data plane for cluster mh9-eksp using AWS Fargate and now moving on to the control plane in AWS Lambda and S3 ...
+Successfully created data plane <span class="k">for</span> cluster mh9-eksp using AWS Fargate and now moving on to the control plane in AWS Lambda and S3 ...
 
-Successfully created control plane entry for cluster mh9-eksp via AWS Lambda and Amazon S3 ...
+Successfully created control plane entry <span class="k">for</span> cluster mh9-eksp via AWS Lambda and Amazon S3 ...
 
 Now moving on to configure kubectl to point to your EKS cluster:
 Updated context arn:aws:eks:us-east-2:661776721573:cluster/mh9-eksp in /Users/hausenbl/.kube/config
 
-Your EKS cluster is now set up and configured:
+Your EKS cluster is now <span class="nb">set</span> up and configured:
 CURRENT   NAME                                                  CLUSTER                                               AUTHINFO                                              NAMESPACE
 *         arn:aws:eks:us-east-2:661776721573:cluster/mh9-eksp   arn:aws:eks:us-east-2:661776721573:cluster/mh9-eksp   arn:aws:eks:us-east-2:661776721573:cluster/mh9-eksp
 
-Note that it still can take up to 5 min until the worker nodes are available, check with the following command until you don't see the 'No resources found.' message anymore:
+Note that it still can take up to <span class="m">5</span> min <span class="k">until</span> the worker nodes are available, check with the following <span class="nb">command</span> <span class="k">until</span> you don<span class="s1">&#39;t see the &#39;</span>No resources found.<span class="err">&#39;</span> message anymore:
 kubectl get nodes
-</code></pre>
+</pre></div>
+</td></tr></table>
 
 <p>Note that if no cluster spec is provided, a default cluster spec will be
-used along with first security group of the default VPC.</p>
+used along with the first security group of the default VPC.</p>
 <p>Once the cluster is ready and you've verified your email addresses you should
 get a notification that looks something like the following:</p>
 <p><img alt="EKSphemeral mail notification on cluster create" src="../img/mail-notif-example.png" /></p>
 <p>The same is true at least five minutes before the cluster shuts down.</p>
-<h2 id="list-clusters">List clusters<a class="headerlink" href="#list-clusters" title="Permanent link"> #</a></h2>
+<h2 id="list-clusters">List clusters<a class="headerlink" href="#list-clusters" title="Permanent link">&para;</a></h2>
 <p>Next, let's check what clusters are managed by EKSphemeral:</p>
-<pre><code class="sh">$ eksp list
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ eksp list
 NAME       ID                                     KUBERNETES   NUM WORKERS   TIMEOUT   TTL      OWNER
-mh9-eksp   e90379cf-ee0a-49c7-8f82-1660760d6bb5   v1.12        2             45 min    42 min   hausenbl+notif@amazon.com
-</code></pre>
+mh9-eksp   e90379cf-ee0a-49c7-8f82-1660760d6bb5   v1.12        <span class="m">2</span>             <span class="m">45</span> min    <span class="m">42</span> min   hausenbl+notif@amazon.com
+</pre></div>
+</td></tr></table>
 
 <p>Here, we get an array of cluster IDs back. We can use such a cluster ID as 
 follows to look up the spec of a particular cluster:</p>
-<pre><code class="sh">$ eksp list e90379cf-ee0a-49c7-8f82-1660760d6bb5
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ eksp list e90379cf-ee0a-49c7-8f82-1660760d6bb5
 ID:             e90379cf-ee0a-49c7-8f82-1660760d6bb5
 Name:           mh9-eksp
 Kubernetes:     v1.12
-Worker nodes:   2
-Timeout:        45 min
-TTL:            38 min
+Worker nodes:   <span class="m">2</span>
+Timeout:        <span class="m">45</span> min
+TTL:            <span class="m">38</span> min
 Owner:          hausenbl+notif@amazon.com
 Details:
         Status:             ACTIVE
         Endpoint:           https://A377918A0CA6D8BE793FF8BEC88964FE.sk1.us-east-2.eks.amazonaws.com
         Platform version:   eks.2
-        VPC config:         private access: false, public access: true
+        VPC config:         private access: false, public access: <span class="nb">true</span>
         IAM role:           arn:aws:iam::661776721573:role/eksctl-mh9-eksp-cluster-ServiceRole-1HT8OAOGNNY2Y
-</code></pre>
+</pre></div>
+</td></tr></table>
 
-<h2 id="prolong-cluster-lifetime">Prolong cluster lifetime<a class="headerlink" href="#prolong-cluster-lifetime" title="Permanent link"> #</a></h2>
+<h2 id="prolong-cluster-lifetime">Prolong cluster lifetime<a class="headerlink" href="#prolong-cluster-lifetime" title="Permanent link">&para;</a></h2>
 <p>When you get a notification that one of your clusters is about to shut down or 
 really at any time before it shuts down, you can prolong the cluster lifetime 
 using the <code>eksp prolong</code> command.</p>
 <p>Let's say we want to keep the cluster with the ID <code>e90379cf-ee0a-49c7-8f82-1660760d6bb5</code> around 
 for 13 min longer. Here's what you would do:</p>
-<pre><code class="sh">$ eksp prolong e90379cf-ee0a-49c7-8f82-1660760d6bb5 13
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ eksp prolong e90379cf-ee0a-49c7-8f82-1660760d6bb5 <span class="m">13</span>
 
-Trying to set the TTL of cluster e90379cf-ee0a-49c7-8f82-1660760d6bb5 to 13 minutes, starting now
-Successfully prolonged the lifetime of cluster e90379cf-ee0a-49c7-8f82-1660760d6bb5 for 13 minutes.
+Trying to <span class="nb">set</span> the TTL of cluster e90379cf-ee0a-49c7-8f82-1660760d6bb5 to <span class="m">13</span> minutes, starting now
+Successfully prolonged the lifetime of cluster e90379cf-ee0a-49c7-8f82-1660760d6bb5 <span class="k">for</span> <span class="m">13</span> minutes.
 
 $ eksp list
 NAME       ID                                     KUBERNETES   NUM WORKERS   TIMEOUT   TTL      OWNER
-mh9-eksp   e90379cf-ee0a-49c7-8f82-1660760d6bb5   v1.12        2             13 min    13 min   hausenbl+notif@amazon.com
-</code></pre>
+mh9-eksp   e90379cf-ee0a-49c7-8f82-1660760d6bb5   v1.12        <span class="m">2</span>             <span class="m">13</span> min    <span class="m">13</span> min   hausenbl+notif@amazon.com
+</pre></div>
+</td></tr></table>
 
 <p>Note that the prolong command updates the <code>timeout</code> field of your cluster spec,
 that is, the cluster TTL is counted from the moment you issue the prolong command, 
 taking the remaining cluster runtime into account.</p>
-<h1 id="uninstall">Uninstall<a class="headerlink" href="#uninstall" title="Permanent link"> #</a></h1>
+<h1 id="uninstall">Uninstall<a class="headerlink" href="#uninstall" title="Permanent link">&para;</a></h1>
 <p>To uninstall EKSphemeral, use the following command. This will remove the 
 control plane elements, that is, delete the Lambda functions and remove all 
 cluster specs from the <code>EKSPHEMERAL_CLUSTERMETA_BUCKET</code> S3 bucket:</p>
-<pre><code class="bash">$ eksp uninstall
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ eksp uninstall
 Trying to uninstall EKSphemeral ...
 Taking down the EKSphemeral control plane, this might take a few minutes ...
 
 aws s3 rm s3://eks-cluster-meta --recursive
 aws cloudformation delete-stack --stack-name eksp
 
-Tear-down will complete within some 5 min. You can check the status manually, if you like, using 'make status' in the svc/ directory.
-Once you see a message saying something like 'Stack with id eksp does not exist' you know for sure it's gone :)
+Tear-down will <span class="nb">complete</span> within some <span class="m">5</span> min. You can check the status manually, <span class="k">if</span> you like, using <span class="s1">&#39;make status&#39;</span> in the svc/ directory.
+Once you see a message saying something like <span class="s1">&#39;Stack with id eksp does not exist&#39;</span> you know <span class="k">for</span> sure it<span class="err">&#39;</span>s gone :<span class="o">)</span>
 
-Thanks for using EKSphemeral and hope to see ya soon ;)
-</code></pre>
+Thanks <span class="k">for</span> using EKSphemeral and hope to see ya soon <span class="p">;</span><span class="o">)</span>
+</pre></div>
+</td></tr></table>
 
 <p>Note that the service code bucket and the cluster metadata bucket are still around after this. 
 You can either manually delete them or keep them around, to reuse them later. </p>

@@ -42,6 +42,12 @@
     
       <link rel="stylesheet" href="../assets/stylesheets/application.0284f74d.css">
       
+        <link rel="stylesheet" href="../assets/stylesheets/application-palette.01803549.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#fb8c00">
       
     
     
@@ -63,7 +69,9 @@
     
   </head>
   
-    <body dir="ltr">
+    
+    
+    <body dir="ltr" data-md-color-primary="orange" data-md-color-accent="orange">
   
     <svg class="md-svg">
       <defs>
@@ -86,7 +94,7 @@
       <div class="md-flex__cell md-flex__cell--shrink">
         <a href=".." title="EKSphemeral" class="md-header-nav__button md-logo">
           
-            <i class="md-icon"></i>
+            <img src="../assets/images/logo.png" width="24" height="24">
           
         </a>
       </div>
@@ -156,7 +164,7 @@
   <label class="md-nav__title md-nav__title--site" for="__drawer">
     <a href=".." title="EKSphemeral" class="md-nav__button md-logo">
       
-        <i class="md-icon"></i>
+        <img src="../assets/images/logo.png" width="48" height="48">
       
     </a>
     EKSphemeral
@@ -334,7 +342,7 @@
               
                 
                 
-                <h1 id="development-and-testing">Development and testing<a class="headerlink" href="#development-and-testing" title="Permanent link"> #</a></h1>
+                <h1 id="development-and-testing">Development and testing<a class="headerlink" href="#development-and-testing" title="Permanent link">&para;</a></h1>
 <p>If you want to play around with EKSphemeral, follow these steps.</p>
 <p>In order to build the service, clone this repo, and make sure you've got the following available, locally:</p>
 <ul>
@@ -345,18 +353,25 @@
 <li>Docker</li>
 </ul>
 <p>Also, you will need access to the following services, and their implicit dependencies, such as EC2 in case of EKS: AWS Lambda, AWS Fargate, Amazon EKS. </p>
-<h2 id="the-control-plane">The control plane<a class="headerlink" href="#the-control-plane" title="Permanent link"> #</a></h2>
+<h2 id="the-control-plane">The control plane<a class="headerlink" href="#the-control-plane" title="Permanent link">&para;</a></h2>
 <p>The EKSphemeral control plane is implemented in AWS Lambda and S3, see also the <a href="/arch">architecture</a> for details.</p>
 <p>In order for the local simulation, part of SAM, to work, you need to have Docker running. Note: Local testing the API is at time of writing not possible since <a href="https://github.com/awslabs/aws-sam-cli/issues/323">CORS is locally not supported</a>, yet.</p>
 <p>In the <code>svc/</code> directory, do the following:</p>
-<pre><code class="sh"># 1. run emulation of Lambda and API Gateway locally (via Docker):
-$ sam local start-api
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="c1"># 1. run emulation of Lambda and API Gateway locally (via Docker):</span>
+$ sam <span class="nb">local</span> start-api
 
-# 2. update Go source code: add functionality, fix bugs
+<span class="c1"># 2. update Go source code: add functionality, fix bugs</span>
 
-# 3. create binaries, automagically synced into the local SAM runtime:
+<span class="c1"># 3. create binaries, automagically synced into the local SAM runtime:</span>
 $ make build
-</code></pre>
+</pre></div>
+</td></tr></table>
 
 <p>If you change anything in the SAM/CF <a href="https://github.com/mhausenblas/eksphemeral/blob/master/svc/template.yaml">template file</a> then you need to re-start the local API emulation.</p>
 <p>The EKSphemeral control plane has the following API:</p>
@@ -371,10 +386,11 @@ $ make build
 <li>Auto-destruction of a cluster after the set timeout (triggered by CloudWatch events, no HTTP endpoint)</li>
 </ul>
 <p>Once deployed, you can find out where the API runs via:</p>
-<pre><code class="sh">$ EKSPHEMERAL_URL=$(aws cloudformation describe-stacks --stack-name eksp | jq '.Stacks[].Outputs[] | select(.OutputKey==&quot;EKSphemeralAPIEndpoint&quot;).OutputValue' -r)
-</code></pre>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ <span class="nv">EKSPHEMERAL_URL</span><span class="o">=</span><span class="k">$(</span>aws cloudformation describe-stacks --stack-name eksp <span class="p">|</span> jq <span class="s1">&#39;.Stacks[].Outputs[] | select(.OutputKey==&quot;EKSphemeralAPIEndpoint&quot;).OutputValue&#39;</span> -r<span class="k">)</span>
+</pre></div>
+</td></tr></table>
 
-<h2 id="the-data-plane">The data plane<a class="headerlink" href="#the-data-plane" title="Permanent link"> #</a></h2>
+<h2 id="the-data-plane">The data plane<a class="headerlink" href="#the-data-plane" title="Permanent link">&para;</a></h2>
 <p>The EKSphemeral data plane consists of <a href="https://eksctl.io/">eksctl</a> running in AWS Fargate, see also the <a href="/arch">architecture</a> for details.</p>
 <p>You can manually kick off the EKS cluster provisioning as described in the following.</p>
 <div class="admonition note">
@@ -382,25 +398,30 @@ $ make build
 <p>Optionally, you can build a custom container image using your own registry coordinates and customize what's in the <code>eksctl</code> image used to provision the EKS cluster via a Fargate task.</p>
 </div>
 <p>First, set the security group to use:</p>
-<pre><code class="sh">$ export EKSPHEMERAL_SG=XXXX
-</code></pre>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ <span class="nb">export</span> <span class="nv">EKSPHEMERAL_SG</span><span class="o">=</span>XXXX
+</pre></div>
+</td></tr></table>
 
 <p>Note that if you don't know which default security group(s) you have available, you can use the following
 command to list them:</p>
-<pre><code class="sh">$ aws ec2 describe-security-groups | jq '.SecurityGroups[] | select (.GroupName == &quot;default&quot;) | .GroupId'
-</code></pre>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ aws ec2 describe-security-groups <span class="p">|</span> jq <span class="s1">&#39;.SecurityGroups[] | select (.GroupName == &quot;default&quot;) | .GroupId&#39;</span>
+</pre></div>
+</td></tr></table>
 
 <p>Also, you could create a dedicated security group for the data plane:</p>
-<pre><code class="sh">$ default_vpc=$(aws ec2 describe-vpcs --filters &quot;Name=isDefault, Values=true&quot; | jq .Vpcs[0].VpcId -r)
-</code></pre>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ <span class="nv">default_vpc</span><span class="o">=</span><span class="k">$(</span>aws ec2 describe-vpcs --filters <span class="s2">&quot;Name=isDefault, Values=true&quot;</span> <span class="p">|</span> jq .Vpcs<span class="o">[</span><span class="m">0</span><span class="o">]</span>.VpcId -r<span class="k">)</span>
+</pre></div>
+</td></tr></table>
 
 <p>And:</p>
-<pre><code class="sh">$ aws ec2 create-security-group --group-name eksphemeral-sg --description &quot;The security group the EKSphemeral data plane uses&quot; --vpc-id $default_vpc
-</code></pre>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ aws ec2 create-security-group --group-name eksphemeral-sg --description <span class="s2">&quot;The security group the EKSphemeral data plane uses&quot;</span> --vpc-id <span class="nv">$default_vpc</span>
+</pre></div>
+</td></tr></table>
 
 <p>And:</p>
-<pre><code class="sh">$ aws ec2 authorize-security-group-ingress --group-name eksphemeral-sg --protocol all --port all
-</code></pre>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ aws ec2 authorize-security-group-ingress --group-name eksphemeral-sg --protocol all --port all
+</pre></div>
+</td></tr></table>
 
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -408,124 +429,212 @@ command to list them:</p>
 </div>
 <p>Now you can use AWS Fargate through the Fargate CLI to provision the cluster,
 using your local AWS credentials, for example like so:</p>
-<pre><code class="sh">$ fargate task run eksctl \
-          --image quay.io/mhausenblas/eksctl:base \
-          --region us-east-2 \
-          --env AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id) \
-          --env AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key) \
-          --env AWS_DEFAULT_REGION=$(aws configure get region) \
-          --env CLUSTER_NAME=test \
-          --env NUM_WORKERS=3 \
-          --env KUBERNETES_VERSION=1.12 \
-          --security-group-id $EKSPHEMERAL_SG
-</code></pre>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ fargate task run eksctl <span class="se">\</span>
+          --image quay.io/mhausenblas/eksctl:base <span class="se">\</span>
+          --region us-east-2 <span class="se">\</span>
+          --env <span class="nv">AWS_ACCESS_KEY_ID</span><span class="o">=</span><span class="k">$(</span>aws configure get aws_access_key_id<span class="k">)</span> <span class="se">\</span>
+          --env <span class="nv">AWS_SECRET_ACCESS_KEY</span><span class="o">=</span><span class="k">$(</span>aws configure get aws_secret_access_key<span class="k">)</span> <span class="se">\</span>
+          --env <span class="nv">AWS_DEFAULT_REGION</span><span class="o">=</span><span class="k">$(</span>aws configure get region<span class="k">)</span> <span class="se">\</span>
+          --env <span class="nv">CLUSTER_NAME</span><span class="o">=</span><span class="nb">test</span> <span class="se">\</span>
+          --env <span class="nv">NUM_WORKERS</span><span class="o">=</span><span class="m">3</span> <span class="se">\</span>
+          --env <span class="nv">KUBERNETES_VERSION</span><span class="o">=</span><span class="m">1</span>.12 <span class="se">\</span>
+          --security-group-id <span class="nv">$EKSPHEMERAL_SG</span>
+</pre></div>
+</td></tr></table>
 
 <p>This should take something like 10 to 15 minutes to finish.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>Keep an eye on the AWS console for the resources and logs.</p>
 </div>
-<h2 id="the-ui">The UI<a class="headerlink" href="#the-ui" title="Permanent link"> #</a></h2>
+<h2 id="the-ui">The UI<a class="headerlink" href="#the-ui" title="Permanent link">&para;</a></h2>
 <p>If you want to change or extend the UI (HTML, JS, CSS) or the <a href="[main.go](https://github.com/mhausenblas/eksphemeral/tree/master/ui)">UI proxy</a> you're welcome to do so.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Please make sure you're in the <code>ui/</code> directory for the following steps. </p>
 </div>
 <p>First, export the <code>EKSPHEMERAL_URL</code> env variable like so:</p>
-<pre><code class="sh">$ export EKSPHEMERAL_URL=$(aws cloudformation describe-stacks --stack-name eksp | jq '.Stacks[].Outputs[] | select(.OutputKey==&quot;EKSphemeralAPIEndpoint&quot;).OutputValue' -r)
-</code></pre>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ <span class="nb">export</span> <span class="nv">EKSPHEMERAL_URL</span><span class="o">=</span><span class="k">$(</span>aws cloudformation describe-stacks --stack-name eksp <span class="p">|</span> jq <span class="s1">&#39;.Stacks[].Outputs[] | select(.OutputKey==&quot;EKSphemeralAPIEndpoint&quot;).OutputValue&#39;</span> -r<span class="k">)</span>
+</pre></div>
+</td></tr></table>
 
 <p>Now you can build the UI container image like so:</p>
-<pre><code class="sh">$ make build
-GOOS=linux GOARCH=amd64 go build -o ./proxy .
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ make build
+<span class="nv">GOOS</span><span class="o">=</span>linux <span class="nv">GOARCH</span><span class="o">=</span>amd64 go build -o ./proxy .
 docker build --tag quay.io/mhausenblas/eksp-ui:0.2 .
-Sending build context to Docker daemon  10.86MB
-Step 1/17 : FROM amazonlinux:2018.03
+Sending build context to Docker daemon  <span class="m">10</span>.86MB
+Step <span class="m">1</span>/17 : FROM amazonlinux:2018.03
  ---&gt; a89f4a191d4c
-Step 2/17 : LABEL maintainer=&quot;Michael Hausenblas &lt;hausenbl@amazon.com&gt;&quot;
+Step <span class="m">2</span>/17 : LABEL <span class="nv">maintainer</span><span class="o">=</span><span class="s2">&quot;Michael Hausenblas &lt;hausenbl@amazon.com&gt;&quot;</span>
  ---&gt; Using cache
  ---&gt; f57e0623e5d8
-Step 3/17 : ARG AWS_ACCESS_KEY_ID
+Step <span class="m">3</span>/17 : ARG AWS_ACCESS_KEY_ID
  ---&gt; Using cache
  ---&gt; 45fc8c05256c
-Step 4/17 : ARG AWS_SECRET_ACCESS_KEY
+Step <span class="m">4</span>/17 : ARG AWS_SECRET_ACCESS_KEY
  ---&gt; Using cache
  ---&gt; 02a4bcc33f74
-Step 5/17 : ARG AWS_DEFAULT_REGION
+Step <span class="m">5</span>/17 : ARG AWS_DEFAULT_REGION
  ---&gt; Using cache
  ---&gt; 6d1562974f7c
-Step 6/17 : COPY install.sh .
+Step <span class="m">6</span>/17 : COPY install.sh .
  ---&gt; Using cache
  ---&gt; 5a6d45d855ce
-Step 7/17 : RUN yum install unzip jq git -y &amp;&amp; yum clean all &amp;&amp;     curl -sL https://bootstrap.pypa.io/get-pip.py -o get-pip.py &amp;&amp;     python get-pip.py &amp;&amp; pip install awscli --upgrade &amp;&amp;     export EKSPHEMERAL_HOME=/eksp &amp;&amp;     chmod +x install.sh &amp;&amp; ./install.sh
+Step <span class="m">7</span>/17 : RUN yum install unzip jq git -y <span class="o">&amp;&amp;</span> yum clean all <span class="o">&amp;&amp;</span>     curl -sL https://bootstrap.pypa.io/get-pip.py -o get-pip.py <span class="o">&amp;&amp;</span>     python get-pip.py <span class="o">&amp;&amp;</span> pip install awscli --upgrade <span class="o">&amp;&amp;</span>     <span class="nb">export</span> <span class="nv">EKSPHEMERAL_HOME</span><span class="o">=</span>/eksp <span class="o">&amp;&amp;</span>     chmod +x install.sh <span class="o">&amp;&amp;</span> ./install.sh
  ---&gt; Using cache
  ---&gt; dcb28e56940f
-Step 8/17 : COPY css/* /app/css/
+Step <span class="m">8</span>/17 : COPY css/* /app/css/
  ---&gt; Using cache
  ---&gt; f2aad01c40dc
-Step 9/17 : COPY img/* /app/img/
+Step <span class="m">9</span>/17 : COPY img/* /app/img/
  ---&gt; Using cache
  ---&gt; ae2750fca6cd
-Step 10/17 : COPY js/* /app/js/
+Step <span class="m">10</span>/17 : COPY js/* /app/js/
  ---&gt; Using cache
  ---&gt; 82fec12cf16a
-Step 11/17 : COPY *.html /app/
+Step <span class="m">11</span>/17 : COPY *.html /app/
  ---&gt; Using cache
  ---&gt; db13d828ff73
-Step 12/17 : WORKDIR /app
+Step <span class="m">12</span>/17 : WORKDIR /app
  ---&gt; Using cache
  ---&gt; 304d80268fbe
-Step 13/17 : RUN chown -R 1001:1 /app
+Step <span class="m">13</span>/17 : RUN chown -R <span class="m">1001</span>:1 /app
  ---&gt; Using cache
  ---&gt; 0c09d65e5358
-Step 14/17 : USER 1001
+Step <span class="m">14</span>/17 : USER <span class="m">1001</span>
  ---&gt; Using cache
  ---&gt; 6ca8e15efb82
-Step 15/17 : COPY proxy .
+Step <span class="m">15</span>/17 : COPY proxy .
  ---&gt; Using cache
  ---&gt; 397672a796b3
-Step 16/17 : EXPOSE 8080
+Step <span class="m">16</span>/17 : EXPOSE <span class="m">8080</span>
  ---&gt; Using cache
  ---&gt; 6508d74b4e39
-Step 17/17 : CMD [&quot;/app/proxy&quot;]
+Step <span class="m">17</span>/17 : CMD <span class="o">[</span><span class="s2">&quot;/app/proxy&quot;</span><span class="o">]</span>
  ---&gt; Using cache
  ---&gt; 2ad45f31e101
 Successfully built 2ad45f31e101
 Successfully tagged quay.io/mhausenblas/eksp-ui:0.2
-</code></pre>
+</pre></div>
+</td></tr></table>
 
 <p>Verify that the image has been built and is available, locally:</p>
-<pre><code class="sh">$ make verify
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ make verify
 REPOSITORY                    TAG                 IMAGE ID            CREATED             SIZE
-quay.io/mhausenblas/eksp-ui   0.2                 2ad45f31e101        About an hour ago   449MB
-</code></pre>
+quay.io/mhausenblas/eksp-ui   <span class="m">0</span>.2                 2ad45f31e101        About an hour ago   449MB
+</pre></div>
+</td></tr></table>
 
 <p>Now you can launch it:</p>
-<pre><code class="sh">$ make run
-docker run      --name ekspui \
-                --rm \
-                --detach \
-                --publish 8080:8080 \
-                --env EKSPHEMERAL_HOME=/eksp \
-                --env AWS_ACCESS_KEY_ID=XXXX \
-                --env AWS_SECRET_ACCESS_KEY=XXXX \
-                --env AWS_DEFAULT_REGION=us-east-2 \
-                --env EKSPHEMERAL_URL=https://nswn7lkjbk.execute-api.us-east-2.amazonaws.com/Prod \
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ make run
+docker run      --name ekspui <span class="se">\</span>
+                --rm <span class="se">\</span>
+                --detach <span class="se">\</span>
+                --publish <span class="m">8080</span>:8080 <span class="se">\</span>
+                --env <span class="nv">EKSPHEMERAL_HOME</span><span class="o">=</span>/eksp <span class="se">\</span>
+                --env <span class="nv">AWS_ACCESS_KEY_ID</span><span class="o">=</span>XXXX <span class="se">\</span>
+                --env <span class="nv">AWS_SECRET_ACCESS_KEY</span><span class="o">=</span>XXXX <span class="se">\</span>
+                --env <span class="nv">AWS_DEFAULT_REGION</span><span class="o">=</span>us-east-2 <span class="se">\</span>
+                --env <span class="nv">EKSPHEMERAL_URL</span><span class="o">=</span>https://nswn7lkjbk.execute-api.us-east-2.amazonaws.com/Prod <span class="se">\</span>
                                 quay.io/mhausenblas/eksp-ui:0.2
 79a352a4b0259e0b9731d5f3cfb942f185013ac51d14c4d4710eb7cfe1c534b2
-</code></pre>
+</pre></div>
+</td></tr></table>
 
 <p>Keep an eye on the logs of the UI proxy:</p>
-<pre><code class="sh">$ docker logs --follow ekspui
-2019/06/21 10:06:58 EKSPhemeral UI up and running on http://localhost:8080/
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ docker logs --follow ekspui
+<span class="m">2019</span>/06/21 <span class="m">10</span>:06:58 EKSPhemeral UI up and running on http://localhost:8080/
 ...
-</code></pre>
+</pre></div>
+</td></tr></table>
 
 <p>When you're done, tear down the UI proxy:</p>
-<pre><code class="sh">$ make stop
-docker kill ekspui
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ make stop
+docker <span class="nb">kill</span> ekspui
 ekspui
-</code></pre>
+</pre></div>
+</td></tr></table>
                 
                   
                 
