@@ -1,0 +1,7 @@
+site_name: EKSphemeral
+nav:
+    - Home: index.md
+    - Architecture: arch.md
+    - Develop: dev.md
+theme:
+    name: bootstrap4
