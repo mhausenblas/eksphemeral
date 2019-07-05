@@ -1,7 +1,16 @@
 site_name: EKSphemeral
 nav:
     - Home: index.md
+    - CLI: cli.md
+    - Web UI: ui.md
     - Architecture: arch.md
     - Develop: dev.md
+
 theme:
-    name: bootstrap4
+    name: material
+
+markdown_extensions:
+    - toc:
+        permalink: ' #'
+    - admonition
+    - def_list
