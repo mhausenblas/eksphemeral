@@ -1,7 +1,3 @@
-####################################################################
-## Based on Massimo's fantastic https://github.com/mreferre/eksutils
-####################################################################
-
 FROM amazonlinux:2018.03
 MAINTAINER hausenbl@amazon.com
 
@@ -19,10 +15,6 @@ RUN /usr/sbin/useradd eksctl
 
 USER eksctl
 
-CMD eksctl create cluster \
-    --name $CLUSTER_NAME \
-    --version $KUBERNETES_VERSION \
-    --nodes $NUM_WORKERS \
-    --auto-kubeconfig \
-    --full-ecr-access \
-    --appmesh-access
+COPY deluxe-install.sh .
+
+CMD ./deluxe-install.sh

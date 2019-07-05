@@ -1,7 +1,3 @@
-####################################################################
-## Based on Massimo's fantastic https://github.com/mreferre/eksutils
-####################################################################
-
 FROM amazonlinux:2018.03
 MAINTAINER hausenbl@amazon.com
 
