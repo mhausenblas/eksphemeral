@@ -52,7 +52,7 @@ First, create a file `cluster-spec.json` with the following content:
 Now you can use the `create` command like so:
 
 ```sh
-$ eksp create luster-spec.json
+$ eksp create cluster-spec.json
 Trying to create a new ephemeral cluster ...
 ... using cluster spec cluster-spec.json
 Seems you have set 'us-east-2' as the target region, using this for all following operations
@@ -77,7 +77,7 @@ kubectl get nodes
 ```
 
 Note that if no cluster spec is provided, a default cluster spec will be
-used along with first security group of the default VPC.
+used along with the first security group of the default VPC.
 
 Once the cluster is ready and you've verified your email addresses you should
 get a notification that looks something like the following:

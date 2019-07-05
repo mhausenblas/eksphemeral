@@ -7,10 +7,23 @@ nav:
     - Develop: dev.md
 
 theme:
-    name: material
+    name: 'material'
+    custom_dir: 'theme'
+    # favicon: 'assets/images/favicon.png'
+    logo: 'assets/images/logo.png'
+    #   icon: 'timelapse'
+    palette:
+      primary: 'orange'
+      accent: 'orange'
+    highlightjs: true
+    hljs_languages:
+        - yaml
+        - json
+        - bash
 
 markdown_extensions:
     - toc:
-        permalink: ' #'
+        permalink: true
     - admonition
-    - def_list
+    - codehilite:
+        linenums: true
