@@ -1,0 +1,590 @@
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.4.0">
+    
+    
+      
+        <title>Develop - EKSphemeral</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/application.0284f74d.css">
+      
+      
+    
+    
+      <script src="../assets/javascripts/modernizr.74668098.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../assets/fonts/material-icons.css">
+    
+    
+    
+      
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#development-and-testing" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href=".." title="EKSphemeral" class="md-header-nav__button md-logo">
+          
+            <i class="md-icon"></i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            <span class="md-header-nav__topic">
+              EKSphemeral
+            </span>
+            <span class="md-header-nav__topic">
+              
+                Develop
+              
+            </span>
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+          
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href=".." title="EKSphemeral" class="md-nav__button md-logo">
+      
+        <i class="md-icon"></i>
+      
+    </a>
+    EKSphemeral
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href=".." title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../cli/" title="CLI" class="md-nav__link">
+      CLI
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../ui/" title="Web UI" class="md-nav__link">
+      Web UI
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../arch/" title="Architecture" class="md-nav__link">
+      Architecture
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Develop
+      </label>
+    
+    <a href="./" title="Develop" class="md-nav__link md-nav__link--active">
+      Develop
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-control-plane" title="The control plane" class="md-nav__link">
+    The control plane
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-data-plane" title="The data plane" class="md-nav__link">
+    The data plane
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-ui" title="The UI" class="md-nav__link">
+    The UI
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-control-plane" title="The control plane" class="md-nav__link">
+    The control plane
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-data-plane" title="The data plane" class="md-nav__link">
+    The data plane
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-ui" title="The UI" class="md-nav__link">
+    The UI
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="development-and-testing">Development and testing<a class="headerlink" href="#development-and-testing" title="Permanent link"> #</a></h1>
+<p>If you want to play around with EKSphemeral, follow these steps.</p>
+<p>In order to build the service, clone this repo, and make sure you've got the following available, locally:</p>
+<ul>
+<li>The <a href="https://stedolan.github.io/jq/download/">jq</a> tool</li>
+<li>The <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html">aws</a> CLI</li>
+<li>The <a href="https://github.com/awslabs/aws-sam-cli">SAM CLI</a></li>
+<li>The <a href="https://somanymachines.com/fargate/">Fargate CLI</a></li>
+<li>Docker</li>
+</ul>
+<p>Also, you will need access to the following services, and their implicit dependencies, such as EC2 in case of EKS: AWS Lambda, AWS Fargate, Amazon EKS. </p>
+<h2 id="the-control-plane">The control plane<a class="headerlink" href="#the-control-plane" title="Permanent link"> #</a></h2>
+<p>The EKSphemeral control plane is implemented in AWS Lambda and S3, see also the <a href="/arch">architecture</a> for details.</p>
+<p>In order for the local simulation, part of SAM, to work, you need to have Docker running. Note: Local testing the API is at time of writing not possible since <a href="https://github.com/awslabs/aws-sam-cli/issues/323">CORS is locally not supported</a>, yet.</p>
+<p>In the <code>svc/</code> directory, do the following:</p>
+<pre><code class="sh"># 1. run emulation of Lambda and API Gateway locally (via Docker):
+$ sam local start-api
+
+# 2. update Go source code: add functionality, fix bugs
+
+# 3. create binaries, automagically synced into the local SAM runtime:
+$ make build
+</code></pre>
+
+<p>If you change anything in the SAM/CF <a href="https://github.com/mhausenblas/eksphemeral/blob/master/svc/template.yaml">template file</a> then you need to re-start the local API emulation.</p>
+<p>The EKSphemeral control plane has the following API:</p>
+<ul>
+<li>List the launched clusters via an HTTP <code>GET</code> to <code>$BASEURL/status</code> </li>
+<li>Check status of a specific cluster via an HTTP <code>GET</code> to <code>$BASEURL/status/$CLUSTERID</code></li>
+<li>Create a cluster via an HTTP <code>POST</code> to <code>$BASEURL/create</code> with following parameters (all optional):</li>
+<li><code>numworkers</code> ... number of worker nodes, defaults to <code>1</code></li>
+<li><code>kubeversion</code> ... Kubernetes version to use, defaults to <code>1.12</code></li>
+<li><code>timeout</code> ... timeout in minutes, after which the cluster is destroyed, defaults to <code>20</code> (and 5 minutes before that you get a warning mail)</li>
+<li><code>owner</code> ... the email address of the owner</li>
+<li>Auto-destruction of a cluster after the set timeout (triggered by CloudWatch events, no HTTP endpoint)</li>
+</ul>
+<p>Once deployed, you can find out where the API runs via:</p>
+<pre><code class="sh">$ EKSPHEMERAL_URL=$(aws cloudformation describe-stacks --stack-name eksp | jq '.Stacks[].Outputs[] | select(.OutputKey==&quot;EKSphemeralAPIEndpoint&quot;).OutputValue' -r)
+</code></pre>
+
+<h2 id="the-data-plane">The data plane<a class="headerlink" href="#the-data-plane" title="Permanent link"> #</a></h2>
+<p>The EKSphemeral data plane consists of <a href="https://eksctl.io/">eksctl</a> running in AWS Fargate, see also the <a href="/arch">architecture</a> for details.</p>
+<p>You can manually kick off the EKS cluster provisioning as described in the following.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Optionally, you can build a custom container image using your own registry coordinates and customize what's in the <code>eksctl</code> image used to provision the EKS cluster via a Fargate task.</p>
+</div>
+<p>First, set the security group to use:</p>
+<pre><code class="sh">$ export EKSPHEMERAL_SG=XXXX
+</code></pre>
+
+<p>Note that if you don't know which default security group(s) you have available, you can use the following
+command to list them:</p>
+<pre><code class="sh">$ aws ec2 describe-security-groups | jq '.SecurityGroups[] | select (.GroupName == &quot;default&quot;) | .GroupId'
+</code></pre>
+
+<p>Also, you could create a dedicated security group for the data plane:</p>
+<pre><code class="sh">$ default_vpc=$(aws ec2 describe-vpcs --filters &quot;Name=isDefault, Values=true&quot; | jq .Vpcs[0].VpcId -r)
+</code></pre>
+
+<p>And:</p>
+<pre><code class="sh">$ aws ec2 create-security-group --group-name eksphemeral-sg --description &quot;The security group the EKSphemeral data plane uses&quot; --vpc-id $default_vpc
+</code></pre>
+
+<p>And:</p>
+<pre><code class="sh">$ aws ec2 authorize-security-group-ingress --group-name eksphemeral-sg --protocol all --port all
+</code></pre>
+
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>That the last command, <code>aws ec2 authorize-security-group-ingress</code> apparently doesn't work, unsure but based on my research it's an AWS CLI bug.</p>
+</div>
+<p>Now you can use AWS Fargate through the Fargate CLI to provision the cluster,
+using your local AWS credentials, for example like so:</p>
+<pre><code class="sh">$ fargate task run eksctl \
+          --image quay.io/mhausenblas/eksctl:base \
+          --region us-east-2 \
+          --env AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id) \
+          --env AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key) \
+          --env AWS_DEFAULT_REGION=$(aws configure get region) \
+          --env CLUSTER_NAME=test \
+          --env NUM_WORKERS=3 \
+          --env KUBERNETES_VERSION=1.12 \
+          --security-group-id $EKSPHEMERAL_SG
+</code></pre>
+
+<p>This should take something like 10 to 15 minutes to finish.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Keep an eye on the AWS console for the resources and logs.</p>
+</div>
+<h2 id="the-ui">The UI<a class="headerlink" href="#the-ui" title="Permanent link"> #</a></h2>
+<p>If you want to change or extend the UI (HTML, JS, CSS) or the <a href="[main.go](https://github.com/mhausenblas/eksphemeral/tree/master/ui)">UI proxy</a> you're welcome to do so.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Please make sure you're in the <code>ui/</code> directory for the following steps. </p>
+</div>
+<p>First, export the <code>EKSPHEMERAL_URL</code> env variable like so:</p>
+<pre><code class="sh">$ export EKSPHEMERAL_URL=$(aws cloudformation describe-stacks --stack-name eksp | jq '.Stacks[].Outputs[] | select(.OutputKey==&quot;EKSphemeralAPIEndpoint&quot;).OutputValue' -r)
+</code></pre>
+
+<p>Now you can build the UI container image like so:</p>
+<pre><code class="sh">$ make build
+GOOS=linux GOARCH=amd64 go build -o ./proxy .
+docker build --tag quay.io/mhausenblas/eksp-ui:0.2 .
+Sending build context to Docker daemon  10.86MB
+Step 1/17 : FROM amazonlinux:2018.03
+ ---&gt; a89f4a191d4c
+Step 2/17 : LABEL maintainer=&quot;Michael Hausenblas &lt;hausenbl@amazon.com&gt;&quot;
+ ---&gt; Using cache
+ ---&gt; f57e0623e5d8
+Step 3/17 : ARG AWS_ACCESS_KEY_ID
+ ---&gt; Using cache
+ ---&gt; 45fc8c05256c
+Step 4/17 : ARG AWS_SECRET_ACCESS_KEY
+ ---&gt; Using cache
+ ---&gt; 02a4bcc33f74
+Step 5/17 : ARG AWS_DEFAULT_REGION
+ ---&gt; Using cache
+ ---&gt; 6d1562974f7c
+Step 6/17 : COPY install.sh .
+ ---&gt; Using cache
+ ---&gt; 5a6d45d855ce
+Step 7/17 : RUN yum install unzip jq git -y &amp;&amp; yum clean all &amp;&amp;     curl -sL https://bootstrap.pypa.io/get-pip.py -o get-pip.py &amp;&amp;     python get-pip.py &amp;&amp; pip install awscli --upgrade &amp;&amp;     export EKSPHEMERAL_HOME=/eksp &amp;&amp;     chmod +x install.sh &amp;&amp; ./install.sh
+ ---&gt; Using cache
+ ---&gt; dcb28e56940f
+Step 8/17 : COPY css/* /app/css/
+ ---&gt; Using cache
+ ---&gt; f2aad01c40dc
+Step 9/17 : COPY img/* /app/img/
+ ---&gt; Using cache
+ ---&gt; ae2750fca6cd
+Step 10/17 : COPY js/* /app/js/
+ ---&gt; Using cache
+ ---&gt; 82fec12cf16a
+Step 11/17 : COPY *.html /app/
+ ---&gt; Using cache
+ ---&gt; db13d828ff73
+Step 12/17 : WORKDIR /app
+ ---&gt; Using cache
+ ---&gt; 304d80268fbe
+Step 13/17 : RUN chown -R 1001:1 /app
+ ---&gt; Using cache
+ ---&gt; 0c09d65e5358
+Step 14/17 : USER 1001
+ ---&gt; Using cache
+ ---&gt; 6ca8e15efb82
+Step 15/17 : COPY proxy .
+ ---&gt; Using cache
+ ---&gt; 397672a796b3
+Step 16/17 : EXPOSE 8080
+ ---&gt; Using cache
+ ---&gt; 6508d74b4e39
+Step 17/17 : CMD [&quot;/app/proxy&quot;]
+ ---&gt; Using cache
+ ---&gt; 2ad45f31e101
+Successfully built 2ad45f31e101
+Successfully tagged quay.io/mhausenblas/eksp-ui:0.2
+</code></pre>
+
+<p>Verify that the image has been built and is available, locally:</p>
+<pre><code class="sh">$ make verify
+REPOSITORY                    TAG                 IMAGE ID            CREATED             SIZE
+quay.io/mhausenblas/eksp-ui   0.2                 2ad45f31e101        About an hour ago   449MB
+</code></pre>
+
+<p>Now you can launch it:</p>
+<pre><code class="sh">$ make run
+docker run      --name ekspui \
+                --rm \
+                --detach \
+                --publish 8080:8080 \
+                --env EKSPHEMERAL_HOME=/eksp \
+                --env AWS_ACCESS_KEY_ID=XXXX \
+                --env AWS_SECRET_ACCESS_KEY=XXXX \
+                --env AWS_DEFAULT_REGION=us-east-2 \
+                --env EKSPHEMERAL_URL=https://nswn7lkjbk.execute-api.us-east-2.amazonaws.com/Prod \
+                                quay.io/mhausenblas/eksp-ui:0.2
+79a352a4b0259e0b9731d5f3cfb942f185013ac51d14c4d4710eb7cfe1c534b2
+</code></pre>
+
+<p>Keep an eye on the logs of the UI proxy:</p>
+<pre><code class="sh">$ docker logs --follow ekspui
+2019/06/21 10:06:58 EKSPhemeral UI up and running on http://localhost:8080/
+...
+</code></pre>
+
+<p>When you're done, tear down the UI proxy:</p>
+<pre><code class="sh">$ make stop
+docker kill ekspui
+ekspui
+</code></pre>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../arch/" title="Architecture" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Architecture
+              </span>
+            </div>
+          </a>
+        
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/application.245445c6.js"></script>
+      
+      <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,560 @@
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.4.0">
+    
+    
+      
+        <title>CLI - EKSphemeral</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/application.0284f74d.css">
+      
+      
+    
+    
+      <script src="../assets/javascripts/modernizr.74668098.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../assets/fonts/material-icons.css">
+    
+    
+    
+      
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#the-eksphemeral-cli" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href=".." title="EKSphemeral" class="md-header-nav__button md-logo">
+          
+            <i class="md-icon"></i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            <span class="md-header-nav__topic">
+              EKSphemeral
+            </span>
+            <span class="md-header-nav__topic">
+              
+                CLI
+              
+            </span>
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+          
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href=".." title="EKSphemeral" class="md-nav__button md-logo">
+      
+        <i class="md-icon"></i>
+      
+    </a>
+    EKSphemeral
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href=".." title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        CLI
+      </label>
+    
+    <a href="./" title="CLI" class="md-nav__link md-nav__link--active">
+      CLI
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#manual-install" title="Manual install" class="md-nav__link">
+    Manual install
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-clusters" title="Create clusters" class="md-nav__link">
+    Create clusters
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#list-clusters" title="List clusters" class="md-nav__link">
+    List clusters
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prolong-cluster-lifetime" title="Prolong cluster lifetime" class="md-nav__link">
+    Prolong cluster lifetime
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../ui/" title="Web UI" class="md-nav__link">
+      Web UI
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../arch/" title="Architecture" class="md-nav__link">
+      Architecture
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../dev/" title="Develop" class="md-nav__link">
+      Develop
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#manual-install" title="Manual install" class="md-nav__link">
+    Manual install
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-clusters" title="Create clusters" class="md-nav__link">
+    Create clusters
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#list-clusters" title="List clusters" class="md-nav__link">
+    List clusters
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prolong-cluster-lifetime" title="Prolong cluster lifetime" class="md-nav__link">
+    Prolong cluster lifetime
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="the-eksphemeral-cli">The EKSphemeral CLI<a class="headerlink" href="#the-eksphemeral-cli" title="Permanent link"> #</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Currently, the CLI binaries are available for both macOS and Linux platforms.</p>
+</div>
+<p>You can create, inspect, and prolong the lifetime of a cluster with the CLI as 
+shown in the following.</p>
+<h2 id="manual-install">Manual install<a class="headerlink" href="#manual-install" title="Permanent link"> #</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You usually don't need to install the CLI manually, it should have been set up with the overall install. However, in cases where you want to access EKSphemeral from a machine other than the one you set it up originally or the CLI has been removed by someone or something, follow the steps here.</p>
+</div>
+<p>To manually install the binary CLI, for example on macOS, do:</p>
+<pre><code class="sh">$ curl -sL https://github.com/mhausenblas/eksphemeral/releases/latest/download/eksp-macos -o eksp
+$ chmod +x eksp
+$ sudo mv ./eksp /usr/local/bin
+</code></pre>
+
+<p>Now, let's check if there are already clusters are managed by EKSphemeral:</p>
+<pre><code class="sh">$ eksp list
+No clusters found
+</code></pre>
+
+<p>Since we just installed EKSphemeral, there are no clusters, yet. Let's change that.</p>
+<h2 id="create-clusters">Create clusters<a class="headerlink" href="#create-clusters" title="Permanent link"> #</a></h2>
+<p>Let's create a cluster named <code>mh9-eksp</code>, with three worker nodes, 
+using Kubernetes version 1.12, with a 150 min timeout. </p>
+<p>First, create a file <code>cluster-spec.json</code> with the following content:</p>
+<pre><code class="json">{
+    &quot;id&quot;: &quot;&quot;,
+    &quot;name&quot;: &quot;mh9-eksp&quot;,
+    &quot;numworkers&quot;: 3,
+    &quot;kubeversion&quot;: &quot;1.21&quot;,
+    &quot;timeout&quot;: 150,
+    &quot;ttl&quot;: 150,
+    &quot;owner&quot;: &quot;hausenbl+notif@amazon.com&quot;,
+    &quot;created&quot;: &quot;&quot;
+}
+</code></pre>
+
+<p>Now you can use the <code>create</code> command like so:</p>
+<pre><code class="sh">$ eksp create luster-spec.json
+Trying to create a new ephemeral cluster ...
+... using cluster spec cluster-spec.json
+Seems you have set 'us-east-2' as the target region, using this for all following operations
+I will now provision the EKS cluster mh9-eksp using AWS Fargate:
+
+[i] Running task eksctl
+Waiting for EKS cluster provisioning to complete. Allow some 15 min to complete, checking status every minute:
+.........
+Successfully created data plane for cluster mh9-eksp using AWS Fargate and now moving on to the control plane in AWS Lambda and S3 ...
+
+Successfully created control plane entry for cluster mh9-eksp via AWS Lambda and Amazon S3 ...
+
+Now moving on to configure kubectl to point to your EKS cluster:
+Updated context arn:aws:eks:us-east-2:661776721573:cluster/mh9-eksp in /Users/hausenbl/.kube/config
+
+Your EKS cluster is now set up and configured:
+CURRENT   NAME                                                  CLUSTER                                               AUTHINFO                                              NAMESPACE
+*         arn:aws:eks:us-east-2:661776721573:cluster/mh9-eksp   arn:aws:eks:us-east-2:661776721573:cluster/mh9-eksp   arn:aws:eks:us-east-2:661776721573:cluster/mh9-eksp
+
+Note that it still can take up to 5 min until the worker nodes are available, check with the following command until you don't see the 'No resources found.' message anymore:
+kubectl get nodes
+</code></pre>
+
+<p>Note that if no cluster spec is provided, a default cluster spec will be
+used along with first security group of the default VPC.</p>
+<p>Once the cluster is ready and you've verified your email addresses you should
+get a notification that looks something like the following:</p>
+<p><img alt="EKSphemeral mail notification on cluster create" src="../img/mail-notif-example.png" /></p>
+<p>The same is true at least five minutes before the cluster shuts down.</p>
+<h2 id="list-clusters">List clusters<a class="headerlink" href="#list-clusters" title="Permanent link"> #</a></h2>
+<p>Next, let's check what clusters are managed by EKSphemeral:</p>
+<pre><code class="sh">$ eksp list
+NAME       ID                                     KUBERNETES   NUM WORKERS   TIMEOUT   TTL      OWNER
+mh9-eksp   e90379cf-ee0a-49c7-8f82-1660760d6bb5   v1.12        2             45 min    42 min   hausenbl+notif@amazon.com
+</code></pre>
+
+<p>Here, we get an array of cluster IDs back. We can use such a cluster ID as 
+follows to look up the spec of a particular cluster:</p>
+<pre><code class="sh">$ eksp list e90379cf-ee0a-49c7-8f82-1660760d6bb5
+ID:             e90379cf-ee0a-49c7-8f82-1660760d6bb5
+Name:           mh9-eksp
+Kubernetes:     v1.12
+Worker nodes:   2
+Timeout:        45 min
+TTL:            38 min
+Owner:          hausenbl+notif@amazon.com
+Details:
+        Status:             ACTIVE
+        Endpoint:           https://A377918A0CA6D8BE793FF8BEC88964FE.sk1.us-east-2.eks.amazonaws.com
+        Platform version:   eks.2
+        VPC config:         private access: false, public access: true
+        IAM role:           arn:aws:iam::661776721573:role/eksctl-mh9-eksp-cluster-ServiceRole-1HT8OAOGNNY2Y
+</code></pre>
+
+<h2 id="prolong-cluster-lifetime">Prolong cluster lifetime<a class="headerlink" href="#prolong-cluster-lifetime" title="Permanent link"> #</a></h2>
+<p>When you get a notification that one of your clusters is about to shut down or 
+really at any time before it shuts down, you can prolong the cluster lifetime 
+using the <code>eksp prolong</code> command.</p>
+<p>Let's say we want to keep the cluster with the ID <code>e90379cf-ee0a-49c7-8f82-1660760d6bb5</code> around 
+for 13 min longer. Here's what you would do:</p>
+<pre><code class="sh">$ eksp prolong e90379cf-ee0a-49c7-8f82-1660760d6bb5 13
+
+Trying to set the TTL of cluster e90379cf-ee0a-49c7-8f82-1660760d6bb5 to 13 minutes, starting now
+Successfully prolonged the lifetime of cluster e90379cf-ee0a-49c7-8f82-1660760d6bb5 for 13 minutes.
+
+$ eksp list
+NAME       ID                                     KUBERNETES   NUM WORKERS   TIMEOUT   TTL      OWNER
+mh9-eksp   e90379cf-ee0a-49c7-8f82-1660760d6bb5   v1.12        2             13 min    13 min   hausenbl+notif@amazon.com
+</code></pre>
+
+<p>Note that the prolong command updates the <code>timeout</code> field of your cluster spec,
+that is, the cluster TTL is counted from the moment you issue the prolong command, 
+taking the remaining cluster runtime into account.</p>
+<h1 id="uninstall">Uninstall<a class="headerlink" href="#uninstall" title="Permanent link"> #</a></h1>
+<p>To uninstall EKSphemeral, use the following command. This will remove the 
+control plane elements, that is, delete the Lambda functions and remove all 
+cluster specs from the <code>EKSPHEMERAL_CLUSTERMETA_BUCKET</code> S3 bucket:</p>
+<pre><code class="bash">$ eksp uninstall
+Trying to uninstall EKSphemeral ...
+Taking down the EKSphemeral control plane, this might take a few minutes ...
+
+aws s3 rm s3://eks-cluster-meta --recursive
+aws cloudformation delete-stack --stack-name eksp
+
+Tear-down will complete within some 5 min. You can check the status manually, if you like, using 'make status' in the svc/ directory.
+Once you see a message saying something like 'Stack with id eksp does not exist' you know for sure it's gone :)
+
+Thanks for using EKSphemeral and hope to see ya soon ;)
+</code></pre>
+
+<p>Note that the service code bucket and the cluster metadata bucket are still around after this. 
+You can either manually delete them or keep them around, to reuse them later. </p>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href=".." title="Home" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Home
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../ui/" title="Web UI" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Web UI
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/application.245445c6.js"></script>
+      
+      <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
+      
+    
+  </body>
+</html>
