@@ -13,7 +13,9 @@ RUN yum -y install shadow-utils && \
     mv ./kubectl /usr/local/bin  && \
     curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get > get_helm.sh  && \
     chmod +x get_helm.sh && \
-    ./get_helm.sh
+    ./get_helm.sh && \
+    JQ=/usr/bin/jq && \
+    curl https://stedolan.github.io/jq/download/linux64/jq > $JQ && chmod +x $JQ
 
 WORKDIR /
 
