@@ -19,7 +19,7 @@ eksctl create cluster \
     --full-ecr-access \
     --appmesh-access
 
-export KUBECONFIG=/root/.kube/eksctl/clusters/$CLUSTER_NAME
+export KUBECONFIG=/home/eksctl/.kube/eksctl/clusters/$CLUSTER_NAME
 
 # let's wait up to 5 minutes for the nodes the get ready:
 echo "Now waiting up to 5 min for cluster to be usable ..."
