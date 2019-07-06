@@ -46,6 +46,8 @@ kubectl -n argocd apply -f https://raw.githubusercontent.com/argoproj/argo-cd/st
 # https://github.com/PaulMaddox/aws-appmesh-helm
 kubectl apply -f https://raw.githubusercontent.com/PaulMaddox/aws-appmesh-helm/master/scripts/helm-rbac.yaml
 helm init --service-account tiller
+sleep 10
+kubectl -n kube-system rollout status deployment tiller-deploy
 helm install -n aws-appmesh --namespace appmesh-system https://github.com/PaulMaddox/aws-appmesh-helm/releases/latest/download/aws-appmesh.tgz
 
 
