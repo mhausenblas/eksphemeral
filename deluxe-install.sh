@@ -35,10 +35,10 @@ echo "Now installing ArgoCD ..."
 kubectl create namespace argocd
 kubectl -n argocd apply -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
-# OPTION: explose the UI via ...
+# OPTION: expose the UI publicly via ...
 # kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
 
-# OPTON: log in via ...
+# OPTION: log in via ...
 # kubectl get pods -n argocd -l app.kubernetes.io/name=argocd-server -o name | cut -d'/' -f 2
 
 ######
@@ -56,5 +56,10 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/heapster.yaml
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/influxdb.yaml
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/rbac/heapster-rbac.yaml
+
+# OPTION expose the dashboard publicly via the following (NOTE: in order to log
+# in, you still need to create an SA xxx and cluster admin CRB and then get the 
+# auth token from executing 'kubectl -n kube-system describe secret xxx') ...
+# kubectl patch svc kubernetes-dashboard -n kube-system -p '{"spec": {"type": "LoadBalancer"}}'
 
 echo "DONE"
