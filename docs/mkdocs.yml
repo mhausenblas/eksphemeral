@@ -8,9 +8,9 @@ nav:
     - Home: index.md
     - CLI: cli.md
     - Web UI: ui.md
-    - FAQ: faq.md
     - Architecture: arch.md
     - Develop: dev.md
+    - FAQ: faq.md
 theme:
     name: 'material'
     custom_dir: 'theme'
