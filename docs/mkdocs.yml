@@ -1,11 +1,16 @@
 site_name: EKSphemeral
+site_description: 'The EKS Ephemeral Cluster Manager'
+site_author: 'Michael Hausenblas'
+repo_name: 'mhausenblas/eksphemeral'
+repo_url: 'https://github.com/mhausenblas/eksphemeral'
+copyright: 'Copyright &copy; 2019 Amazon'
 nav:
     - Home: index.md
     - CLI: cli.md
     - Web UI: ui.md
+    - FAQ: faq.md
     - Architecture: arch.md
     - Develop: dev.md
-
 theme:
     name: 'material'
     custom_dir: 'theme'
@@ -20,7 +25,6 @@ theme:
         - yaml
         - json
         - bash
-
 markdown_extensions:
     - toc:
         permalink: true
