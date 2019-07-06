@@ -276,6 +276,26 @@
     Create clusters
   </a>
   
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basics" title="Basics" class="md-nav__link">
+    Basics
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-cluster-creation" title="Advanced cluster creation" class="md-nav__link">
+    Advanced cluster creation
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -288,6 +308,13 @@
         <li class="md-nav__item">
   <a href="#prolong-cluster-lifetime" title="Prolong cluster lifetime" class="md-nav__link">
     Prolong cluster lifetime
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uninstall" title="Uninstall" class="md-nav__link">
+    Uninstall
   </a>
   
 </li>
@@ -383,6 +410,26 @@
     Create clusters
   </a>
   
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basics" title="Basics" class="md-nav__link">
+    Basics
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-cluster-creation" title="Advanced cluster creation" class="md-nav__link">
+    Advanced cluster creation
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -395,6 +442,13 @@
         <li class="md-nav__item">
   <a href="#prolong-cluster-lifetime" title="Prolong cluster lifetime" class="md-nav__link">
     Prolong cluster lifetime
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uninstall" title="Uninstall" class="md-nav__link">
+    Uninstall
   </a>
   
 </li>
@@ -419,8 +473,8 @@
                 
                 
                 <h1 id="the-eksphemeral-cli">The EKSphemeral CLI<a class="headerlink" href="#the-eksphemeral-cli" title="Permanent link">&para;</a></h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
 <p>Currently, the CLI binaries are available for both macOS and Linux platforms.</p>
 </div>
 <p>You can create, inspect, and prolong the lifetime of a cluster with the CLI as 
@@ -448,6 +502,9 @@ No clusters found
 
 <p>Since we just installed EKSphemeral, there are no clusters, yet. Let's change that.</p>
 <h2 id="create-clusters">Create clusters<a class="headerlink" href="#create-clusters" title="Permanent link">&para;</a></h2>
+<p>The CLI allows you to create ephemeral EKS clusters with a single command, based
+on a simple JSON cluster spec file.</p>
+<h3 id="basics">Basics<a class="headerlink" href="#basics" title="Permanent link">&para;</a></h3>
 <p>Let's create a cluster named <code>mh9-eksp</code>, with three worker nodes, 
 using Kubernetes version 1.12, with a 150 min timeout. </p>
 <p>First, create a file <code>cluster-spec.json</code> with the following content:</p>
@@ -464,7 +521,7 @@ using Kubernetes version 1.12, with a 150 min timeout. </p>
     <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
     <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;mh9-eksp&quot;</span><span class="p">,</span>
     <span class="nt">&quot;numworkers&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-    <span class="nt">&quot;kubeversion&quot;</span><span class="p">:</span> <span class="s2">&quot;1.21&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;kubeversion&quot;</span><span class="p">:</span> <span class="s2">&quot;1.12&quot;</span><span class="p">,</span>
     <span class="nt">&quot;timeout&quot;</span><span class="p">:</span> <span class="mi">150</span><span class="p">,</span>
     <span class="nt">&quot;ttl&quot;</span><span class="p">:</span> <span class="mi">150</span><span class="p">,</span>
     <span class="nt">&quot;owner&quot;</span><span class="p">:</span> <span class="s2">&quot;hausenbl+notif@amazon.com&quot;</span><span class="p">,</span>
@@ -520,12 +577,107 @@ kubectl get nodes
 </pre></div>
 </td></tr></table>
 
-<p>Note that if no cluster spec is provided, a default cluster spec will be
-used along with the first security group of the default VPC.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If no cluster spec is provided, a default cluster spec will be used along with the first security group of the default VPC.</p>
+</div>
 <p>Once the cluster is ready and you've verified your email addresses you should
 get a notification that looks something like the following:</p>
 <p><img alt="EKSphemeral mail notification on cluster create" src="../img/mail-notif-example.png" /></p>
 <p>The same is true at least five minutes before the cluster shuts down.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Above implicitly uses the <a href="https://github.com/mhausenblas/eksphemeral/blob/master/Dockerfile.base">base</a> image.
+If you want a few more things installed, such as the Kubernetes dashboard, ArgoCD, and App Mesh, use the <code>eksctl:deluxe</code> image as shown in the following.</p>
+</div>
+<h3 id="advanced-cluster-creation">Advanced cluster creation<a class="headerlink" href="#advanced-cluster-creation" title="Permanent link">&para;</a></h3>
+<p>You can also use the <a href="https://github.com/mhausenblas/eksphemeral/blob/master/Dockerfile.deluxe">deluxe</a> image,
+available via <a href="https://quay.io/repository/mhausenblas/eksctl?tag=latest&amp;tab=tags">Quay.io</a>, 
+to create an ephemeral cluster with the Kubernetes Dashboard, <a href="https://argoproj.github.io/argo-cd/">ArgoCD</a>, 
+and <a href="https://aws.amazon.com/app-mesh/">AWS App Mesh</a> (incl. Prometheus and Grafana) pre-installed.</p>
+<p>Do the following to provision an ephemeral <code>deluxe</code> cluster:</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ cat /tmp/eks-deluxe.json
+<span class="o">{</span>
+    <span class="s2">&quot;id&quot;</span>: <span class="s2">&quot;&quot;</span>,
+    <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;mh9-deluxe&quot;</span>,
+    <span class="s2">&quot;numworkers&quot;</span>: <span class="m">2</span>,
+    <span class="s2">&quot;kubeversion&quot;</span>: <span class="s2">&quot;1.13&quot;</span>,
+    <span class="s2">&quot;timeout&quot;</span>: <span class="m">1440</span>,
+    <span class="s2">&quot;ttl&quot;</span>: <span class="m">1440</span>,
+    <span class="s2">&quot;owner&quot;</span>: <span class="s2">&quot;hausenbl+notif@amazon.com&quot;</span>,
+    <span class="s2">&quot;created&quot;</span>: <span class="s2">&quot;&quot;</span>
+<span class="o">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>And then:</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ <span class="nv">EKSPHEMERAL_EKSCTL_IMG</span><span class="o">=</span>deluxe eksp create /tmp/eks-deluxe.json
+...
+</pre></div>
+</td></tr></table>
+
+<p>This takes some 15 min and after that, to access the <strong>Kubernetes dashboard</strong> we need to 1. proxy the UI locally, and 2. sort out the access control bits.</p>
+<p>First, launch the proxy to forward traffic to you local environment:</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ kubectl proxy
+</pre></div>
+</td></tr></table>
+
+<p>Next, let's sort out the access control bits:</p>
+<p>First, create a service account <code>eks-admin</code>:</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ kubectl -n kube-system create sa eks-admin
+</pre></div>
+</td></tr></table>
+
+<p>... and give it cluster admin rights ...</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ kubectl create clusterrolebinding eks-admin <span class="se">\</span>
+                 --clusterrole<span class="o">=</span>cluster-admin <span class="se">\</span>
+                 --serviceaccount<span class="o">=</span>kube-system:eks-admin
+</pre></div>
+</td></tr></table>
+
+<p>... and finally, get the <code>token</code> for logging into the dashboard:</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ kubectl -n kube-system describe secret <span class="se">\</span>
+             <span class="k">$(</span>kubectl -n kube-system get secret <span class="p">|</span> grep eks-admin <span class="p">|</span> awk <span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span> <span class="p">|</span> grep ^token
+token:      e****************************************************************************************************************g
+</pre></div>
+</td></tr></table>
+
+<p>Finally, got to the <a href="http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/#!/login">dashboard</a> and use the value of <code>token</code> from the last command to log into the dashboard:</p>
+<p><img alt="Kube dashboard login" src="../img/screen-shot-2019-07-06-kube-dashboard-login.png" /></p>
+<p>Once you've completed the login, select the "Namespace" tab, left-hand side to check if all is as it should be, compare with the following screen shot:</p>
+<p><img alt="Kube dashboard namespace" src="../img/screen-shot-2019-07-06-kube-dashboard-ns.png" /></p>
+<p>To access the <strong>ArgoCD UI</strong>, do:</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ kubectl port-forward svc/argocd-server -n argocd <span class="m">8080</span>:443
+</pre></div>
+</td></tr></table>
+
+<p>And now execute:</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ kubectl get pods -n argocd -l app.kubernetes.io/name<span class="o">=</span>argocd-server -o name <span class="p">|</span> cut -d<span class="s1">&#39;/&#39;</span> -f <span class="m">2</span>
+argocd-server-7c7c748648-nlrwq
+</pre></div>
+</td></tr></table>
+
+<p>Finally, open <a href="https://localhost:8080/">localhost:8080</a> and log in with username <code>admin</code> and password using the pod name from the previous step, in my case <code>argocd-server-7c7c748648-nlrwq</code>:</p>
+<p><img alt="ArgoCD login" src="../img/screen-shot-2019-07-06-argo-login.png" /></p>
+<p>Once you've completed the login, you are ready to configure your first app deployment, GitOps style:</p>
+<p><img alt="ArgoCD login" src="../img/screen-shot-2019-07-06-argo-app.png" /></p>
+<p>That's it. Now let's see how we can introspect and manipulate EKSphemeral clusters.</p>
 <h2 id="list-clusters">List clusters<a class="headerlink" href="#list-clusters" title="Permanent link">&para;</a></h2>
 <p>Next, let's check what clusters are managed by EKSphemeral:</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
@@ -536,7 +688,7 @@ mh9-eksp   e90379cf-ee0a-49c7-8f82-1660760d6bb5   v1.12        <span class="m">2
 </pre></div>
 </td></tr></table>
 
-<p>Here, we get an array of cluster IDs back. We can use such a cluster ID as 
+<p>Here, we get an tabular rendering of the clusters. We can use a cluster ID as 
 follows to look up the spec of a particular cluster:</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -577,25 +729,29 @@ for 13 min longer. Here's what you would do:</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
-4
-5
-6
-7
-8</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ eksp prolong e90379cf-ee0a-49c7-8f82-1660760d6bb5 <span class="m">13</span>
+4</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ eksp prolong e90379cf-ee0a-49c7-8f82-1660760d6bb5 <span class="m">13</span>
 
 Trying to <span class="nb">set</span> the TTL of cluster e90379cf-ee0a-49c7-8f82-1660760d6bb5 to <span class="m">13</span> minutes, starting now
 Successfully prolonged the lifetime of cluster e90379cf-ee0a-49c7-8f82-1660760d6bb5 <span class="k">for</span> <span class="m">13</span> minutes.
+</pre></div>
+</td></tr></table>
 
-$ eksp list
+<p>Now let's check:</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ eksp list
 NAME       ID                                     KUBERNETES   NUM WORKERS   TIMEOUT   TTL      OWNER
 mh9-eksp   e90379cf-ee0a-49c7-8f82-1660760d6bb5   v1.12        <span class="m">2</span>             <span class="m">13</span> min    <span class="m">13</span> min   hausenbl+notif@amazon.com
 </pre></div>
 </td></tr></table>
 
-<p>Note that the prolong command updates the <code>timeout</code> field of your cluster spec,
-that is, the cluster TTL is counted from the moment you issue the prolong command, 
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The prolong command updates the <code>timeout</code> field of your cluster spec, that is,
+the cluster TTL is counted from the moment you issue the prolong command, 
 taking the remaining cluster runtime into account.</p>
-<h1 id="uninstall">Uninstall<a class="headerlink" href="#uninstall" title="Permanent link">&para;</a></h1>
+</div>
+<h2 id="uninstall">Uninstall<a class="headerlink" href="#uninstall" title="Permanent link">&para;</a></h2>
 <p>To uninstall EKSphemeral, use the following command. This will remove the 
 control plane elements, that is, delete the Lambda functions and remove all 
 cluster specs from the <code>EKSPHEMERAL_CLUSTERMETA_BUCKET</code> S3 bucket:</p>
@@ -623,8 +779,13 @@ Thanks <span class="k">for</span> using EKSphemeral and hope to see ya soon <spa
 </pre></div>
 </td></tr></table>
 
-<p>Note that the service code bucket and the cluster metadata bucket are still around after this. 
-You can either manually delete them or keep them around, to reuse them later. </p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The service code bucket and the cluster metadata bucket are still around
+after the <code>uninstall</code> command has completed. You can either manually delete 
+them or keep them around, to reuse them later. </p>
+</div>
+<p>This concludes the CLI walkthrough.</p>
                 
                   
                 
