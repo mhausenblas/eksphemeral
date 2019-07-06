@@ -10,7 +10,11 @@
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <meta http-equiv="x-ua-compatible" content="ie=edge">
       
+        <meta name="description" content="The EKS Ephemeral Cluster Manager">
       
+      
+      
+        <meta name="author" content="Michael Hausenblas">
       
       
         <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -76,6 +80,8 @@
     <svg class="md-svg">
       <defs>
         
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
         
       </defs>
     </svg>
@@ -144,6 +150,28 @@
         
       </div>
       
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+<a href="https://github.com/mhausenblas/eksphemeral/" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    mhausenblas/eksphemeral
+  </div>
+</a>
+          </div>
+        </div>
+      
     </div>
   </nav>
 </header>
@@ -169,6 +197,26 @@
     </a>
     EKSphemeral
   </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+<a href="https://github.com/mhausenblas/eksphemeral/" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    mhausenblas/eksphemeral
+  </div>
+</a>
+    </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
     
@@ -284,6 +332,18 @@
   </li>
 
     
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../faq/" title="FAQ" class="md-nav__link">
+      FAQ
+    </a>
+  </li>
+
+    
   </ul>
 </nav>
                   </div>
@@ -340,6 +400,8 @@
           <div class="md-content">
             <article class="md-content__inner md-typeset">
               
+                
+                  <a href="https://github.com/mhausenblas/eksphemeral/edit/master/docs/dev.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
                 <h1 id="development-and-testing">Development and testing<a class="headerlink" href="#development-and-testing" title="Permanent link">&para;</a></h1>
@@ -468,126 +530,12 @@ using your local AWS credentials, for example like so:</p>
 </td></tr></table>
 
 <p>Now you can build the UI container image like so:</p>
-<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ make build
-<span class="nv">GOOS</span><span class="o">=</span>linux <span class="nv">GOARCH</span><span class="o">=</span>amd64 go build -o ./proxy .
-docker build --tag quay.io/mhausenblas/eksp-ui:0.2 .
-Sending build context to Docker daemon  <span class="m">10</span>.86MB
-Step <span class="m">1</span>/17 : FROM amazonlinux:2018.03
- ---&gt; a89f4a191d4c
-Step <span class="m">2</span>/17 : LABEL <span class="nv">maintainer</span><span class="o">=</span><span class="s2">&quot;Michael Hausenblas &lt;hausenbl@amazon.com&gt;&quot;</span>
- ---&gt; Using cache
- ---&gt; f57e0623e5d8
-Step <span class="m">3</span>/17 : ARG AWS_ACCESS_KEY_ID
- ---&gt; Using cache
- ---&gt; 45fc8c05256c
-Step <span class="m">4</span>/17 : ARG AWS_SECRET_ACCESS_KEY
- ---&gt; Using cache
- ---&gt; 02a4bcc33f74
-Step <span class="m">5</span>/17 : ARG AWS_DEFAULT_REGION
- ---&gt; Using cache
- ---&gt; 6d1562974f7c
-Step <span class="m">6</span>/17 : COPY install.sh .
- ---&gt; Using cache
- ---&gt; 5a6d45d855ce
-Step <span class="m">7</span>/17 : RUN yum install unzip jq git -y <span class="o">&amp;&amp;</span> yum clean all <span class="o">&amp;&amp;</span>     curl -sL https://bootstrap.pypa.io/get-pip.py -o get-pip.py <span class="o">&amp;&amp;</span>     python get-pip.py <span class="o">&amp;&amp;</span> pip install awscli --upgrade <span class="o">&amp;&amp;</span>     <span class="nb">export</span> <span class="nv">EKSPHEMERAL_HOME</span><span class="o">=</span>/eksp <span class="o">&amp;&amp;</span>     chmod +x install.sh <span class="o">&amp;&amp;</span> ./install.sh
- ---&gt; Using cache
- ---&gt; dcb28e56940f
-Step <span class="m">8</span>/17 : COPY css/* /app/css/
- ---&gt; Using cache
- ---&gt; f2aad01c40dc
-Step <span class="m">9</span>/17 : COPY img/* /app/img/
- ---&gt; Using cache
- ---&gt; ae2750fca6cd
-Step <span class="m">10</span>/17 : COPY js/* /app/js/
- ---&gt; Using cache
- ---&gt; 82fec12cf16a
-Step <span class="m">11</span>/17 : COPY *.html /app/
- ---&gt; Using cache
- ---&gt; db13d828ff73
-Step <span class="m">12</span>/17 : WORKDIR /app
- ---&gt; Using cache
- ---&gt; 304d80268fbe
-Step <span class="m">13</span>/17 : RUN chown -R <span class="m">1001</span>:1 /app
- ---&gt; Using cache
- ---&gt; 0c09d65e5358
-Step <span class="m">14</span>/17 : USER <span class="m">1001</span>
- ---&gt; Using cache
- ---&gt; 6ca8e15efb82
-Step <span class="m">15</span>/17 : COPY proxy .
- ---&gt; Using cache
- ---&gt; 397672a796b3
-Step <span class="m">16</span>/17 : EXPOSE <span class="m">8080</span>
- ---&gt; Using cache
- ---&gt; 6508d74b4e39
-Step <span class="m">17</span>/17 : CMD <span class="o">[</span><span class="s2">&quot;/app/proxy&quot;</span><span class="o">]</span>
- ---&gt; Using cache
- ---&gt; 2ad45f31e101
-Successfully built 2ad45f31e101
-Successfully tagged quay.io/mhausenblas/eksp-ui:0.2
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ make build
 </pre></div>
 </td></tr></table>
 
 <p>Verify that the image has been built and is available, locally:</p>
-<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ make verify
-REPOSITORY                    TAG                 IMAGE ID            CREATED             SIZE
-quay.io/mhausenblas/eksp-ui   <span class="m">0</span>.2                 2ad45f31e101        About an hour ago   449MB
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>$ make verify
 </pre></div>
 </td></tr></table>
 
@@ -670,12 +618,30 @@ ekspui
           </a>
         
         
+          <a href="../faq/" title="FAQ" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                FAQ
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
       </nav>
     </div>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
       <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2019 Amazon
+          </div>
         
         powered by
         <a href="https://www.mkdocs.org">MkDocs</a>
