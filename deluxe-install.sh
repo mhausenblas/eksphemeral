@@ -52,5 +52,9 @@ helm install -n aws-appmesh --namespace appmesh-system https://github.com/PaulMa
 ######
 # install the default Kube dashboard based off of:
 # https://docs.aws.amazon.com/eks/latest/userguide/dashboard-tutorial.html
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/heapster.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/influxdb.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/rbac/heapster-rbac.yaml
 
 echo "DONE"
