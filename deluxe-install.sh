@@ -19,6 +19,8 @@ eksctl create cluster \
     --full-ecr-access \
     --appmesh-access
 
+export KUBECONFIG=/root/.kube/eksctl/clusters/$CLUSTER_NAME
+
 # let's wait up to 5 minutes for the nodes the get ready:
 echo "Now waiting up to 5 min for cluster to be usable ..."
 kubectl wait nodes --for=condition=Ready --timeout=300s --all
@@ -31,6 +33,10 @@ kubectl wait nodes --for=condition=Ready --timeout=300s --all
 echo "Now installing ArgoCD ..."
 kubectl create namespace argocd
 kubectl -n argocd apply -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+# OPTION: explose the UI via ...
+# kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+# OPTON: log in via ...
+# kubectl get pods -n argocd -l app.kubernetes.io/name=argocd-server -o name | cut -d'/' -f 2
 
 # install App Mesh and o11y components (Prometheus, Grafana, X-Ray)
 # based off of: https://github.com/PaulMaddox/aws-appmesh-helm

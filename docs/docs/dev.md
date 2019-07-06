@@ -132,69 +132,14 @@ Now you can build the UI container image like so:
 
 ```sh
 $ make build
-GOOS=linux GOARCH=amd64 go build -o ./proxy .
-docker build --tag quay.io/mhausenblas/eksp-ui:0.2 .
-Sending build context to Docker daemon  10.86MB
-Step 1/17 : FROM amazonlinux:2018.03
- ---> a89f4a191d4c
-Step 2/17 : LABEL maintainer="Michael Hausenblas <hausenbl@amazon.com>"
- ---> Using cache
- ---> f57e0623e5d8
-Step 3/17 : ARG AWS_ACCESS_KEY_ID
- ---> Using cache
- ---> 45fc8c05256c
-Step 4/17 : ARG AWS_SECRET_ACCESS_KEY
- ---> Using cache
- ---> 02a4bcc33f74
-Step 5/17 : ARG AWS_DEFAULT_REGION
- ---> Using cache
- ---> 6d1562974f7c
-Step 6/17 : COPY install.sh .
- ---> Using cache
- ---> 5a6d45d855ce
-Step 7/17 : RUN yum install unzip jq git -y && yum clean all &&     curl -sL https://bootstrap.pypa.io/get-pip.py -o get-pip.py &&     python get-pip.py && pip install awscli --upgrade &&     export EKSPHEMERAL_HOME=/eksp &&     chmod +x install.sh && ./install.sh
- ---> Using cache
- ---> dcb28e56940f
-Step 8/17 : COPY css/* /app/css/
- ---> Using cache
- ---> f2aad01c40dc
-Step 9/17 : COPY img/* /app/img/
- ---> Using cache
- ---> ae2750fca6cd
-Step 10/17 : COPY js/* /app/js/
- ---> Using cache
- ---> 82fec12cf16a
-Step 11/17 : COPY *.html /app/
- ---> Using cache
- ---> db13d828ff73
-Step 12/17 : WORKDIR /app
- ---> Using cache
- ---> 304d80268fbe
-Step 13/17 : RUN chown -R 1001:1 /app
- ---> Using cache
- ---> 0c09d65e5358
-Step 14/17 : USER 1001
- ---> Using cache
- ---> 6ca8e15efb82
-Step 15/17 : COPY proxy .
- ---> Using cache
- ---> 397672a796b3
-Step 16/17 : EXPOSE 8080
- ---> Using cache
- ---> 6508d74b4e39
-Step 17/17 : CMD ["/app/proxy"]
- ---> Using cache
- ---> 2ad45f31e101
-Successfully built 2ad45f31e101
-Successfully tagged quay.io/mhausenblas/eksp-ui:0.2
+
 ```
 
 Verify that the image has been built and is available, locally:
 
 ```sh
 $ make verify
-REPOSITORY                    TAG                 IMAGE ID            CREATED             SIZE
-quay.io/mhausenblas/eksp-ui   0.2                 2ad45f31e101        About an hour ago   449MB
+
 ```
 
 Now you can launch it:
