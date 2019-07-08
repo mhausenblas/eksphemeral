@@ -1,12 +1,20 @@
 # Frequently Asked Questions (FAQ)
 
-## Usage
+## Use Cases
 
 !!! question "Question"
     What is EKSphemeral for?
 
 !!! quote "Answer"
     For development, demo, and test environments.
+
+## Costs
+
+!!! question "Question"
+    What are the cost savings?
+
+!!! quote "Answer"
+    Depends on how long the EKS cluster runs. The EKSphemeral control plane components virtually do not cost anything (few cents per month at maximum).
 
 ## CLI 
 
@@ -23,3 +31,11 @@
 
 !!! quote "Answer"
     Sure! Check out the [development and testing](/dev) docs.
+
+## Misc
+
+!!! question "Question"
+    How is EKSphemeral pronounced?
+
+!!! quote "Answer"
+    Glad you asked, I thought that would never happen: x-phemeral.
