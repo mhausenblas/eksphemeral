@@ -125,14 +125,14 @@ printf "I will now provision the EKS cluster %s using AWS Fargate:\n\n" $CLUSTER
 # provision the EKS cluster using containerized eksctl:
 fargate task run eksctl \
           --image quay.io/mhausenblas/eksctl:$EKSCTL_IMAGE \
-          --region $(aws configure get region) \
-          --env AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id) \
-          --env AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key) \
-          --env AWS_DEFAULT_REGION=$(aws configure get region) \
-          --env CLUSTER_NAME=$CLUSTER_NAME \
-          --env NUM_WORKERS=$NUM_WORKERS \
-          --env KUBERNETES_VERSION=$K8S_VERSION \
-          --security-group-id $EKSPHEMERAL_SG
+          --region "$(aws configure get region)" \
+          --env AWS_ACCESS_KEY_ID="$(aws configure get aws_access_key_id)" \
+          --env AWS_SECRET_ACCESS_KEY="$(aws configure get aws_secret_access_key)" \
+          --env AWS_DEFAULT_REGION="$(aws configure get region)" \
+          --env CLUSTER_NAME="$CLUSTER_NAME" \
+          --env NUM_WORKERS="$NUM_WORKERS" \
+          --env KUBERNETES_VERSION="$K8S_VERSION" \
+          --security-group-id "$EKSPHEMERAL_SG"
 
 printf "Waiting for EKS cluster provisioning to complete. Allow some 15 min to complete, checking status every minute:\n"
 
@@ -168,4 +168,4 @@ printf "\nYour EKS cluster is now set up and configured:\n"
 kubectl config get-contexts
 
 printf "\nNote that it still can take up to 5 min until the worker nodes are available, check with the following command until you don't see the 'No resources found.' message anymore:\n"
-echo "kubectl get nodes" 
+echo "kubectl get nodes"
